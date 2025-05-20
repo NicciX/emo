@@ -2,19 +2,22 @@
 
 local validTemps = {
 	["arctic"] = "arctic",
-	["cold"] = "cold",
-	["cool"] = "cool",
-	["warm"] = "warm",
-	["normal"] = "normal",
-	["def"] = "normal",
-	["hot"] = "hot",
-	["wet"] = "wet",
-	["aetheric"] = "aetheric",
+	["cold"] = "cold", -- ☃▽
+	["cool"] = "cool", -- ☆▼
+	["warm"] = "warm", -- ○ 
+	["normal"] = "normal", -- ★    °
+	["def"] = "normal", -- ★ ≡
+	["hot"] = "hot", -- ●▲
+	["wet"] = "wet", -- ☂ ☁
+	["aetheric"] = "aetheric",  --₆☀∮
 	["space"] = "space",
-	["hell"] = "hellworld",
+	["hell"] = "hellworld", -- ☀
 	["naked"] = "scorchin",
 	["scorchin"] = "scorchin",
 }
+
+-- hot = ▲
+-- warm = △
 
 local smartOutfitSelect = {
 	["cool"] = {
@@ -93,6 +96,7 @@ local validTypes =  {
 	["sporty"] = "athletic",
 	["athletic"] = "athletic",
 	["everyday"] = "everyday",
+	["lingerie"] = "lingerie",
 }
 
 local validStyles = {
@@ -103,36 +107,36 @@ local validStyles = {
 }
 
 local validSlotId = {
-	["hat"] = "2",
-	["top"] = "3",
-	["shirt"] = "3",
-	["jacket"] = "3",
-	["dress"] = "3",
-	["blouse"] = "3",
-	["tunic"] = "3",
-	["gloves"] = "4",
-	["pants"] = "6",
-	["skirt"] = "6",
-	["shorts"] = "6",
-	["bottoms"] = "6",
-	["shoes"] = "7",
-	["boots"] = "7",
-	["bracelet"] = "10",
-	["earring"] = "8",
-	["earrings"] = "8",
-	["necklace"] = "9",
-	["choker"] = "9",
-	["ribbon"] = "9",
-	["ringr"] = "11",
-	["rring"] = "11",
-	["ringl"] = "12",
-	["lring"] = "12",
-	["bra"] = "31",
-	["panties"] = "30",
-	["nails"] = "32",
-	["glasses"] = "33",
-	["facewear"] = "33",
-	["spriggan"] = "2",
+	["hat"] = "head", --2
+	["top"] = "body", --3
+	["shirt"] = "body",
+	["jacket"] = "body",
+	["dress"] = "body",
+	["blouse"] = "body",
+	["tunic"] = "body",
+	["gloves"] = "hands", --4
+	["pants"] = "legs", --6
+	["skirt"] = "legs",
+	["shorts"] = "legs",
+	["bottoms"] = "legs",
+	["shoes"] = "feet",
+	["boots"] = "feet",
+	["bracelet"] = "wrist",
+	["earring"] = "ears",
+	["earrings"] = "ears",
+	["necklace"] = "neck",
+	["choker"] = "neck",
+	["ribbon"] = "neck",
+	["ringr"] = "ringr",
+	["rring"] = "ringr",
+	["ringl"] = "lring",
+	["lring"] = "lring",
+	["bra"] = "bra",
+	["panties"] = "panties",
+	["nails"] = "nails",
+	["glasses"] = "facewear",
+	["facewear"] = "facewear",
+	["spriggan"] = "head",
 }
 
 local gearSlotName = {
@@ -235,17 +239,8 @@ function OutfitLoad(co)
 			currentOutfitSet[k] = v
 		end
 		CD[playerName]["currentOutfit"] = currentOutfit
-		--[[if not CD[playerName]["outfits"][currentOutfit]["3"] or not CD[playerName]["outfits"][currentOutfit]["6"] then
-			dbgMsg("Missing Top/Bottom Data for " .. co .. "...... Loading Data....", 1)
-			dbgMsg("top:" .. tostring(CD[playerName]["outfits"][currentOutfit]["3"]), 1)
-			dbgMsg("bottoms:" .. tostring(CD[playerName]["outfits"][currentOutfit]["6"]), 1)
-			OutfitHandler("save " .. co)
-		else ]]--
-			--Script.Storage = CD
-			--Script.SaveStorage()
-			CDHandler()
-		--end
-		
+		CDHandler()
+		return "OutfitLoaded: " .. co .. "."
 	end
 end
 
@@ -276,52 +271,85 @@ end
 
 function RemoveItem(args)
 	dbgMsg(".RemoveItem.", 2)
+	local ls = Game.Player.Equipped.LoadSlots()
 	slot = validSlotId[args]
 	dbgMsg("RemoveItem : slot: " .. tostring(slot), 1)
 	dbgMsg("RemoveItem : cOS.slot: " .. tostring(currentOutfitSet[slot]), 1)
 	if slot then
-		if slot == "6" and (currentOutfitSet["6"] == currentOutfitSet["30"] or not currentOutfitSet["30"]) then
+		if slot == "body" and (currentOutfitSet["body"] == currentOutfitSet["bra"] or currentOutfitSet["bra"] == 0) then
+			currentOutfitSet[slot] = 0
+			currentOutfitSet["bra"] = 0
+			Game.Player.Equipped.Body.Remove()
+			--Game.SendChat("/snd run " .. SNDRemoveCall[slot])
+		elseif slot == "legs" and (currentOutfitSet["legs"] == currentOutfitSet["panties"] or currentOutfitSet["panties"] == 0) then
+			currentOutfitSet[slot] = 0
+			currentOutfitSet["panties"] = 0
+			Game.Player.Equipped.Legs.Remove()
+			--Game.SendChat("/snd run " .. SNDRemoveCall[slot])
+		elseif slot == "hands" and (currentOutfitSet["hands"] == currentOutfitSet["nails"] or currentOutfitSet["nails"] == 0) then
+			currentOutfitSet["nails"] = 0
+			currentOutfitSet[slot] = 0
+			Game.Player.Equipped.Hands.Remove()
+			--Game.SendChat("/snd run " .. SNDRemoveCall[slot])
+		elseif slot == "body" and CD[playerName]["outfits"][currentOutfit]["bra"] > 0 then
+			dbgMsg("Body -> Bra : slot: " .. tostring(CD[playerName]["outfits"][currentOutfit]["bra"]), 1)
+			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["bra"]
+			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["bra"])
+		elseif slot == "legs" and CD[playerName]["outfits"][currentOutfit]["panties"] > 0 then
+			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["panties"]
+			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["panties"])
+		elseif slot == "hands" and CD[playerName]["outfits"][currentOutfit]["nails"] > 0 then
+			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["nails"]
+			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["nails"])
+		elseif slot == "facewear" and CD[playerName]["outfits"][currentOutfit]["facewear"] then
 			currentOutfitSet[slot] = nil
-			currentOutfitSet["30"] = nil
-			Game.SendChat("/snd run " .. SNDRemoveCall[slot])
-		elseif slot == "3" and (currentOutfitSet["3"] == currentOutfitSet["31"] or not currentOutfitSet["31"]) then
-			currentOutfitSet[slot] = nil
-			currentOutfitSet["31"] = nil
-			Game.SendChat("/snd run " .. SNDRemoveCall[slot])
-		elseif slot == "4" and currentOutfitSet["4"] == currentOutfitSet["32"] then
-			currentOutfitSet["32"] = nil
-			currentOutfitSet[slot] = nil
-			Game.SendChat("/snd run " .. SNDRemoveCall[slot])
-		elseif slot == "6" and CD[playerName]["outfits"][currentOutfit]["30"] then
-			currentOutfitSet[slot] = nil
-			--OutfitHandler("puton panties")
-			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["30"])
-		elseif slot == "3" and CD[playerName]["outfits"][currentOutfit]["31"] then
-			currentOutfitSet[slot] = nil
-			--OutfitHandler("puton bra")
-			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["31"])
-		elseif slot == "4" and CD[playerName]["outfits"][currentOutfit]["32"] then
-			currentOutfitSet[slot] = nil
-			--OutfitHandler("puton nails")
-			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["32"])
-		elseif slot == "33" and CD[playerName]["outfits"][currentOutfit]["glasses"] then
-			currentOutfitSet[slot] = nil
-			Game.SendChat("/facewear \"" .. CD[playerName]["outfits"][currentOutfit]["glasses"] .. "\"")
+			Game.SendChat("/facewear \"" .. CD[playerName]["outfits"][currentOutfit]["facewear"] .. "\"")
+		elseif slot == "panties" and currentOutfitSet[slot] == currentOutfitSet.legs then
+			currentOutfitSet[slot] = 0
+			Game.Player.Equipped.Legs.Remove()
+		elseif slot == "bra" and currentOutfitSet[slot] == currentOutfitSet.bra then
+			currentOutfitSet[slot] = 0
+			Game.Player.Equipped.Body.Remove()
+		elseif slot == "nails" and currentOutfitSet[slot] == currentOutfitSet.nails then
+			currentOutfitSet[slot] = 0
+			Game.Player.Equipped.Hands.Remove()
+		elseif slot == "panties" and currentOutfitSet[slot] ~= currentOutfitSet.legs then
+			currentOutfitSet[slot] = 0
+			dbgMsg("Panties removed for " .. currentOutfit .. " O₀oLaLa.", 0)
+			--Game.Player.Equipped.Legs.Remove()
 		else
 			currentOutfitSet[slot] = nil
-			Game.SendChat("/snd run " .. SNDRemoveCall[slot])
+			Game.Player.Equipped[slot:sub(1,1):upper()..slot:sub(2)].Remove()
 		end
 	end
 end
 
-function PutonItem(args)
+function PutonItem(slot, id)
 	dbgMsg(".PutonItem.", 2)
-	slot = validSlotId[args]
+	local ls = Game.Player.Equipped.LoadSlots()
+	slot = validSlotId[slot]
 	if slot and CD[playerName]["outfits"] then
 		slot = tostring(slot)
 		dbgMsg("Puton Args: " .. slot, 0)
 		dbgMsg("Puton slot item: " .. tostring(CD[playerName]["outfits"][currentOutfit][slot]), 1)
-		if CD[playerName]["outfits"][currentOutfit][slot] then
+		if tonumber(id) then
+			if slot == "panties" then
+				Game.SendChat("/equip " .. tostring(id))
+				Script.QueueDelay(1.500)
+				Script.QueueAction(OutfitHandler, "set panties")
+			elseif slot == "bra" then
+				Game.SendChat("/equip " .. tostring(id))
+				Script.QueueDelay(1.500)
+				Script.QueueAction(OutfitHandler, "set bra")
+			elseif slot == "nails" then
+				Game.SendChat("/equip " .. tostring(id))
+				Script.QueueDelay(1.500)
+				Script.QueueAction(OutfitHandler, "set nails")
+			end
+		elseif slot == "facewear" and not currentOutfitSet[slot] then
+			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["facewear"]
+			Game.SendChat("/facewear \"" .. CD[playerName]["outfits"][currentOutfit]["facewear"] .. "\"")
+		elseif CD[playerName]["outfits"][currentOutfit][slot] > 0 then
 			--local itemData = tostring(CD[playerName]["outfits"][currentOutfit][slot]) .. "." .. tostring(slot)
 			--dbgMsg("Saving Clipboard Data [" .. itemData .. "], please wait...", 0)
 			--Script.Clipboard = tostring(CD[playerName]["outfits"][currentOutfit][slot]) .. "." .. tostring(slot)
@@ -332,9 +360,7 @@ function PutonItem(args)
 			end
 			--Game.SendChat("/snd run EmoEquipFromClip")
 			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit][slot]
-		elseif slot == "33" and not currentOutfitSet[slot] then
-			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["glasses"]
-			Game.SendChat("/facewear \"" .. CD[playerName]["outfits"][currentOutfit]["glasses"] .. "\"")
+		
 		else
 			dbgMsg("Item Data Not Found For: " .. slot, 0)
 		end
@@ -370,12 +396,14 @@ function UpdateOutfit(co)
 	if not co then
 		return
 	end
+	local glam
 	currentOutfit = co
 	dbgMsg("Update Outfit: " .. currentOutfit, 0)
 	local ls = Game.Player.Equipped.LoadSlots()
 	if ls then
 		--CD[playerName]["outfits"][currentOutfit][slot]
 		dbgMsg("Update Outfit: Load...", 0)
+		CD[playerName].outfits[currentOutfit] = CD[playerName].outfits[currentOutfit] or {}
 		--Weapon
 		CD[playerName].outfits[currentOutfit].weapon = Game.Player.Equipped.Weapon.Item
 		CD[playerName].outfits[currentOutfit].weaponName = Game.Player.Equipped.Weapon.ItemName
@@ -388,53 +416,132 @@ function UpdateOutfit(co)
 		--Head
 		CD[playerName].outfits[currentOutfit].head = Game.Player.Equipped.Head.Item
 		CD[playerName].outfits[currentOutfit].headName = Game.Player.Equipped.Head.ItemName
-		CD[playerName].outfits[currentOutfit].headGlam = Game.Player.Equipped.Head.GlamName
 		CD[playerName].outfits[currentOutfit].headDyeA = Game.Player.Equipped.Head.DyeA
 		CD[playerName].outfits[currentOutfit].headDyeB = Game.Player.Equipped.Head.DyeB
+		glam = Game.Player.Equipped.Head.GlamName
+		CD[playerName].outfits[currentOutfit].headGlam = glam
+		if glam then
+			if not CD[playerName].glams.head[glam] then
+				CD[playerName].glams.head[glam] = {}
+				CD[playerName].glams.head[glam]["temp"] = "normal"
+			end
+		end
 		--Body
 		CD[playerName].outfits[currentOutfit].body = Game.Player.Equipped.Body.Item
 		CD[playerName].outfits[currentOutfit].bodyName = Game.Player.Equipped.Body.ItemName
-		CD[playerName].outfits[currentOutfit].bodyGlam = Game.Player.Equipped.Body.GlamName
+		--CD[playerName].outfits[currentOutfit].bodyGlam = Game.Player.Equipped.Body.GlamName
 		CD[playerName].outfits[currentOutfit].bodyDyeA = Game.Player.Equipped.Body.DyeA
 		CD[playerName].outfits[currentOutfit].bodyDyeB = Game.Player.Equipped.Body.DyeB
+		glam = Game.Player.Equipped.Body.GlamName
+		CD[playerName].outfits[currentOutfit].bodyGlam = glam
+		if glam then
+			if not CD[playerName].glams.body[glam] then
+				CD[playerName].glams.body[glam] = {}
+				CD[playerName].glams.body[glam]["temp"] = "normal"
+			end
+		end
 		--Hands
 		CD[playerName].outfits[currentOutfit].hands = Game.Player.Equipped.Hands.Item
 		CD[playerName].outfits[currentOutfit].handsName = Game.Player.Equipped.Hands.ItemName
-		CD[playerName].outfits[currentOutfit].handsGlam = Game.Player.Equipped.Hands.GlamName
+		--CD[playerName].outfits[currentOutfit].handsGlam = Game.Player.Equipped.Hands.GlamName
 		CD[playerName].outfits[currentOutfit].handsDyeA = Game.Player.Equipped.Hands.DyeA
 		CD[playerName].outfits[currentOutfit].handsDyeB = Game.Player.Equipped.Hands.DyeB
+		glam = Game.Player.Equipped.Hands.GlamName
+		CD[playerName].outfits[currentOutfit].handsGlam = glam
+		if glam then
+			if not CD[playerName].glams.hands[glam] then
+				CD[playerName].glams.hands[glam] = {}
+				CD[playerName].glams.hands[glam]["temp"] = "normal"
+			end
+		end
 		--Legs
 		CD[playerName].outfits[currentOutfit].legs = Game.Player.Equipped.Legs.Item
 		CD[playerName].outfits[currentOutfit].legsName = Game.Player.Equipped.Legs.ItemName
-		CD[playerName].outfits[currentOutfit].legsGlam = Game.Player.Equipped.Legs.GlamName
+		--CD[playerName].outfits[currentOutfit].legsGlam = Game.Player.Equipped.Legs.GlamName
 		CD[playerName].outfits[currentOutfit].legsDyeA = Game.Player.Equipped.Legs.DyeA
 		CD[playerName].outfits[currentOutfit].legsDyeB = Game.Player.Equipped.Legs.DyeB
+		glam = Game.Player.Equipped.Legs.GlamName
+		CD[playerName].outfits[currentOutfit].legsGlam = glam
+		if glam then
+			if not CD[playerName].glams.legs[glam] then
+				CD[playerName].glams.legs[glam] = {}
+				CD[playerName].glams.legs[glam]["temp"] = "normal"
+			end
+		end
 		--Feet
 		CD[playerName].outfits[currentOutfit].feet = Game.Player.Equipped.Feet.Item
 		CD[playerName].outfits[currentOutfit].feetName = Game.Player.Equipped.Feet.ItemName
-		CD[playerName].outfits[currentOutfit].feetGlam = Game.Player.Equipped.Feet.GlamName
+		--CD[playerName].outfits[currentOutfit].feetGlam = Game.Player.Equipped.Feet.GlamName
 		CD[playerName].outfits[currentOutfit].feetDyeA = Game.Player.Equipped.Feet.DyeA
 		CD[playerName].outfits[currentOutfit].feetDyeB = Game.Player.Equipped.Feet.DyeB
+		glam = Game.Player.Equipped.Feet.GlamName
+		CD[playerName].outfits[currentOutfit].feetGlam = glam
+		if glam then
+			if not CD[playerName].glams.feet[glam] then
+				CD[playerName].glams.feet[glam] = {}
+				CD[playerName].glams.feet[glam]["temp"] = "normal"
+			end
+		end
 		--Ears
 		CD[playerName].outfits[currentOutfit].ears = Game.Player.Equipped.Ears.Item
 		CD[playerName].outfits[currentOutfit].earsName = Game.Player.Equipped.Ears.ItemName
-		CD[playerName].outfits[currentOutfit].earsGlam = Game.Player.Equipped.Ears.GlamName
+		--CD[playerName].outfits[currentOutfit].earsGlam = Game.Player.Equipped.Ears.GlamName
+		glam = Game.Player.Equipped.Ears.GlamName
+		CD[playerName].outfits[currentOutfit].earsGlam = glam
+		if glam then
+			if not CD[playerName].glams.ears[glam] then
+				CD[playerName].glams.ears[glam] = {}
+				CD[playerName].glams.ears[glam]["temp"] = "normal"
+			end
+		end
 		--Neck
 		CD[playerName].outfits[currentOutfit].neck = Game.Player.Equipped.Neck.Item
 		CD[playerName].outfits[currentOutfit].neckName = Game.Player.Equipped.Neck.ItemName
-		CD[playerName].outfits[currentOutfit].neckGlam = Game.Player.Equipped.Neck.GlamName
+		--CD[playerName].outfits[currentOutfit].neckGlam = Game.Player.Equipped.Neck.GlamName
+		glam = Game.Player.Equipped.Neck.GlamName
+		CD[playerName].outfits[currentOutfit].neckGlam = glam
+		if glam then
+			if not CD[playerName].glams.neck[glam] then
+				CD[playerName].glams.neck[glam] = {}
+				CD[playerName].glams.neck[glam]["temp"] = "normal"
+			end
+		end
 		--Wrist
 		CD[playerName].outfits[currentOutfit].wrist = Game.Player.Equipped.Wrist.Item
 		CD[playerName].outfits[currentOutfit].wristName = Game.Player.Equipped.Wrist.ItemName
-		CD[playerName].outfits[currentOutfit].wristGlam = Game.Player.Equipped.Wrist.GlamName
+		--CD[playerName].outfits[currentOutfit].wristGlam = Game.Player.Equipped.Wrist.GlamName
+		glam = Game.Player.Equipped.Wrist.GlamName
+		CD[playerName].outfits[currentOutfit].wristGlam = glam
+		if glam then
+			if not CD[playerName].glams.wrist[glam] then
+				CD[playerName].glams.wrist[glam] = {}
+				CD[playerName].glams.wrist[glam]["temp"] = "normal"
+			end
+		end
 		--RRing
 		CD[playerName].outfits[currentOutfit].rring = Game.Player.Equipped.RRing.Item
 		CD[playerName].outfits[currentOutfit].rringName = Game.Player.Equipped.RRing.ItemName
-		CD[playerName].outfits[currentOutfit].rringGlam = Game.Player.Equipped.RRing.GlamName
+		--CD[playerName].outfits[currentOutfit].rringGlam = Game.Player.Equipped.RRing.GlamName
+		glam = Game.Player.Equipped.RRing.GlamName
+		CD[playerName].outfits[currentOutfit].rringGlam = glam
+		if glam then
+			if not CD[playerName].glams.ring[glam] then
+				CD[playerName].glams.ring[glam] = {}
+				CD[playerName].glams.ring[glam]["temp"] = "normal"
+			end
+		end
 		--LRing
 		CD[playerName].outfits[currentOutfit].lring = Game.Player.Equipped.LRing.Item
 		CD[playerName].outfits[currentOutfit].lringName = Game.Player.Equipped.LRing.ItemName
-		CD[playerName].outfits[currentOutfit].lringGlam = Game.Player.Equipped.LRing.GlamName
+		--CD[playerName].outfits[currentOutfit].lringGlam = Game.Player.Equipped.LRing.GlamName
+		glam = Game.Player.Equipped.LRing.GlamName
+		CD[playerName].outfits[currentOutfit].lringGlam = glam
+		if glam then
+			if not CD[playerName].glams.ring[glam] then
+				CD[playerName].glams.ring[glam] = {}
+				CD[playerName].glams.ring[glam]["temp"] = "normal"
+			end
+		end
 		
 		CD[playerName].outfits[currentOutfit].panties = CD[playerName].outfits[currentOutfit].panties or 0
 		CD[playerName].outfits[currentOutfit].bra = CD[playerName].outfits[currentOutfit].bra or 0
@@ -449,7 +556,8 @@ function OutfitHandler(args)
 	dbgMsg(".OutfitHandler.", 2)
 	local act, eVars = shiftWord(args)
 	local var1, var2 = shiftWord(eVars)
-	local s
+	local s, glam
+	local ls = Game.Player.Equipped.LoadSlots()
 	if act == "save" and var1 then
 		--[[if var1 ~= "" then
 			if var1 == "gearupdate" and gearsetChange then
@@ -495,7 +603,7 @@ function OutfitHandler(args)
 	elseif act == "remove" or act == "takeoff" or act == "off" then
 		RemoveItem(var1)
 	elseif act == "puton" then
-		PutonItem(var1)
+		PutonItem(var1, var2)
 	elseif act == "clear" or act == "delete" then
 		CD[playerName]["outfits"][currentOutfit] = nil
 		dbgMsg("Removing savedata for current outfit: " .. tostring(currentOutfit) .. ".", 0)
@@ -531,24 +639,110 @@ function OutfitHandler(args)
 			var1 = string.lower(var1)
 			if var1 == "panties" then
 				dbgMsg("Panties set for " .. currentOutfit .. ".", 0)
-				Game.SendChat("/snd run EmoGetPanties")
+				CD[playerName]["outfits"][currentOutfit]["panties"] = Game.Player.Equipped.Legs.Item
+				CD[playerName].outfits[currentOutfit].pantiesName = Game.Player.Equipped.Legs.ItemName
+				--CD[playerName].outfits[currentOutfit].pantiesGlam = Game.Player.Equipped.Legs.GlamName
+				CD[playerName].outfits[currentOutfit].pantiesDyeA = Game.Player.Equipped.Legs.DyeA
+				CD[playerName].outfits[currentOutfit].pantiesDyeB = Game.Player.Equipped.Legs.DyeB
+				glam = Game.Player.Equipped.Legs.GlamName
+				CD[playerName].outfits[currentOutfit].pantiesGlam = glam
+				if glam then
+					if not CD[playerName].glams.panties[glam] then
+						CD[playerName].glams.panties[glam] = {}
+						CD[playerName].glams.panties[glam]["temp"] = "cool"
+					end
+				end
+				--Game.SendChat("/snd run EmoGetPanties")
 			elseif var1 == "bra" then
 				dbgMsg("Bra set for " .. currentOutfit .. ".", 0)
-				Game.SendChat("/snd run EmoGetBra")
+				CD[playerName]["outfits"][currentOutfit]["bra"] = Game.Player.Equipped.Body.Item
+				CD[playerName].outfits[currentOutfit].braName = Game.Player.Equipped.Body.ItemName
+				--CD[playerName].outfits[currentOutfit].braGlam = Game.Player.Equipped.Body.GlamName
+				CD[playerName].outfits[currentOutfit].braDyeA = Game.Player.Equipped.Body.DyeA
+				CD[playerName].outfits[currentOutfit].braDyeB = Game.Player.Equipped.Body.DyeB
+				glam = Game.Player.Equipped.Body.GlamName
+				CD[playerName].outfits[currentOutfit].braGlam = glam
+				if glam then
+					if not CD[playerName].glams.bra[glam] then
+						CD[playerName].glams.bra[glam] = {}
+						CD[playerName].glams.bra[glam]["temp"] = "cool"
+					end
+				end
+				--Game.SendChat("/snd run EmoGetBra")
 			elseif var1 == "nails" then
 				dbgMsg("Nails set for " .. currentOutfit .. ".", 0)
-				Game.SendChat("/snd run EmoGetNails")
+				CD[playerName]["outfits"][currentOutfit]["nails"] = Game.Player.Equipped.Hands.Item
+				CD[playerName].outfits[currentOutfit].nailsName = Game.Player.Equipped.Hands.ItemName
+				--CD[playerName].outfits[currentOutfit].nailsGlam = Game.Player.Equipped.Hands.GlamName
+				CD[playerName].outfits[currentOutfit].nailsDyeA = Game.Player.Equipped.Hands.DyeA
+				CD[playerName].outfits[currentOutfit].nailsDyeB = Game.Player.Equipped.Hands.DyeB
+				glam = Game.Player.Equipped.Hands.GlamName
+				CD[playerName].outfits[currentOutfit].nailsGlam = glam
+				if glam then
+					if not CD[playerName].glams.nails[glam] then
+						CD[playerName].glams.nails[glam] = {}
+						CD[playerName].glams.nails[glam]["temp"] = "cool"
+					end
+				end
+				--Game.SendChat("/snd run EmoGetNails")
 			elseif var1 == "glasses" or var1 == "facewear" then
 				dbgMsg("Facewear set for " .. currentOutfit .. ".", 0)
+				CD[playerName]["outfits"][currentOutfit]["facewear"] = var2
 				CD[playerName]["outfits"][currentOutfit]["glasses"] = var2
 			elseif var1 == "underwear" then
 				dbgMsg("Underwear -(panties, bra and nails)- set for " .. currentOutfit .. ".", 0)
-				Game.SendChat("/snd run EmoGetPanties")
-				Game.SendChat("/snd run EmoGetBra")
-				Game.SendChat("/snd run EmoGetNails")
+				CD[playerName]["outfits"][currentOutfit]["panties"] = Game.Player.Equipped.Legs.Item
+				CD[playerName].outfits[currentOutfit].pantiesName = Game.Player.Equipped.Legs.ItemName
+				--CD[playerName].outfits[currentOutfit].pantiesGlam = Game.Player.Equipped.Legs.GlamName
+				CD[playerName].outfits[currentOutfit].pantiesDyeA = Game.Player.Equipped.Legs.DyeA
+				CD[playerName].outfits[currentOutfit].pantiesDyeB = Game.Player.Equipped.Legs.DyeB
+				glam = Game.Player.Equipped.Legs.GlamName
+				CD[playerName].outfits[currentOutfit].pantiesGlam = glam
+				if glam then
+					if not CD[playerName].glams.panties[glam] then
+						CD[playerName].glams.panties[glam] = {}
+						CD[playerName].glams.panties[glam]["temp"] = "cool"
+					end
+				end
+				
+				CD[playerName]["outfits"][currentOutfit]["bra"] = Game.Player.Equipped.Body.Item
+				CD[playerName].outfits[currentOutfit].braName = Game.Player.Equipped.Body.ItemName
+				--CD[playerName].outfits[currentOutfit].braGlam = Game.Player.Equipped.Body.GlamName
+				CD[playerName].outfits[currentOutfit].braDyeA = Game.Player.Equipped.Body.DyeA
+				CD[playerName].outfits[currentOutfit].braDyeB = Game.Player.Equipped.Body.DyeB
+				glam = Game.Player.Equipped.Body.GlamName
+				CD[playerName].outfits[currentOutfit].braGlam = glam
+				if glam then
+					if not CD[playerName].glams.bra[glam] then
+						CD[playerName].glams.bra[glam] = {}
+						CD[playerName].glams.bra[glam]["temp"] = "cool"
+					end
+				end
+				
+				CD[playerName]["outfits"][currentOutfit]["nails"] = Game.Player.Equipped.Hands.Item
+				CD[playerName].outfits[currentOutfit].nailsName = Game.Player.Equipped.Hands.ItemName
+				--CD[playerName].outfits[currentOutfit].nailsGlam = Game.Player.Equipped.Hands.GlamName
+				CD[playerName].outfits[currentOutfit].nailsDyeA = Game.Player.Equipped.Hands.DyeA
+				CD[playerName].outfits[currentOutfit].nailsDyeB = Game.Player.Equipped.Hands.DyeB
+				glam = Game.Player.Equipped.Hands.GlamName
+				CD[playerName].outfits[currentOutfit].nailsGlam = glam
+				if glam then
+					if not CD[playerName].glams.nails[glam] then
+						CD[playerName].glams.nails[glam] = {}
+						CD[playerName].glams.nails[glam]["temp"] = "cool"
+						CD[playerName].glams.nails[glam]["buff"] = "confident"
+					end
+				end
+				--Game.SendChat("/snd run EmoGetPanties")
+				--Game.SendChat("/snd run EmoGetBra")
+				--Game.SendChat("/snd run EmoGetNails")
 			end
 		end
 	elseif act == "temp" then
+		local slot = validSlotId[var1]
+		if slot then
+			 
+		end
 		if currentOutfit and currentOutfit ~= "" then
 			var1 = string.lower(var1)
 			dbgMsg("Temperature set for " .. currentOutfit .. ".", 0)

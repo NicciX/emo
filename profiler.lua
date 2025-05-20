@@ -333,7 +333,7 @@ func_time = {
 		["calls"] = 0,
 		["longest"] = 0,
 	},
-	["SittingEffects"] = {
+	["RestEffects"] = {
 		["ST"] = 0,
 		["END"] = 0,
 		["tot"] = 0,
@@ -381,18 +381,18 @@ func_time = {
 }
 
 filterLog = {
-	["0"] = true, -- limited information
-	["1"] = true, -- general information
+	["0"] = nil, -- limited information
+	["1"] = nil, -- general information
 	["2"] = nil, -- function call tracking
 	["3"] = nil, -- emotional changes
 	["4"] = nil, -- traces
 	["5"] = nil, --weather effects
 	["6"] = nil, -- zone effects
-	["7"] = false, -- Aether Churn
+	["7"] = nil, -- Aether Churn
 	["8"] = nil, -- outfit effects
-	["9"] = false, -- Chat
+	["9"] = nil, -- Chat
 	["10"] = nil, -- misc.
-	["13"] = false, -- Gyre
+	["13"] = nil, -- Gyre
 }
 
 function efficiency()
@@ -407,6 +407,8 @@ function func_track(func)
 	local n
 	local tiS = os.date("%H:%M:%S", s) .. tostring(s - math.floor(s))
 	local tiE = os.date("%H:%M:%S", e) .. tostring(e - math.floor(e))
+	
+	--[[
 	if type(#func_log) == "number" then
 		ct = #func_log + 1
 	end
@@ -414,7 +416,7 @@ function func_track(func)
 	func_log[ct].func = func
 	func_log[ct].Start = tiS
 	func_log[ct].End = tiE
-	
+	]]--
 	
 	local t = e - s
 	if t > 0.0747 then
@@ -430,7 +432,7 @@ function func_track(func)
 		dbgMsg("|FuncTrack| § " .. func .. " ExecTime: " .. formatTime(t) .. "", 1)
 	end
 	n = formatTime(t)
-	func_log[ct].tot = n
+	--func_log[ct].tot = n
 	--func_time[func] = func_time[func] or {}
 	--func_time[func]["tot"] = func_time[func]["tot"] or 0
 	func_time[func].tot = func_time[func].tot + t
@@ -507,13 +509,13 @@ function dbgMsg(msg, lvl)
 	if os.time() - dbgLastcall > 0.777 then
 		if lvl > -1 and lvl < 2 then
 			if DBG >= tonumber(lvl) then
-				Game.SendChat("/e EmoBot " .. tostring(msg))
+				Game.SendChat("/e " .. EmoBot .. tostring(msg))
 				--s = timestring .. "EmoBot " .. tostring(msg) .. "\n"
 				--dbg_log = dbg_log .. s
 			end
 		elseif lvl == DBG then
 			if tonumber(lvl) == DBG then
-				Game.SendChat("/e EmoBot " .. tostring(msg))
+				Game.SendChat("/e " .. EmoBot .. tostring(msg))
 				--s = timestring .. "EmoBot " .. tostring(msg) .. "\n"
 				--dbg_log = dbg_log .. s
 			end
@@ -862,6 +864,11 @@ function dumpInfo(args)
 									else
 										dbgMsg("what: " .. "|Not Defined|" .. " ", 0)
 									end
+									if tk.stacks then
+										dbgMsg("stacks: " .. tostring(tk.stacks) .. " ", 0)
+									else
+										dbgMsg("stacks: " .. "|Not Defined|" .. " ", 0)
+									end
 									if tk.falloff then
 										dbgMsg("falloff: " .. tostring(formatTime(tk.falloff)) .. " ", 0)
 										tmp = tk.falloff - (os.time() - b.firstCall)
@@ -946,11 +953,11 @@ function dumpInfo(args)
 		dbgMsg("playerNameday ".. tostring(playerNameday) .. ".", 0)
 		
 		
-		if IsBusy("quick") then
-			dbgMsg("Is Busy? " .. tostring(IsBusy("quick")) .. ".", 0)
-		else
-			dbgMsg("Is Busy?  No.", 0)
-		end
+		--if IsBusy("quick") then
+			dbgMsg("Is Busy? " .. tostring(IsBusy) .. ".", 0)
+		--else
+			--dbgMsg("Is Busy?  No.", 0)
+		--end
 		
 		--[[
 		[1] = true, -- 1 (0) -- NormalConditions
@@ -981,21 +988,22 @@ function dumpInfo(args)
 		]]--
 		
 		
-		dbgMsg("Autonrun On? " .. tostring(flags[10]) .. ".", 0)
-		dbgMsg("Is Jumping? " .. tostring(flags[9]) .. ".", 0)
-		dbgMsg("Is Casting? " .. tostring(flags[5]) .. ".", 0)
+		--dbgMsg("Autonrun On? " .. tostring(flags[10]) .. ".", 0)
+		dbgMsg("Is Jumping? " .. tostring(IsJumping) .. ".", 0)
+		dbgMsg("Is Casting? " .. tostring(IsCasting) .. ".", 0)
 		dbgMsg("Is Emoting? " .. tostring(IsEmoting) .. ".", 0)
-		dbgMsg("Is Emoting (flag)? " .. tostring(flags[2]) .. ".", 0)
-		dbgMsg("Is Swimming? " .. tostring(Game.Player.Swimming) .. ".", 0)
-		dbgMsg("Is Diving? " .. tostring(Game.Player.Diving) .. ".", 0)
+		--dbgMsg("Is Emoting (flag)? " .. tostring(flags[2]) .. ".", 0)
+		dbgMsg("Is Swimming? " .. tostring(IsSwimming) .. ".", 0)
+		dbgMsg("Is Diving? " .. tostring(IsDiving) .. ".", 0)
 		dbgMsg("Is Porting? " .. tostring(IsPorting) .. ".", 0)
 		dbgMsg("Is Sitting? " .. tostring(IsSitting) .. ".", 0)
-		dbgMsg("Is Carrying Object? " .. tostring(flags[3]) .. ".", 0)
-		dbgMsg("Alive? ".. tostring(Game.Player.Entity.Alive) .. ".", 0)
-		dbgMsg("Is Sitting(flag)? " .. tostring(flags[4]) .. ".", 0)
+		dbgMsg("Is Carrying Object? " .. tostring(IsCarryingObject) .. ".", 0)
+		dbgMsg("Alive? ".. tostring(IsAlive) .. ".", 0)
+		--dbgMsg("Is Sitting(flag)? " .. tostring(flags[4]) .. ".", 0)
 		dbgMsg("AethericBuffer: " .. tostring(AethericBuffer) .. ".", 0)
-		dbgMsg("Peloton Active? " .. tostring(pelotonActive) .. ".", 0)
-		dbgMsg("Sprint Active? " .. tostring(sprintActive) .. ".", 0)
+		dbgMsg("Peloton Active? " .. tostring(IsPeloton) .. ".", 0)
+		dbgMsg("Sprinting? " .. tostring(IsSprinting) .. ".", 0)
+		dbgMsg("Jogging? " .. tostring(IsJogging) .. ".", 0)
 		
 		dbgMsg("tempComfortFactor: " .. tostring(tempComfortFactor) .. ".", 0)
 		
@@ -1064,44 +1072,83 @@ function dumpInfo(args)
 			end
 		else
 			if CD[playerName].outfits[currentOutfit] then
-				if CD[playerName].outfits[currentOutfit]["30"] then
-					dbgMsg("✓Panties Set :" .. tostring(CD[playerName].outfits[currentOutfit]["30"]) .. ".", 0)
+				if CD[playerName].outfits[currentOutfit].panties > 0 then
+					if CD[playerName].outfits[currentOutfit].pantiesGlam ~= "" then
+						dbgMsg("✓Panties Set : " .. tostring(CD[playerName].outfits[currentOutfit].pantiesGlam) .. ".", 0)
+					else
+						dbgMsg("✓Panties Set : " .. tostring(CD[playerName].outfits[currentOutfit].pantiesName) .. ".", 0)
+					end
+					
 					if filter == "advanced" then
-						dbgMsg("Current? :: " .. tostring(currentOutfitSet["30"]) .. ".", 0)
+						dbgMsg("Current? :: " .. tostring(currentOutfitSet.panties) .. ".", 0)
 					end
 				else
-					dbgMsg("Panties Not Set:", 0)	
+					dbgMsg("Panties Not Set~ (i♥i)", 0)	
 				end
-				if CD[playerName].outfits[currentOutfit]["31"] then
-					dbgMsg("✓Bra Set :" .. tostring(CD[playerName].outfits[currentOutfit]["31"]) .. ".", 0)
+				if CD[playerName].outfits[currentOutfit].bra > 0 then
+					if CD[playerName].outfits[currentOutfit].braGlam ~= "" then
+						dbgMsg("✓Bra Set : " .. tostring(CD[playerName].outfits[currentOutfit].braGlam) .. ".", 0)
+					else
+						dbgMsg("✓Bra Set : " .. tostring(CD[playerName].outfits[currentOutfit].braName) .. ".", 0)
+					end
+					
 					if filter == "advanced" then
-						dbgMsg("Current? :: " .. tostring(currentOutfitSet["31"]) .. ".", 0)
+						dbgMsg("Current? :: " .. tostring(currentOutfitSet.bra) .. ".", 0)
 					end
 				else
-					dbgMsg("Bra Not Set:", 0)
+					dbgMsg("Bra Not Set~ (•Y•)", 0)
 				end
-				if CD[playerName].outfits[currentOutfit]["32"] then
-					dbgMsg("✓Nails Set :" .. tostring(CD[playerName].outfits[currentOutfit]["32"]) .. ".", 0)
+				if CD[playerName].outfits[currentOutfit].nails > 0 then
+					if CD[playerName].outfits[currentOutfit].nailsGlam ~= "" then
+						dbgMsg("✓Nails Set : " .. tostring(CD[playerName].outfits[currentOutfit].nailsGlam) .. ".", 0)
+					else
+						dbgMsg("✓Nails Set : |^|^|" .. tostring(CD[playerName].outfits[currentOutfit].nailsName) .. ".", 0)
+					end
+					
 					if filter == "advanced" then
-						dbgMsg("Current? :: " .. tostring(currentOutfitSet["32"]) .. ".", 0)
+						dbgMsg("Current? :: " .. tostring(currentOutfitSet.nails) .. ".", 0)
 					end
 				else
-					dbgMsg("Nails Not Set:", 0)
+					dbgMsg("Nails Not Set~ (|||)", 0)
 				end
-				if CD[playerName].outfits[currentOutfit]["glasses"] then
-					dbgMsg("✓Facewear Set :" .. tostring(CD[playerName].outfits[currentOutfit]["glasses"]) .. ".", 0)
+				if CD[playerName].outfits[currentOutfit]["facewear"] then
+					dbgMsg("✓Facewear Set : " .. tostring(CD[playerName].outfits[currentOutfit]["facewear"]) .. ".", 0)
 				else
-					dbgMsg("Facewear Not Set:", 0)
+					dbgMsg("Facewear Not Set~ (⌐■_■)", 0) --♪π∞
 				end
 				if CD[playerName].outfits[currentOutfit]["temp"] then
 					dbgMsg("✓Current Outfit Environment: " .. tostring(CD[playerName].outfits[currentOutfit]["temp"]) .. ".", 0)
 				else
-					dbgMsg("Outfit Environment Not Set:", 0)
+					dbgMsg("Outfit Environment Not Set~", 0)
 				end
 			end
 			if filter == "supersimple" then
 				dbgMsg("♦ — ♦ — ♦ — ♦ — ♦ — ♦ — ♦", 0)
+			elseif filter == "glams" then
+				dbgMsg("♦ — ♦ — ♦ — ♦ — ♦ — ♦ — ♦", 0)
+				local ms, mx, my
+				mx = CD[playerName].outfits[currentOutfit].headGlam
+				my = CD[playerName].outfits[currentOutfit].earsGlam
+				ms = "[" .. mx .. "]" .. string.rep(" ", 51 - #mx - #my) .. "[" .. my .. "]"
+				dbgMsg(ms, 0)
+				mx = CD[playerName].outfits[currentOutfit].bodyGlam
+				my = CD[playerName].outfits[currentOutfit].neckGlam
+				ms = "[" .. mx .. "]" .. string.rep(" ", 51 - #mx - #my) .. "[" .. my .. "]"
+				dbgMsg(ms, 0)
+				mx = CD[playerName].outfits[currentOutfit].handsGlam
+				my = CD[playerName].outfits[currentOutfit].wristGlam
+				ms = "[" .. mx .. "]" .. string.rep(" ", 51 - #mx - #my) .. "[" .. my .. "]"
+				dbgMsg(ms, 0)
+				mx = CD[playerName].outfits[currentOutfit].legsGlam
+				my = CD[playerName].outfits[currentOutfit].rringGlam
+				ms = "[" .. mx .. "]" .. string.rep(" ", 51 - #mx - #my) .. "[" .. my .. "]"
+				dbgMsg(ms, 0)
+				mx = CD[playerName].outfits[currentOutfit].feetGlam
+				my = CD[playerName].outfits[currentOutfit].lringGlam
+				ms = "[" .. mx .. "]" .. string.rep(" ", 51 - #mx - #my) .. "[" .. my .. "]"
+				dbgMsg(ms, 0)
 			else
+
 			dbgMsg("— — — — — S L O T S — — — — —  ", 0)
 			
 				if type(CD[playerName].outfits[currentOutfit]) == "table" then

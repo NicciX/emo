@@ -111,6 +111,105 @@ local routines = {
 		},
 	},
 	
+	["moonrabbitbase"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				--local map = Game.Player.Map
+				if HasMoonZoom then
+					return true
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 3,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			--["cond"] = ".^.^.",
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function()
+				--local map = Game.Player.Map
+				if Game.Player.IsFemale then
+					return true
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 6,
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				DoToast("Sprinting not permitted in base Sir.")
+			end,
+			["w"] = 1.000,
+		},
+		[5] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "jmp",
+			["jmp"] = 7,
+			["w"] = 2.000,
+		},
+		[6] = {
+			["run"] = true,
+			["func"] = function() 
+				DoToast("Sprinting not permitted in base Miss.")
+			end,
+			["w"] = 1.000,
+		},
+		[7] = {
+			["do"] = "statusoff \"Stellar Sprint\"",
+			["w"] = 1.000,
+		},
+	},
+
+	["automove"] = {
+		[1] = {
+			["do"] = "automove",
+			["w"] = 1.234,
+		},
+	
+	},
+	
+	["underwear"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				OutfitLoad("")
+			end,
+			["w"] = 1.750,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("shirt")
+			end,
+			["w"] = 2.5,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("pants")
+			end,
+			["w"] = 2.5,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("gloves")
+			end,
+			["w"] = 1.5,
+		},
+		
+	},
+	
 	["SliceIsRightNPC"] = {
 		[1] = {
 			["do"] = "target \"Strangely Garbed Gentleman\"",
@@ -191,6 +290,302 @@ local routines = {
 			["run"] = true,
 			["func"] = function() 
 				return true
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["jujububble"] = {
+		[1] = {
+			["do"] = "target Purification Module",
+			["w"] = 1.0,
+		},
+		[2] = {
+			["do"] = "pinteract",
+			["w"] = 1.0,
+		},
+		[3] = {
+			["do"] = "surprised motion",
+			["w"] = 7.0,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = math.random(-9,9)
+			end,
+			["w"] = 30.00,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = nil
+			end,
+			["w"] = 3.00,
+		},
+		[6] = {
+			["do"] = "tomestone motion",
+			["w"] = 7.0,
+		},
+		[7] = {
+			["do"] = "songbird motion",
+			["w"] = 17.0,
+		},
+	},
+	
+	["mesmerized"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if playerTraits.spriggan and tardis(true) < 5 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 3,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function()
+				local r = math.random(1,100)
+				if r > 37 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 6,
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("charmed")
+			end,
+			["w"] = 1.000,
+		},
+		[5] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[6] = {
+			["test"] = true,
+			["func"] = function()
+				local r = math.random(1,100)
+				if r > 37 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 9,
+			["w"] = 1.000,
+		},
+		[7] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("dazed")
+			end,
+			["w"] = 1.000,
+		},
+		[8] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[9] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("surprised")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["gacharage"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("angry")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["astonished"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if playerTraits.spriggan and tardis(true) < 11 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 3,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function()
+				local r = math.random(1,100)
+				if r > 37 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 6,
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("shocked")
+			end,
+			["w"] = 1.000,
+		},
+		[5] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[6] = {
+			["test"] = true,
+			["func"] = function()
+				local r = math.random(1,100)
+				if r > 37 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 9,
+			["w"] = 1.000,
+		},
+		[7] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("panic")
+			end,
+			["w"] = 1.000,
+		},
+		[8] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[9] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("surprised")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["poppit"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if tardis(true) < 13 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 3,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function()
+				local r = math.random(1,100)
+				if r > 37 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 6,
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("shocked")
+			end,
+			["w"] = 1.000,
+		},
+		[5] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[6] = {
+			["test"] = true,
+			["func"] = function()
+				local r = math.random(1,100)
+				if r > 37 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 9,
+			["w"] = 1.000,
+		},
+		[7] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("panic")
+			end,
+			["w"] = 1.000,
+		},
+		[8] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[9] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("aback")
 			end,
 			["w"] = 1.000,
 		},

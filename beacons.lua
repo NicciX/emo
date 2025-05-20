@@ -439,7 +439,7 @@ local beacons = {
 	
 		},
 	},
-	[144] = {
+	[144] = { --The Gold Saucer
 		["name"] = "The Gold Saucer",
 		["cont"] = "Thanalan",
 		["beacon"] = {
@@ -826,7 +826,7 @@ local beacons = {
 			},
 		},
 	},
-	[147] = {
+	[147] = { -- Northern Thanalan
 		["name"] = "Northern Thanalan",
 		["cont"] = "Thanalan",
 		["beacon"] = {
@@ -1021,9 +1021,9 @@ local beacons = {
 				["cooldown"] = 6,
 			},
 			["E"] = {
-				["XPos"] = -588.4361572265625,
-				["YPos"] = -710.4817504882812,
-				["ZPos"] = 48.99713897705078,
+				["XPos"] = -592.1263427734375,
+				["YPos"] = -709.193603515625,
+				["ZPos"] = 49.9427490234375,
 				["radius"] = 4.021314505650621,
 				["toast"] = "",
 				["effects"] = {
@@ -2256,8 +2256,8 @@ local beacons = {
 				["effects"] = {
 					["energized"] = 0.55,
 				},
-				--["routine"] = "Beacon1190A",
-				["cooldown"] = 90,
+				["routine"] = "moonrabbitbase",
+				["cooldown"] = 13,
 			},
 			["N"] = {
 				["XPos"] = -0.015079972334206104,
@@ -2418,6 +2418,25 @@ local beacons = {
 				},
 				--["routine"] = "AetherEffectnil", --sandy skittles
 				["cooldown"] = 15,
+			},
+		},
+	},
+	[1249] = { -- Private Cottage - Mist
+		["name"] = "Private Cottage - Mist",
+		["cont"] = "La Noscea",
+		["beacon"] = {
+			["JujuBubble"] = {
+				["XPos"] = -0.01922994665801525,
+				["YPos"] = 3.981386184692383,
+				["ZPos"] = -6.956051826477051,
+				["radius"] = 1,
+				["toast"] = "",
+				["effects"] = {
+					["aetheric"] = 0.35,
+					["energized"] = 0.25,
+				},
+				["routine"] = "jujububble", --sandy skittles
+				["cooldown"] = 133,
 			},
 		},
 	},

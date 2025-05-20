@@ -292,6 +292,28 @@ local zones = {
 		["nighthot"] = -0.37,
 		["nightcold"] = 0.43,
 	},
+	[177] = { -- Limsa Lominsa - Mizzenmast Inn
+		["name"] = "Mizzenmast Inn",
+		["cont"] = "La Noscea",
+		["climate"] = {
+			["temp"] = "warm",
+			["humidity"] = "med",
+		},
+		["effects"] = {
+			["hot"] = 0.15,
+			["cold"] = -3,
+			["wet"] = -0.15,
+			["tired"] = -1.2,
+			["tense"] = -1.25,
+			["uncomfortable"] = -1.5,
+			["happy"] = 0.25,
+			["sleepy"] = -3.6,
+			["amused"] = 0.2,
+			["energized"] = 0.3,
+			["anxious"] = -0.1,
+			["aetheric"] = -1.77,
+		}
+	},
 	[250] = {
 		["name"] = "Wolves' Den Pier",
 		["cont"] = "La Noscea",
@@ -673,10 +695,11 @@ local zones = {
 			["happy"] = 0.45,
 			["curious"] = 0.95,
 			["playful"] = 0.85,
-			["sleepy"] = -0.75,
+			["sleepy"] = -0.41,
 			["social"] = 0.65,
 			["focused"] = 0.75,
 			["amused"] = 0.85,
+			["aetheric"] = 0.37,
 		}
 	},
 	[1187] = {

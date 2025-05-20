@@ -1,40 +1,53 @@
 
 local tokenStack = {}
 
-function emoHandler(tbl, what, moodle)
+function emoHandler(tbl, what, moodle, stacks, drAdj, method, falloff, firstcall, initialized)
 	if filterLog["2"] then
 		dbgMsg("ƒemoHandlerƒ", 2)
 	end
 	func_time["emoHandler"].ST = os.time()
-	local tmp
+	local tmp, adj, stp, X
+	stacks = stacks or 0
 	--dbgMsg("emoHandler: " .. type(tbl),1)
 	dbgMsg("emoHandler: tbl length: " .. tostring(#tbl),3)
+	dbgMsg("emoHandler: moodle:" .. tostring(moodle),3)
+	dbgMsg("emoHandler: what:" .. tostring(what),3)
+	dbgMsg("emoHandler: stacks:" .. tostring(stacks),3)
+	dbgMsg("emoHandler: drAdj:" .. tostring(drAdj),3)
 	for k,v in pairs(tbl) do
 		
 		dbgMsg("emoHandler: tbl length: k: " .. tostring(k),3)
-		if emoState[k] then
-			tmp = math.floor(tonumber(v) * 1000)/1000
-			dbgMsg("emoHandler: tmp:" .. tostring(tmp),3)
-			dbgMsg("emoHandler: moodle:" .. tostring(moodle),3)
-			dbgMsg("emoHandler: what:" .. tostring(what),3)
-			--if method == "normalized" then
-				--tmp = math.abs(tmp)
-			--end
-			--Moodle(moodle, "apply", "self", what, "default")
-			if k == "aetheric" then
-				AetherHandler(tmp, "aetheric")
+		if emoState[k] and method then
+			X = ((os.time() - initialized) / falloff) * (math.pi / 180)
+			--dbgMsg("emoHandler: X: " .. tostring(X),1)
+			--dbgMsg("emoHandler: method: " .. tostring(method),1)
+			tmp = method
+			tmp = string.gsub(tmp, "X", tostring(X))
+			local func, oopsoo = load("return "..tmp)
+			if func then
+				funCoo = {pcall(func)}
+			end
+			if funCoo then
+				tmp = funCoo[2]
+				--dbgMsg("emoHandler: tmp: " .. tostring(tmp),1)
 			else
-				--AetherHandler(tmp, "aetheric")
-				emoState[k] = math.abs(emoState[k] + tmp) 	-- the storage thingy chokes on negatives for some reason, 
+				dbgMsg("emoHandler: invalid return value for tmp: " .. tostring(tmp),1)
+				tmp = 1
 			end
-			if emoState[k] < 0 then
-				emoState[k] = 0
-			end
-			-- so need to make sure it's +++, gives a little jitter too
-			dbgMsg("" .. k .. " increased by " .. tostring(tmp) .. " " .. k .. " " .. tostring(emoState[k]) .. ".", 5)
+			--dbgMsg("emoHandler: v: " .. k .." :: " .. tostring(v),1)
+			tmp = tonumber(tmp)
+			--dbgMsg("emoHandler: tmp: " .. k .." :: " .. tostring(tmp),1)
+			adj = math.log(drAdj,3)*stacks
+			--adj = math.log(stacks*drAdj)
+			dbgMsg("emoHandler: adj: " .. k .." :: " .. tostring(v * adj * tmp),3)
+			EmoGyre(k, v * adj * tmp)
+		elseif emoState[k] then
+			adj = math.log(stacks*drAdj)
+			dbgMsg("emoHandler: adj: " .. k .." :: " .. tostring(v*adj),3)
+			EmoGyre(k, v * adj)
 		else
 			initPersona()
-			dbgMsg("Warning: emotion not found - " .. tostring(k), 2)
+			dbgMsg("Warning: emotion not found - " .. tostring(k), 1)
 		end
 	end
 	func_time["emoHandler"].END = os.time()
@@ -527,22 +540,23 @@ aspectAffinity = {
 	
 	--- Elementals: Earth - Ice ---
 	 --[[1, 2, 11, 13, 31, 37]]--
+	 
 moods = {
 	--- Elementals: Earth - Ice ---
 	-- Black Moods --
 	["focused"] = {"read", "tomestone", "reference", "ritualprayer", "flamedance", "examineself", "kneel", "earwiggle", "think"},
-	["dazed"] = {"stagger", "vexed", "shocked", "panic", "no", "cutchhead", "aback", "deny", "disappointed", "huh"},
-	["mischievous"] = {"magictrick", "malevolence", "allsaintscharm", "scheme", "frighten", "mogdance", "ladance", "paintblack", "earwiggle", "pose", "sabotender", "snap"},
-	["anxious"] = {"panic", "deny", "shocked", "reference"},
-	["flippant"] = {"airquotes", "disappointed", "huh", "yes", "elucidate", "facepalm"},
+	["dazed"] = {"stagger", "vexed", "shocked", "panic", "no", "overreact", "cutchhead", "sulk", "shrug", "aback", "deny", "disappointed", "huh"},
+	["mischievous"] = {"magictrick", "malevolence", "allsaintscharm", "scheme", "toast", "visage", "frighten", "mogdance", "ladance", "paintblack", "earwiggle", "pose", "sabotender", "snap"},
+	["anxious"] = {"panic", "deny", "shocked", "reference", "overreact", "shush", "grovel", "no"},
+	["flippant"] = {"airquotes", "disappointed", "huh", "yes", "shrug", "elucidate", "facepalm"},
 	--["apathetic"] = {"airquotes", "shrug", "huh", "lean", "malevolence"}, -- Moved from Blue
-	["aetheric"] = {"deride", "clap", "snap", "flamedance", "malevolence"},
+	["aetheric"] = {"deride", "clap", "snap", "flamedance", "malevolence", "throw"},
 	
 	
 	--- Elementals: Ice - Water ---
 	-- Blue Moods --
-	["bored"] = {"doze", "huh", "magictrick", "read", "riceball", "malevolence", "sabotender", "tomestone", "lookout"},
-	["scared"] = {"shocked", "paintblue", "panic", "upset", "pdead", "aback", "wringhands"},
+	["bored"] = {"doze", "huh", "magictrick", "read", "riceball", "malevolence", "sabotender", "sulk", "tomestone", "lookout"},
+	["scared"] = {"shocked", "paintblue", "panic", "overreact", "upset", "pdead", "aback", "wringhands", "blush", "deny"},
 	["sleepy"] = {"doze", "stretch", "lean", "sit", "pdead"},
 	["sad"] = {"slump", "cry", "disappointed", "sulk"},
 	["cold"] = {"shiver", "slump", "paintblue", "squats", "tea"},
@@ -554,41 +568,41 @@ moods = {
 	--- Elementals; Earth - Fire ---
 	-- Red Moods --
 	["angry"] = {"furious", "deride", "vexed", "angry", "malevolence", "clutchhead", "rage", "slap", "throw", "vexed", "fume", "frighten", "upset", "paintred", "box"},
-	["embarrassed"] = {"blush", "deny", "huh", "shrug"},
+	["embarrassed"] = {"blush", "deny", "huh", "overreact", "shrug", "grovel", "no"},
 	["curious"] = {"lookout", "examineself", "greet", "read", "think", "reference", "photograph", "lean"},
 	["hot"] = {"ladance", "sweat", "paintred", "bigfan"},
-	["flirty"] = {"heart", "dote", "charmed", "blush", "ladance", "photograph", "blowkiss", "tea", "songbird", "paintred", "pose", "sabotender", "petals"},
-	["amused"] = {"chuckle", "clap", "allsaintscharm", "showleft", "flamedance", "hum", "dance", "happy", "earwiggle", "lophop", "pose", "apple", "visage", "tomestone", "sabotender", "bdance"},
+	["flirty"] = {"heart", "dote", "charmed", "blush", "shush", "ladance", "photograph", "blowkiss", "tea", "songbird", "paintred", "pose", "sabotender", "petals"},
+	["amused"] = {"chuckle", "clap", "allsaintscharm", "visage", "showleft", "blowbubbles", "toast", "flamedance", "hum", "dance", "happy", "earwiggle", "lophop", "pose", "apple", "visage", "tomestone", "sabotender", "bdance"},
 	
 	--- Elementals; Lightning - Fire ---
 	-- Yellow Moods --
-	["hungry"] = {"bread", "apple", "egg", "pizza", "cookie", "choco", "riceball", "tea"}, --Moved From Yellow
+	["hungry"] = {"bread", "apple", "egg", "pizza", "cookie", "choco", "riceball", "tea", "toast"}, --Moved From Yellow
 	["puzzled"] = {"think", "read", "panic", "shocked", "shrug"},
-	["energized"] = {"lophop", "backflip", "cheer", "shakedrink", "magictrick", "cheeron", "cheerjump", "sdance", "paintyellow", "squats", "pushups", "situps", "yoldance", "sabotender"},
+	["energized"] = {"lophop", "backflip", "cheer", "shakedrink", "blowbubbles", "magictrick", "fist", "cheeron", "cheerjump", "sdance", "paintyellow", "squats", "pushups", "situps", "yoldance", "sabotender"},
 	["busy"] = {"read", "reference", "think", "tomestone", "gcsalute"},
 	["amazed"] = {"awe", "joy", "psych", "surprised", "wow", "mogdance", "showright", "photograph"},
-	["surprised"] = {"aback", "shocked", "panic", "surprised", "lookout"},
+	["surprised"] = {"aback", "shocked", "panic", "overreact", "surprised", "lookout"},
 	
 	
 	--- Elementals; Wind - Water ---
 	-- Green Moods --
-	["tense"] = {"sweat", "upset", "wringhands", "bigfan", "facepalm"},
+	["tense"] = {"sweat", "upset", "wringhands", "bigfan", "overreact", "facepalm", "sulk", "no"},
 	["uncomfortable"] = {"upset", "clutchhead", "deny", "paintblue", "paintyellow", "sit"},
 	["impatient"] = {"beckon", "panic", "snap", "slump", "sweep", "elucidate", "sweat", "clutchhead", "wringhands", "disappointed"},
 	["bathing"] = {"splash", "waterfloat", "cheer", "photograph"},
 	["diving"] = {"waterflip"},
-	["nosey"] = {"lookout", "converse", "photograph", "read", "lean", "tea", "insist", "attend", "hum"},
-	
+	["nosey"] = {"lookout", "converse", "photograph", "read", "shush", "lean", "tea", "insist", "attend", "hum"},
+	-- ^^ change to 'curious' maybe
 	--- Elementals; Lightning - Wind ---
 	-- White Moods --
 	["happy"] = {"happy", "cheer", "clap", "chuckle", "dance", "earwiggle", "hug", "songbird", "fistpump", "highfive", "joy","paintyellow"},
-	["playful"] = {"magictrick", "lophop", "heart", "sdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
-	["confident"] = {"cheer", "paintblack", "photograph", "think", "lean", "heart", "scheme", "gratuity", "tea", "spectacles", "snap", "pose", "petals", "vpose"}, --Moved From Black
+	["playful"] = {"magictrick", "lophop", "blowbubbles", "heart", "sdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
+	["confident"] = {"cheer", "paintblack", "photograph", "toast", "think", "lean", "visage", "heart", "scheme", "gratuity", "tea", "spectacles", "snap", "pose", "petals", "vpose"}, --Moved From Black
 	["social"] = {"converse", "beesknees", "tea", "clap", "sweep", "songbird", "flamedance", "welcome", 
-					"greet", "hum", "bombdance", "getfantasy", "shakedrink", "hug", "dote", "petals", "sabotender", 
-					"vpose", "tomestone", "photograph", "sdance", "bigfan", "reference", "paintblack"},
+					"greet", "hum", "bombdance", "getfantasy", "shakedrink", "hug", "dote", "petals", "sabotender", "ohokaliy",
+					"vpose", "tomestone", "photograph", "sdance", "blowbubbles", "toast", "visage", "fist", "bigfan", "reference", "paintblack"},
 	["neutral"] = {"airquotes", "apple", "hum", "atease", "beckon", "riceball", "hum", "lean"},
-	["responsible"] = {"bstance", "beckon", "bow", "ebow", "welcome", "greet", "sweep", "goodbye", "yes"}, --Moved From Black
+	["responsible"] = {"bstance", "gcsalute","beckon", "bow", "ebow", "welcome", "greet", "kneel", "sweep", "goodbye", "yes", "ohokaliy"}, --Moved From Black
 }
 
 Gyre = {	---	 -1-  -2- -3- -4- -5- -6-
@@ -962,6 +976,48 @@ function runGyreMethod(mtd)
 	return "Gyre method complete.."
 end
 
+function GyreCheck()
+		--- Schmitt trigger for the Gyre - You're in the Hysteresis Zone now!
+	if playerTraits.aetheric then
+		if Sys.Gyre and emoState.aetheric > 7777 then
+			dbgMsg("Your emotional energies return to a normal, although altered state...", 1)
+			Sys.Gyre = nil
+		elseif not Sys.Gyre and emoState.aetheric > 3777 then
+			dbgMsg("Hysteric Aetheric energies have invoked the Emotional Gyre within you...", 1)
+			Sys.Gyre = true
+		elseif Sys.Gyre and emoState.aetheric < 2357 then -- prime || sum = 17
+			dbgMsg("Your emotional energies return to a more normal state...", 1)
+			Sys.Gyre = nil
+		end
+	elseif playerTraits.spriggan then
+		if not Sys.Gyre and emoState.aetheric > 13777 then
+			dbgMsg("Hysteric Aetheric energies have invoked the Emotional Gyre within you...", 1)
+			Sys.Gyre = true
+		elseif Sys.Gyre and emoState.aetheric < 7777 then -- prime || sum = 17
+			dbgMsg("Your emotional energies return to a more normal state...", 1)
+			Sys.Gyre = nil
+		end
+	elseif playerTraits.vixen then
+		if not Sys.Gyre and emoState.aetheric > 7777 then
+			dbgMsg("Hysteric Aetheric energies have invoked the Emotional Gyre within you...", 1)
+			Sys.Gyre = true
+		elseif Sys.Gyre and emoState.aetheric < 3777 then -- prime || sum = 17
+			dbgMsg("Your emotional energies return to a more normal state...", 1)
+			Sys.Gyre = nil
+		end
+	elseif playerTraits.muggle then
+		Sys.Gyre = nil -- No Gyre for you muggle~~~
+	else -- everyone else
+		if not Sys.Gyre and emoState.aetheric > 4321 then
+			dbgMsg("Hysteric Aetheric energies have invoked the Emotional Gyre within you...", 1)
+			Sys.Gyre = true
+		elseif Sys.Gyre and emoState.aetheric < 1234 then -- prime || sum = 17
+			dbgMsg("Your emotional energies return to a more normal state...", 1)
+			Sys.Gyre = nil
+		end
+	end
+end
+
 function GyreLite(emo, amt)
 	if filterLog["2"] then
 		dbgMsg("ƒGyreLiteƒ", 2)
@@ -974,6 +1030,7 @@ function GyreLite(emo, amt)
 	if emoState[emo] < 0 then
 		emoState[emo] = 0
 	end
+	emoState[emo] = reduce(emoState[emo], 4)
 	func_time["GyreLite"].END = os.time()
 	func_track("GyreLite")
 end
@@ -992,7 +1049,20 @@ function EmoGyre(emo, amt)
 		return
 	end
 	
+	--dbgMsg("EmoGyre.: [" .. emo .. "] IN -> " .. tostring(amt), 1)
+	--dbgMsg("EmoGyre.: [atheric] (" .. tostring(emoState["atheric"]) .. ") expire -> " .. tostring(377), 1)
+	emoState["aetheric"] = emoState["aetheric"] - 1.77 --should not drop below 3000
+	if (os.time() - lastGyreEffect) > 13 then
+		Moodle("-Aether", "apply", "self", "buffs", "default")
+		lastGyreEffect = os.time()
+	end
+	
+	
+	--dbgMsg("EmoGyre.: [atheric] || (" .. tostring(emoState["atheric"]), 1)
+	--dbgMsg("EmoGyre.: [atheric] expire -> " .. tostring(377), 1)
+	
 	amt = amt or 1
+	amt = amt * 0.0177
 	local out, outval
 	local asp = aspectTable[emo]
 	local sftA, sftB, sftC, sftD, sftE, sftF, aspAff
@@ -1017,7 +1087,6 @@ function EmoGyre(emo, amt)
 			emoState["sleepy"] = emoState["sleepy"] + amt *  ((sftC - sftE) / 13)
 			emoState["hungry"] = emoState["hungry"] + amt *  ((sftC - sftD) / sftC)
 		end
-		
 	elseif emo == "aetheric" then
 		-- causes the outer gyre to rotate CCW on a +amt and CW on -amt
 		-- causes the inner gyre to swap diagonals regardless of amt
@@ -1045,6 +1114,34 @@ function EmoGyre(emo, amt)
 			runGyreMethod("ccw_rot")
 		else
 			runGyreMethod("cw_rot")
+		end
+	elseif emo == "energized" then
+		-- causes the outer gyre to rotate CCW on a +amt and CW on -amt
+		-- causes the inner gyre to swap diagonals regardless of amt
+		-- amount of rotation is 1 regardless of the value of amt
+		dbgMsg("EmoGyre.: aetheric IN -> " .. tostring(amt), 13)
+		sftA = tcopy(Gyre)
+		
+		
+		Gyre["yellow"][4] = sftA["red"][3]
+		Gyre["red"][3] = sftA["yellow"][4]
+		Gyre["yellow"][3] = sftA["red"][4]
+		Gyre["red"][4] = sftA["yellow"][3]
+		
+		sftA, sftB, sftC, sftD = Gyre["yellow"][4], Gyre["red"][3], Gyre["yellow"][3], Gyre["red"][4]
+		local n = (sftA + sftC) / (sftB + sftD)
+		local aa = 1
+		if playerTraits == "aetheric" then
+			aa = 1.69 * sign(amt)
+		end
+		emoState["energized"] = emoState["energized"] + amt * n * aa
+		dbgMsg("EmoGyre.: aetheric Gyre:Center :: -> " .. tostring(n), 13)
+		
+		
+		if sn == 1 then
+			runGyreMethod("cw_rot")
+		else
+			runGyreMethod("ccw_rot")
 		end
 	elseif asp == "cold" then
 		if sn == 1 then
@@ -1119,9 +1216,32 @@ function EmoGyre(emo, amt)
 		updateAffinity(sftA, sftB, "red", "yellow", amt, emo)
 		dbgMsg("EmoGyre.: Red: amt: -> " .. tostring(amt), 13)		
 	end
-	if emoState[emo] < 0 then
-		emoState[emo] = 0
+	if emoState[emo] then -- paintbrushes and potentially other non emotes my get in otherwise
+		if emoState[emo] < 0 then
+			emoState[emo] = 0
+		end
+		--dbgMsg("EmoGyre.: Invalid Emote: emo: -> " .. tostring(emo), 1)
 	end
+	
+	if playerTraits.aetheric then
+		if emoState.energized > emoState.aetheric then
+			local aeAdj = diff(emoState.energized, emoState.aetheric)
+			if aeAdj > 169 then
+				aeAdj = 169
+			end
+			if aeAdj > 3.7 then
+				emoState.energized = emoState.energized - aeAdj
+				emoState.aetheric = emoState.aetheric - aeAdj * 0.37
+				if emoState.energized < 0 then
+					emoState.energized = 0
+				end
+				if emoState.aetheric < 0 then
+					emoState.aetheric = 0
+				end
+			end
+		end
+	end
+	
 	for k,v in pairs(GyreConduit) do
 		GyreConduit[k] = Gyre[k][6]
 	end
@@ -1173,6 +1293,11 @@ function tokenHandler()
 	end
 	func_time["tokenHandler"].ST = os.time()
 	local map = Game.Player.MapZone
+	if not map then 
+		func_time["tokenHandler"].END = os.time()
+		func_track("tokenHandler")
+		return
+	end
 	local tkS = tokenStack[map]
 	local tk, tm, er, ret, test
 	local doSt = 1
@@ -1191,7 +1316,7 @@ function tokenHandler()
 				tk = v.token
 				if not v.lastCall then
 					tokenStack[map][k].lastCall = tm
-					tokenStack[map][k].initialized = true
+					tokenStack[map][k].initialized = tm
 					if tk.appRout then
 						CallRoutine(tk.appRout, tk)
 					end
@@ -1206,30 +1331,33 @@ function tokenHandler()
 							test = nil
 							dbgMsg("tokenStack: Test Check C", 3)
 						end
+					else
+						test = true -- set test to nil or omit on token if test is not needed
 					end
-					
-					--dbgMsg("tokenStack: Check X :: " .. tostring(tk.what), 1)
-					--dbgMsg("tokenStack: Check X: test :: " .. tostring(test), 1)
-					--dbgMsg("tokenStack: Check X: f(4) :: " .. tostring(flags[4]), 1)
 					if test then
-						dbgMsg("tokenStack: Test Passed Z :: " .. tostring(tk.type), 3)
+						dbgMsg("tokenStack: tk.delayApply :: " .. tostring(tk.delayApply), 3)
 						if tk.boosts then
-							if tk.moodle then
-								Moodle(tk.moodle, "apply", "self", "buffs", "default")
-							end
-							if tk.scopes then
-								if (tk.scopes == "global" and doSt == 2) or (tk.scopes == "local" and doSt == 1) then
-								--dbgMsg("tokenStack: Test Passed Z.1 :: " .. tostring(tk.type), 1)
-									emoHandler(tk.boosts, tk.type, tk.moodle)
-								--dbgMsg("tokenStack: Test Passed Z.2 :: " .. tostring(tk.type), 1)
+							if tk.moodle and (tk.refresh or tk.delayApply) then
+								if tk.delayApply then
+									if (os.time() - v.firstCall) > tk.delayApply then
+										Moodle(tk.moodle, "apply", "self", "buffs", "default")
+										tokenStack[map][k].token.delayApply = nil
+									end
+								elseif tk.refresh then
+									tk.refresh = tk.refresh - 1
+									Moodle(tk.moodle, "apply", "self", "buffs", "default")
+									tokenStack[map][k].firstCall = os.time()
+									if tk.refresh < 1 then
+										tokenStack[map][k].token.refresh = nil
+									end
 								else
-									emoHandler(tk.boosts)
+									Moodle(tk.moodle, "apply", "self", "buffs", "default")
 								end
-							else
-								emoHandler(tk.boosts)
 							end
+							
+							dbgMsg("tokenStack: Test Passed Z.1 :: " .. tostring(tk.type), 3)
+							emoHandler(tk.boosts, tk.type, tk.moodle, tk.stacks, tk.drAdj, tk.method, tk.falloff, v.firstCall, v.initialized )
 						end
-						dbgMsg(".....tokenStack: Test Passed Z.3 :: ", 3)
 						if tk.type == "emote" then
 							if tk.what then
 								DoRandom(tk.what)
@@ -1239,9 +1367,24 @@ function tokenHandler()
 							dbgMsg("tokenHandler : Routine  :: " .. tostring(tk.what), 3)
 							CallRoutine(tk.what,tk)
 						elseif tk.type == "buff" then
-							dbgMsg("tokenHandler : Buff  :: " .. tostring(tk.what), 3)
-							if tk.moodle then
-								Moodle(tk.moodle, "apply", "self", "buffs", "default")
+							dbgMsg("tokenHandler : Buff  :: " .. tostring(tk.what), 1)
+							if tk.moodle and (tk.refresh or tk.delayApply) then
+								if tk.delayApply then
+									if (os.time() - v.firstCall) > tk.delayApply then
+										Moodle(tk.moodle, "apply", "self", "buffs", "default")
+										tokenStack[map][k].firstCall = os.time()
+										tokenStack[map][k].token.delayApply = nil
+									end
+								elseif tk.refresh then
+									tk.refresh = tk.refresh - 1
+									Moodle(tk.moodle, "apply", "self", "buffs", "default")
+									tokenStack[map][k].firstCall = os.time()
+									if tk.refresh < 1 then
+										tokenStack[map][k].token.refresh = nil
+									end
+								else
+									Moodle(tk.moodle, "apply", "self", "buffs", "default")
+								end
 							end
 							if tk.toasted then
 								if not tk.lastToast then
@@ -1275,15 +1418,55 @@ function tokenHandler()
 				dbgMsg("tokenHandler  :: F:" .. tostring(tk.falloff), 3)
 				dbgMsg("tokenHandler  :: t - fc:" .. tostring(os.time() - v.firstCall), 3)
 				dbgMsg("tokenHandler  :: F - (t - fc):" .. tostring(tk.falloff - (os.time() - v.firstCall)), 3)
-				if os.time() - v.firstCall > tk.falloff then
-					dbgMsg("tokenHandler  :: Falloff -- " .. tostring(tk.what), 3)
-					if tk.moodle then
-						Moodle(tk.moodle, "remove", "self", "tokens", "default")
+				if os.time() - v.firstCall > tk.falloff or v.remove then
+					--if not v.initialized
+					if tk.stacks then
+						if tk.stacks > 1 then
+							tokenStack[map][k].token.stacks = tokenStack[map][k].token.stacks - 1
+							tokenStack[map][k].token.refresh = tokenStack[map][k].token.stacks
+							--tokenStack[map][k].firstCall = os.time()
+							--Moodle(tk.moodle, "apply", "self", "buffs", "default")
+							dbgMsg("tokenHandler  :: stacks decrement -- " .. tostring(tokenStack[map][k].stacks), 3)
+						else
+							if tk.moodle then
+								Moodle(tk.moodle, "remove", "self", "buffs", "default")
+								dbgMsg("tokenHandler  :: Falloff -- " .. tostring(tk.what), 1)
+								dbgMsg("tokenHandler  :: tk.moodle -- " .. tostring(tk.moodle), 1)
+							end
+							if tk.falloffRout then
+								CallRoutine(tk.falloffRout)
+							end
+							
+							lastBuff[k] = lastBuff[k] or {}
+							lastBuff[k].count = lastBuff[k].count or 0
+							lastBuff[k].count = lastBuff[k].count + 1
+							lastBuff[k].tolerance = lastBuff[k].tolerance or 0
+							if not v.initialized then
+								v.initialized = os.time()
+							end
+							lastBuff[k].tolerance = lastBuff[k].tolerance + (os.time() - v.initialized)
+							tokenStack[map][k] = nil
+						end
+					else
+						dbgMsg("tokenHandler  :: Falloff -- " .. tostring(tk.what), 1)
+						dbgMsg("tokenHandler  :: tk.moodle -- " .. tostring(tk.moodle), 1)
+						if tk.moodle then
+							dbgMsg("tokenHandler  :: Removing Moodle -- " .. tostring(tk.what), 1)
+							Moodle(tk.moodle, "remove", "self", "buffs", "default")
+						end
+						if tk.falloffRout then
+							CallRoutine(tk.falloffRout)
+						end
+						lastBuff[k] = lastBuff[k] or {}
+						lastBuff[k].count = lastBuff[k].count or 0
+						lastBuff[k].count = lastBuff[k].count + 1
+						lastBuff[k].tolerance = lastBuff[k].tolerance or 0
+						if not v.initialized then
+								v.initialized = os.time()
+						end
+						lastBuff[k].tolerance = lastBuff[k].tolerance + (os.time() - v.initialized)
+						tokenStack[map][k] = nil
 					end
-					if tk.falloffRout then
-						CallRoutine(tk.falloffRout)
-					end
-					tokenStack[map][k] = nil
 				end
 				
 				
@@ -1297,6 +1480,13 @@ function tokenHandler()
 			map = "GEN"
 		end
 		doSt = doSt + 1
+	end
+	local lB = tcopy(lastBuff)
+	for k,v in pairs(lB) do
+		if lastBuff[k].tolerance > 7 then
+			lastBuff[k].tolerance = lastBuff[k].tolerance - 0.177
+			--lastBuff[k].tolerance = 0
+		end
 	end
 	func_time["tokenHandler"].END = os.time()
 	func_track("tokenHandler")
@@ -1389,4 +1579,4 @@ function UpdateStorageData()
 	func_track("tokenHandler")
 end
 
-return {emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn, Gyre, GyreConduit, aspectTable, EmoGyre, aspectAffinity, moods, dbgGyre, runGyreMethod, gyreMethods, updateAffinity, aspectPass, GyreLite}
+return {emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn, Gyre, GyreConduit, aspectTable, EmoGyre, aspectAffinity, moods, dbgGyre, runGyreMethod, gyreMethods, updateAffinity, aspectPass, GyreLite, GyreCheck}

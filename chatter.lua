@@ -10,7 +10,7 @@ function ChatHandler()
 	if stackIdx < 1 then
 		return
 	end
-	--dbgMsg("!ChatHandler :: stackIdx :: " .. tostring(stackIdx), 1)
+	dbgMsg("!ChatHandler :: stackIdx :: " .. tostring(stackIdx), 1)
 	--dbgMsg("!ChatHandler :: stackMsg :: " .. tostring(chatStack[stackIdx].msg), 1)
 	local n
 	local txt = chatStack[stackIdx].msg --Game.Chat.Msg
@@ -20,7 +20,9 @@ function ChatHandler()
 	
 	sender = string.gsub(sender, "[]", "")
 
-	
+	if chn == "ls2" or chn == "Ls2" then
+		chn = "l2"
+	end
 	
 	chatStack[stackIdx] = nil
 	stackIdx = #chatStack
@@ -65,11 +67,32 @@ function ChatHandler()
 		--elseif string.find(txt, "juju")	then
 			--Game.SendChat("/useitem 40392 ")
 		elseif string.sub(txt, 1, 4) == "emo " then
+			--Script.QueueDelay(37)
+			--Script.QueueAction(delayedAction, txt)
+			Game.SendChat("/wait 1")
 			Game.SendChat("/" .. txt)
 		elseif txt == "save" then
 			CDUpdater()
 		elseif txt == "artisan" or txt == "xllog" or txt == "xldat" or txt == "wolua reload" then
 			Game.SendChat("/" .. txt)
+		--elseif txt == "penumbra" or txt == "chatalerts" or txt == "xlstats" or txt == "moodles" or
+			--txt == "penny toggle" or txt == "penny" or txt == "snd" or txt == "mare" then
+			--Game.SendChat("/" .. txt)
+		elseif txt == "glam" or txt == "glamourer" or txt == "currency" or txt == "macros" then
+			Game.SendChat("/" .. txt)
+		elseif txt == "armor" or txt == "armoury" or txt == "gear" then
+			Game.SendChat("/isort condition armoury ilv des")
+			Game.SendChat("/isort execute armoury")
+			Game.SendChat("/armoury body")
+		elseif txt == "bags" or txt == "inventory" then
+			Game.SendChat("/isort condition inventory ilv des")
+			Game.SendChat("/isort execute inventory")
+			Game.SendChat("/inventory")
+		elseif txt == "minion" or txt == "pet" then
+			Game.SendChat("/minionguide")
+		elseif string.find(txt, "^item ") then
+			txt = string.gsub(txt, "item ", "")
+			Game.SendChat("/xlitem " .. txt)
 		elseif string.find(txt, "lalafel") or string.find(txt, "lala") then
 			GetAngry()
 		elseif string.find(txt, "ahoy")  or string.find(txt, "heya") then
@@ -108,6 +131,8 @@ function ChatHandler()
 		elseif string.find(txt, "rain") then
 			DoRandom("water")
 		elseif (string.find(txt, "lol") or string.find(txt, "hehe")) and sender == playerName then
+			--Script.QueueDelay(123)
+			--Script.QueueAction(DoRandom, "chuckle")
 			DoRandom("chuckle")
 			--%s(no)%s
 		elseif string.match(txt, "%f[A-Za-z]no%f[^A-Za-z]") and sender == playerName then
@@ -118,7 +143,7 @@ function ChatHandler()
 			DoRandom("blush")
 		elseif (string.match(txt, "%f[A-Za-z]angry%f[^A-Za-z]") or string.match(txt, "%f[A-Za-z]mad%f[^A-Za-z]")) and string.find(txt, playerName) then
 			DoRandom("angry")
-		elseif string.find(txt, "mischief") or string.find(txt, "shenanigans") or string.find(txt, "tomfoolery") then
+		--[[elseif string.find(txt, "mischief") or string.find(txt, "shenanigans") or string.find(txt, "tomfoolery") then
 			local tmp = math.random(100)
 			if tmp > 77 then
 				Game.SendChat("/minion \"Mischief Maker\"")
@@ -126,7 +151,7 @@ function ChatHandler()
 				Game.SendChat("/minion \"Motley Egg\"")
 			else
 				Game.SendChat("/minion \"Wind-up Fuath\"")
-			end
+			end]]--
 		elseif string.match(txt, "“[%a%s]+” equipped.") and Sys.Outfits then
 			local mt = string.match(txt, "“([%a%s]+)” equipped.")
 			gearsetChange = mt
@@ -143,7 +168,7 @@ function ChatHandler()
 				UpdateOutfit(mt)
 				--CD[playerName].outfits = CD[playerName].outfits or {}
 				CD[playerName].outfits.currentOutfit = CD[playerName].outfits.currentOutfit or {}
-				dumpInfo("outfits supersimple")
+				dumpInfo("outfits glams")
 			end
 			--Game.SendChat("/e " .. mt)
 			
@@ -159,6 +184,8 @@ function ChatHandler()
 			Shame(txt)
 		elseif string.find(txt, "coffee") or string.find(txt, "tea") or string.find(txt, "thirsty") then
 			DoRandom("tea")
+			--ApplyBuff("caffeinated")
+			dbgMsg("Tea Time!", 1)
 		elseif string.find(txt, "shit") then
 			DoRandom("furious")
 		elseif string.find(txt, "dammit") or string.find(txt, "annoying") then
@@ -177,7 +204,7 @@ function ChatHandler()
 			StringsHandler(ac)
 			--Yojimbo, come on down!
 		else
-			MatchStick(txt)
+			MatchStick(txt, sender, chn)
 		end
 		lastChat = txt
 	end
@@ -192,6 +219,153 @@ function Shame(txt)
 	Moodle("Shameful", "apply", "self", "buffs", "default")
 end
 
+local bijous = {
+	["keys"] = {"diamonds", "birds", "onibi", "sunshine", "emerald", "indigo", "stardust"},
+	["diamonds"] = "/useitem 38539",
+	["birds"] = "/useitem 41500",
+	["onibi"] = "/useitem 40392",
+	["sunshine"] = "/useitem 7809",
+	["moonrabbits"] = "/useitem 48158",
+	["emerald"] = "/useitem 5900",
+	["indigo"] = "/useitem 5901",
+	["stardust"] = "/useitem 7810",
+	["pumpkin"] = "/useitem 16929",
+
+}
+
+local cats = {
+	["whiskers"] = {"Nagxian Cat", "Tora-jiro", "Coeurl Kitten", "Black Coeurl", "Byakko Cub", "Palico", "Jibanyan",
+					"Bluecoat Cat", "Ilyikty'i", "Weatherproof Gaelicat", "Fat Cat", "Meerkat", "USApyon", "Shoebill",
+					"Black Kitten"},
+	["Nagxian Cat"] = true,
+	["Tora-jiro"] = true,
+	["Coeurl Kitten"] = true,
+	["Black Coeurl"] = true,
+	["Byakko Cub"] = true,
+	["Palico"] = true,
+	["Jibanyan"] = true,
+	["Bluecoat Cat"] = true,
+	["Ilyikty'i"] = true,
+	["Weatherproof Gaelicat"] = true,
+	["Fat Cat"] = true,
+	["Black Kitten"] = true,
+	["Meerkat"] = true,
+	["USApyon"] = true,
+	["Shoebill"] = true,
+}
+
+local mischief = {
+	["makers"] = {"Motley Egg", "Mischief Maker", "Meerkat", "Shoebill", "Wind-up Cursor", "Manjimutt"},
+	["Motley Egg"] = true,
+	["Mischief Maker"] = true,
+	["Meerkat"] = true,
+	["Page 63"] = true,
+	["Treasure Box"] = true,
+	["Porro Roggo"] = true,
+	["Shoebill"] = true,
+	["Wind-up Cursor"] = true,
+	["Manjimutt"] = true,
+	["Meerkat"] = true,
+	["Meerkat"] = true,
+	["Meerkat"] = true,
+	["Meerkat"] = true,
+	["Meerkat"] = true,
+	["Meerkat"] = true,
+	
+}
+
+local poppits = {
+	["strings"] = {"Calca", "Brina", "Meerkat", "Wind-up Edda", "Wind-up Chimera", "Shoebill"},
+	["Calca"] = true,
+	["Brina"] = true,
+	["Meerkat"] = true,
+	["Shoebill"] = true,
+	["Wind-up Chimera"] = true,
+	["Wind-up Edda"] = true,
+}
+
+local bunnies = {
+	["dust"] = {"Dust Bunny", "Unlucky Rabbit", "Meerkat", "Shoebill"},
+	["Dust Bunny"] = true,
+	["Unlucky Rabbit"] = true,
+	["Meerkat"] = true,
+	["Shoebill"] = true,
+}
+
+function doBijou(tag)
+	if tag == "any" then
+		dbgMsg("doBijou: tag :: " .. tostring(tag), 1)
+		local r = math.random(1, #bijous.keys)
+		local k = bijous.keys[r]
+		dbgMsg("doBijou: k :: " .. tostring(k), 1)
+		Game.SendChat(bijous[k])
+	elseif bijous[tag] then
+		Game.SendChat(bijous[tag])
+	end
+	return true
+end
+
+function getKitty(cat)
+	if cat == "random" then
+		dbgMsg("getKitty: cat :: " .. tostring(cat), 1)
+		local r = math.random(1, #cats.whiskers)
+		local k = cats.whiskers[r]
+		dbgMsg("getKitty: k :: " .. tostring(k), 1)
+		if cats[k] then
+			Game.SendChat("/minion \"" .. k .. "\"")
+		end
+	elseif cats[cat] then
+		Game.SendChat("/minion \"" .. cats[cat] .. "\"")
+	end
+	return true
+end
+
+function getBunny(bunny)
+	if bunny == "random" then
+		dbgMsg("getBunny: bunny :: " .. tostring(bunny), 1)
+		local r = math.random(1, #bunnies.dust)
+		local k = bunnies.dust[r]
+		dbgMsg("getBunny: k :: " .. tostring(k), 1)
+		if bunnies[k] then
+			Game.SendChat("/minion \"" .. k .. "\"")
+		end
+	elseif bunnies[bunny] then
+		Game.SendChat("/minion \"" .. cats[cat] .. "\"")
+	end
+	return true
+end
+
+function getPoppit(poppit)
+	if poppit == "random" then
+		dbgMsg("getPoppit: poppit :: " .. tostring(poppit), 1)
+		local r = math.random(1, #poppits.strings)
+		local k = poppits.strings[r]
+		dbgMsg("getPoppit: k :: " .. tostring(k), 1)
+		if poppits[k] then
+			Game.SendChat("/minion \"" .. k .. "\"")
+		end
+	elseif poppits[poppit] then
+		Game.SendChat("/minion \"" .. poppits[poppit] .. "\"")
+	end
+	EmoGyre("focused", 19.1)
+	return true
+end
+
+function getMotley(egg)
+	if egg == "random" then
+		dbgMsg("getMotley: egg :: " .. tostring(egg), 1)
+		local r = math.random(1, #mischief.makers)
+		local k = mischief.makers[r]
+		dbgMsg("getMotley: k :: " .. tostring(k), 1)
+		if mischief[k] then
+			Game.SendChat("/minion \"" .. k .. "\"")
+		end
+	elseif mischief[egg] then
+		Game.SendChat("/minion \"" .. mischief[egg] .. "\"")
+	end
+	EmoGyre("mischievous", 19.1)
+	return true
+end
 
 function GetAngry()
 	local angry = moods.angry
@@ -392,12 +566,27 @@ function JujuHoodoo(txt, chn)
 			foodoo = string.gsub(foodoo, "^%s*", "")
 			bo = "return "
 			be = ""
+			--foodoo = " " .. foodoo
+			local func, oopsoo = load(bo..foodoo..be)
+			if func then
+				funCoo = {pcall(func)}
+			end
+			dbgMsg("JujuHoodoo:  *run* foodoo :: " .. tostring(foodoo), 1)
+			if funCoo then
+				foodoo = funCoo[2]
+				dbgMsg("JujuHoodoo:  *run* funCoo.1 :: " .. tostring(funCoo[1]), 1)
+				dbgMsg("JujuHoodoo:  *run* funCoo.2 :: " .. tostring(funCoo[2]), 1)
+			else
+				foodoo = "return 'Could not load function..'"
+			end
 			doorun = true
-			dbgMsg("JujuHoodoo:  *run* :: " .. tostring(foodoo), 1)
+			dbgMsg("JujuHoodoo:  *run* foodoo.. :: " .. tostring(foodoo), 1)
 		end
-		local func, oopsoo = load(bo..foodoo..be)
-		if func then
-			funCoo = {pcall(func)}
+		if foodoo then
+			local func, oopsoo = load(bo..foodoo..be)
+			if func then
+				funCoo = {pcall(func)}
+			end
 		end
 		--dbgMsg("JujuHoodoo:  hoohoo :: " .. tostring(foodoo), 9)
 		if oopsoo then
@@ -436,7 +625,7 @@ function JujuHoodoo(txt, chn)
 						
 						if doorun == true then
 							foodoo = tostring(funCoo[2])
-							func, oopsoo = load(bo..foodoo..be)
+							func, oopsoo = load(foodoo)
 							dbgMsg("JujuHoodoo:  doorunfoo :: " .. tostring(foodoo), 1)
 							if func then
 								funCoo = {pcall(func)}
@@ -465,14 +654,25 @@ end
 
 function Windfall(txt, chn, toss)
 	dbgMsg(".Windfall.", 2)
-	--dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+	dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
 	--dbgMsg("Windfall: toss :: " .. tostring(toss), 1)
-	if toss == "You obtain" or toss == "You gain" or toss == "You earn" or toss == "put up for sale" then
+	if not validSysChan[chn] then
+		dbgMsg("Windfall: invalid (chn) :: " .. tostring(chn), 1)
+		--return
+	end
+	if toss == "You obtain" or toss == "You gain" or toss == "You earn" then
+		lastWindfall = txt
 		txt = string.gsub(txt, toss, "")
 		txt = string.gsub(txt, " ", "")
 		--local val = string.match(txt, "(%d+)")
 		--local val = string.match(txt, "(%d+,?%d*)")
 		local val = string.match(txt, "(%d+,?%d+,?%d*)")
+		if not val then
+			val = string.match(txt, "(?%d+,?%d*)")
+		end
+		if not val then
+			val = string.match(txt, "(%d+)")
+		end
 		--dbgMsg("Windfall: val :: " .. tostring(val), 1)
 		--dbgMsg("Windfall: key :: " .. tostring(txt), 1)
 		if val then
@@ -499,71 +699,183 @@ function Windfall(txt, chn, toss)
 		CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] or 0
 		CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] + val
 		
+		if val < 10000 and val > 1000 then
+			DoRandom("surprised")
+		elseif val > 100000 then
+			DoRandom("cheer")
+		elseif val > 1000000 then
+			UseItem(8214)
+		end
+		
 		dbgMsg("Windfall: key :: " .. tostring(txt), 1) 
 		dbgMsg("Windfall: val :: " .. tostring(val), 1) --Chloe had it backwards
-		
 		return
+	elseif (chn == "RetainerSale" or chn == "say") and string.find(txt, "you put up for sale") then
+		dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+		lastSale = txt
+		txt = string.gsub(txt, "handfuls of", "")
+		--txt = string.gsub(txt, "handfuls of", "")
+		local cnt = string.match(txt, "^The (%d+) ")
+		if cnt then
+			cnt = tonumber(cnt)
+			txt = string.gsub(txt, "^The (%d+) ", "")
+		else
+			cnt = 1
+		end
+		
+		local sale = string.match(txt, "(%d+,?%d+,?%d*)")
+		if not sale then
+			sale = string.match(txt, "(?%d+,?%d*)")
+		end
+		if not sale then
+			sale = string.match(txt, "(%d+)")
+		end
+		if not sale then
+			sale = 0
+		end
+		
+		sale = tonumber(sale)
+		salesTotal = salesTotal + sale
+		
+		
+		dbgMsg("Windfall: cnt :: " .. tostring(cnt), 1)
+		dbgMsg("Windfall: sale :: " .. tostring(sale), 1)
+		txt = string.gsub(txt, "you put up for sale in the (%a+) markets ", "")
+		dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+		
+		if sale > 7777 then
+			Report(lastSale)
+		end
+		--CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] or 0
+		--CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] + val
+		--have sold for 12,921 gil (after fees).
+	elseif (chn == "2242" or chn == "say") and string.find(txt, "You synthesize") then
+		--dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+		lastCraft = txt
+		txt = string.gsub(txt, "You synthesize", "")
+		txt = string.gsub(txt, "(^%a*)", "")
+		local x = string.match(txt, "(%d+)")
+		if not x then
+			x = 1
+			--txt = string.gsub(txt, "(^[a]? )", "")
+		else
+			txt = string.gsub(txt, "(%d+)", "")
+		end
+		
+		txt = string.gsub(txt, "(%d+)", "")
+		txt = string.gsub(txt, "(%a+ of)", "")
+		txt = string.gsub(txt, "", "")
+		txt = string.gsub(txt, "%.", "")
+		txt = string.gsub(txt, "^%s*(.-)", "%1")
+		--txt = string.gsub(txt, "(^%s+)", "")
+		CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] or 0
+		CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] + x
+		
+		if string.find(txt, " ") then
+			x = x * 3
+			txt = string.gsub(txt, " ", "")
+		end
+		
+		EmoGyre("aetheric", -x*7)
+		dbgMsg("Windfall Craft: x :: " .. tostring(x), 1)
+		Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
+		dbgMsg("Windfall: |txt| :: " .. tostring(txt), 1)
+		
 	end
-	bits, bobs = string.match(txt, "(%d+,?%d*).+(MGP)")
+	if string.find(txt, "MGP") then
+		bits, bobs = string.match(txt, "(%d+,?%d*).+(MGP)")
+		dbgMsg("MatchStick: Bits & Bobs :: " .. tostring(bits) .. " & " .. tostring(bobs), 1)
+		if not bits then
+			--4,800 (+60%) MGP.
+			bits, bobs = string.match(txt, "(%d+,?%d*) %(%d%%%) (MGP)")
+		end
 	--if not bobs then
 		--bits, bobs = string.match(txt, "(%d+,?%d*).*([%a]+)")
 	--end
-	if bits and bobs then
-		dbgMsg("MatchStick: Bits & Bobs :: " .. tostring(bits) .. " & " .. tostring(bobs), 9)
-		if bobs == "MGP" then
-			bits = tonumber(bits)
-			if bits then
-				if bits >= 8000 then
-					CallRoutine("hoot-n-holler")
-				elseif bits >= 4000 then
-					DoRandom("cheer")
-				elseif bits >= 1000 then
-					DoRandom("clap")
+		if bits and bobs then
+			dbgMsg("MatchStick: Bits & Bobs :: " .. tostring(bits) .. " & " .. tostring(bobs), 9)
+			if bobs == "MGP" then
+				bits = tonumber(bits)
+				if bits then
+					if bits >= 8000 then
+						CallRoutine("hoot-n-holler")
+					elseif bits >= 4000 then
+						DoRandom("cheer")
+					elseif bits >= 1000 then
+						DoRandom("clap")
+					end
 				end
 			end
 		end
 	end
 end
 
-function ProgHandler(txt, toss)
+function ProgHandler(txt, toss, chn)
 	dbgMsg("ProgHandler :: " .. tostring(txt), 1)
+	if not validSysChan[chn] then
+		dbgMsg("ProgHandler: invalid (chn) :: " .. tostring(chn), 1)
+		return
+	end
+	lastProg = txt
 	if string.find(txt, "Gold Star rating") then
 		Moodle("GoldStar", "apply", "self", "buffs", "default")
 		playerProg.GoldStar = playerProg.GoldStar + 1
-		EmoGyre("responsible", 10)
+		EmoGyre("aetheric", -17.7)
+		Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
+		EmoGyre("responsible", 7)
 		EmoGyre("confident", 7)
 		DoRandom("cheer")
 	elseif string.find(txt, "Silver Star rating") then
 		Moodle("SilverStar", "apply", "self", "buffs", "default")
 		playerProg.SilverStar = playerProg.SilverStar + 1
-		EmoGyre("responsible", 5)
+		EmoGyre("aetheric", -13.3)
+		Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
+		EmoGyre("responsible", 3)
 		EmoGyre("confident", 3)
 		DoRandom("clap")
 	elseif string.find(txt, "Bronze Star rating") then
 		Moodle("BronzeStar", "apply", "self", "buffs", "default")
 		playerProg.BronzeStar = playerProg.BronzeStar + 1
+		EmoGyre("embarrased", 12.3)
 		EmoGyre("responsible", 1)
 		EmoGyre("confident", -1)
 		DoRandom("shrug")
 	elseif string.find(txt, "You submitted") or string.find(txt, "You earned a score") or
 		string.find(txt, "experience points") then
 		Moodle("BusyBee", "apply", "self", "buffs", "default")
-		playerProg.SilverStar = playerProg.SilverStar + 1
+		--playerProg.SilverStar = playerProg.SilverStar + 1
 		local val = string.match(txt, "(%d+,?%d+,?%d*)")
 		if tonumber(val) then
+			local adj = 1
 			if string.find(txt, "experience") then
 				txt = "Experience"
+				adj = (val / Game.Player.Level) * 0.000177
 			elseif string.find(txt, "points") then
+				adj = (val / Game.Player.Level) * 0.17
 				txt = "Points"
 			elseif string.find(txt, "score") then
+				adj = (val / Game.Player.Level) * 0.017
 				txt = "Score"
 			else
 				txt = "Unknown"
 			end
 			playerProg[txt] = playerProg[txt] or 0
-			playerProg[txt] = playerProg[txt] + val
-			EmoGyre("responsible", val / 777)
+			playerProg[txt] = playerProg[txt] + val * adj
+			EmoGyre("aetheric", val * -0.0369)
+			Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
+			EmoGyre("responsible", val / 7.77 * adj)
 		end
+	elseif string.find(txt, "You clean the stable") then
+		playerProg["cleaned stable"] = playerProg["cleaned stable"] or 0
+		playerProg["cleaned stable"] = playerProg["cleaned stable"] + 1
+		EmoGyre("responsible", 29)
+	elseif string.find(txt, "Sightseeing log entry") then
+		playerProg["sightseeing log"] = playerProg["sightseeing log"] or {}
+		local val = string.match(txt, "“(%d+)”")
+		playerProg["sightseeing log"][val] = formatTime(os.time())
+		bubbleBuff = os.time()
+		Report(txt)
+		dbgMsg("ProgHandler: log entry :: " .. tostring(val), 1)
 	elseif string.find(txt, "You attain level") then
 		UseItem(8215)
 	elseif string.find(txt, "upgrading your tool") then
@@ -576,24 +888,53 @@ function SharkHandler()
 	CallRoutine("babysharkgirl")
 end
 
-function FlameCheck(flame, toss, txt)
+function Crystal(txt, chn, toss)
+	if chn == "2114" then
+		dbgMsg("Crystal: txt :: " .. tostring(txt), 1)
+		local crystal
+		local amt = string.match(txt, "(%d+)")
+		if string.find(txt, "crystal") then
+			crystal = 2
+		elseif string.find(txt, "shard") then
+			crystal = 1
+		elseif string.find(txt, "cluster") then
+			crystal = 3
+		end
+		amt = amt * 0.77 * crystal
+		EmoGyre("aetheric", -amt)
+		EmoGyre("energized", -amt/3)
+		EmoGyre("focused", -amt)
+		--if emoState.focused < 17 then
+			--EmoGyre("dazed", amt)
+		--end
+		dbgMsg("Crystal: amt :: " .. tostring(amt), 1)
+		Moodle("Aether+", "apply", "self", "buffs", "default")
+	end
+end
+
+function Report(txt)
+	if not playerTraits.gossiper then
+		dbgMsg("Report: You do not have the 'gossiper' trait", 1)
+		return
+	end
+	if (os.time() - lastGossip) < gossipCD then
+		dbgMsg("Report: lastGossip :: " .. tostring(os.time() - lastGossip) .. " :|: gossipCD :: " .. tostring(gossipCD), 1)
+		return
+	end
+	lastGossip = os.time()
+	txt = Blimey(txt)
+	Game.SendChat("/fc " .. txt)
+	Game.SendChat("/fc Reporting from <pos>.")
+end
+
+function FlameCheck(flame, toss, txt, chn, sender)
 	dbgMsg(".FlameCheck.", 2)
 	dbgMsg("MatchStick: " .. txt, 9)
 	dbgMsg(".FlameCheck: flame :: " .. tostring(flame), 9)
 	dbgMsg(".FlameCheck: toss :: " .. tostring(toss), 9)
-	local chn = Game.Chat.Chn
+	--local chn = Game.Chat.Chn
 	dbgMsg(".FlameCheck: chn :: " .. tostring(chn), 9)
-	if chn then
-		if #chn > 0 then
-			if tonumber(chn) then
-				chn = "l"..chn
-			end
-		end
-		chn = string.lower(chn)
-		if not validChn then
-			chn = "fc"
-		end
-	end
+	
 	--[2]<Sandy Skittles> juju lastChat
 
 	if flame == "*creature*" then
@@ -604,63 +945,85 @@ function FlameCheck(flame, toss, txt)
 		if bits and bobs then
 			dbgMsg("MatchStick: Bits & Bobs :: " .. tostring(bits) .. " & " .. tostring(bobs), 9)
 			if IsPorting then
-				dbgMsg("MatchStick: Porting finished: time :: " .. tostring(os.time() - IsPorting), 9)
-				Porting(tonumber(bits))
-				IsPorting = nil
+				--dbgMsg("MatchStick: Porting finished: time :: " .. tostring(os.time() - IsPorting), 1)
+				dbgMsg("MatchStick: Porting finished: time :: " .. tostring(tonumber(bits)), 1)
+				Porting(tonumber(bits) * (os.time() - IsPorting))
+				--IsPorting = nil --Porting function now handles this
 			end
 		end
 	elseif flame == "*porting*" or flame == "*travel*" then
 		IsPorting = os.time()
+		dbgMsg("PortingCall :: " .. tostring(toss), 1)
+	elseif flame == "*action*" and chn == "NPCDialogueAnnouncements" then
+		
 	elseif flame == "*shark*" then
 		SharkHandler()
 	elseif flame == "*prog*" then
-		ProgHandler(txt, toss)
+		ProgHandler(txt, toss, chn)
 	elseif flame == "*failure*" then
 		Shame(toss)
+	elseif flame == "*panic*" then
+		if string.sub(txt, 1, #toss) == toss and sender == playerName then
+			dbgMsg("PanicCheck toss :: " .. tostring(toss), 1)
+			dbgMsg("PanicCheck txt :: " .. tostring(txt), 1)
+			--dbgMsg("PanicCheck sender :: " .. tostring(sender), 1)
+			if toss == "safe" then
+				safe = true
+				dbgMsg("PanicHandler switching to safe mode :: ✓", 0)
+			elseif toss == "kill" then
+				dbgMsg("PanicHandler shutting down...", 0)
+				action = "sleep"
+				rnd = nil
+				dbg = 1
+				Script.ClearQueue()
+				dbgMsg("PanicHandler Emote queue stopped :: ✓ ", 0)
+				Update()
+				dbgMsg("PanicHandler Halting All Lua Scripts :: ✓", 0)
+				Game.SendChat("/woluax halt-all")
+			end
+		end
 	elseif flame == "*duty*" then
-		ProgHandler(txt, toss)
+		ProgHandler(txt, toss, chn)
 	elseif flame == "*jujuhoodoo*" then
 		JujuHoodoo(txt, chn)
 	elseif flame == "*profit*" then
 		Windfall(txt, chn, toss)
+	elseif flame == "*gossip*" then
+		Report(txt)
+	elseif flame == "*balmung*" then
+		emoReact("scared")
+	elseif flame == "*crystal*" then
+		Crystal(txt, chn, toss)
 	elseif flame == "*kitty*" then
-		local r = math.random(1,100)
-		if r < 10 then
-			Game.SendChat("/minion \"Nagxian Cat\"")
-		elseif r < 20 then
-			Game.SendChat("/minion \"Tora-jiro\"")
-		elseif r < 30 then
-			Game.SendChat("/minion \"Coeurl Kitten\"")
-		elseif r < 40 then
-			Game.SendChat("/minion \"Black Coeurl\"")
-		elseif r < 50 then
-			Game.SendChat("/minion \"Byakko Cub\"")
-		elseif r < 60 then
-			Game.SendChat("/minion \"Palico\"")
-		elseif r < 70 then
-			Game.SendChat("/minion \"Jibanyan\"")
-		elseif r < 80 then
-			Game.SendChat("/minion \"Bluecoat Cat\"")
-		elseif r < 90 then
-			Game.SendChat("/minion \"Ilyikty'i\"")
-		else
-			Game.SendChat("/minion \"Weatherproof Gaelicat\"")
-		end
+		getKitty("random")
+	elseif flame == "*bunny*" then
+		getBunny("random")
+	elseif flame == "*motley*" then
+		getMotley("random")
+	elseif flame == "*poppit*" then
+		getPoppit("random")
+	elseif flame == "*zoom*" and not InCombat then
+		CallRoutine("automove")
+	elseif flame == "*goober*" then
+		DoRandom("pose")
+	elseif flame == "*plogon*" then
+		Game.SendChat("/"..txt)
 	elseif flame == "*emo*" then
 		emoReact(toss)
 	elseif flame == "*profit*" then
 		Windfall(txt, chn, toss)
-	elseif flame == "*gewgaw*" then
-		Game.SendChat("/useitem 12042")
+	elseif flame == "*bijou*" then
+		doBijou("any")
+		--Game.SendChat("/useitem 12042")
 	elseif flame == "*booger*" then
-		DoRandom("aback")
+		emoReact("scared")
 	elseif flame == "*disappointment*" then
 		DoRandom("disappointed")
 	end
 	matchMadness[flame] = {}
 end
 
-function MatchStick(txt)
+function MatchStick(txt, sender, chn)
 	dbgMsg(".MatchStick.", 2)
 	local sticks = ""
 	local stones = ""
@@ -702,7 +1065,7 @@ function MatchStick(txt)
 			end
 			if #flame > 0 and not fire[flame] then
 				dbgMsg("MatchStick: flame(+3): " .. tostring(flame), 9)
-				FlameCheck(flame, toss, txt)
+				FlameCheck(flame, toss, txt, chn, sender)
 				fire[flame] = toss
 			end
 			if cnt + 2 <= #salad then -- catch 3 word phrases
@@ -724,7 +1087,7 @@ function MatchStick(txt)
 			end
 			if #flame > 0 and not fire[flame] then
 				dbgMsg("MatchStick: flame(+2): " .. tostring(flame), 9)
-				FlameCheck(flame, toss, txt)
+				FlameCheck(flame, toss, txt, chn, sender)
 				fire[flame] = toss
 			end
 			if cnt + 1 <= #salad then -- catch 2 word phrases
@@ -747,7 +1110,7 @@ function MatchStick(txt)
 			end
 			if #flame > 0 and not fire[flame] then
 				dbgMsg("MatchStick: flame(+1): " .. tostring(flame), 9)
-				FlameCheck(flame, toss, txt)
+				FlameCheck(flame, toss, txt, chn, sender)
 				fire[flame] = toss
 			end
 			-- check single words
@@ -768,7 +1131,7 @@ function MatchStick(txt)
 			end
 			if #flame > 0 and not fire[flame] then
 				dbgMsg("MatchStick: flame (singles): " .. tostring(flame), 9)
-				FlameCheck(flame, toss, txt)
+				FlameCheck(flame, toss, txt, chn, sender)
 				fire[flame] = toss
 			end
 			cnt = cnt + 1
@@ -785,7 +1148,8 @@ function MatchStick(txt)
 				dbgMsg("MatchStick .:. Blimey: report: " .. Blimey(matchsticks.lights[sticks].report), 1)
 				
 				if matchsticks.lights[sticks].report and CD[playerName].traits["gossiper"] then
-					Game.SendChat("/fc " .. Blimey(matchsticks.lights[sticks].report))
+					Report(matchsticks.lights[sticks].report)
+					--Game.SendChat("/fc " .. Blimey(matchsticks.lights[sticks].report))
 				elseif matchsticks.lights[sticks].routine then
 					CallRoutine(matchsticks.lights[sticks].routine)
 				end
@@ -801,7 +1165,7 @@ function MatchStick(txt)
 end
 
 return {ChatHandler, Blimey, StringsHandler, Chatty, ChattyChop, JujuHoodoo, FlameCheck, MatchStick, Windfall,
-		TimeGate, doPhrash, ProgHandler, emoReact}
+		TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous}
 
 --	^								^	--
 --	^	^^^ Chat Handler ^^^ 		^	--
