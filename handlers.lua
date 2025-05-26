@@ -31,7 +31,7 @@ function emoHandler(tbl, what, moodle, stacks, drAdj, method, falloff, firstcall
 				tmp = funCoo[2]
 				--dbgMsg("emoHandler: tmp: " .. tostring(tmp),1)
 			else
-				dbgMsg("emoHandler: invalid return value for tmp: " .. tostring(tmp),1)
+				dbgMsg("emoHandler: invalid return value for tmp: " .. tostring(tmp),3)
 				tmp = 1
 			end
 			--dbgMsg("emoHandler: v: " .. k .." :: " .. tostring(v),1)
@@ -47,7 +47,7 @@ function emoHandler(tbl, what, moodle, stacks, drAdj, method, falloff, firstcall
 			EmoGyre(k, v * adj)
 		else
 			initPersona()
-			dbgMsg("Warning: emotion not found - " .. tostring(k), 1)
+			dbgMsg("Warning: emotion not found - " .. tostring(k), 3)
 		end
 	end
 	func_time["emoHandler"].END = os.time()
@@ -557,7 +557,7 @@ moods = {
 	-- Blue Moods --
 	["bored"] = {"doze", "huh", "magictrick", "read", "riceball", "malevolence", "sabotender", "sulk", "tomestone", "lookout"},
 	["scared"] = {"shocked", "paintblue", "panic", "overreact", "upset", "pdead", "aback", "wringhands", "blush", "deny"},
-	["sleepy"] = {"doze", "stretch", "lean", "sit", "pdead"},
+	["sleepy"] = {"doze", "stretch", "lean", "sit", "pdead", "tea"},
 	["sad"] = {"slump", "cry", "disappointed", "sulk"},
 	["cold"] = {"shiver", "slump", "paintblue", "squats", "tea"},
 	["wet"] = {"shiver", "slump", "angry", "bigfan", "upset"},
@@ -567,12 +567,16 @@ moods = {
 	
 	--- Elementals; Earth - Fire ---
 	-- Red Moods --
-	["angry"] = {"furious", "deride", "vexed", "angry", "malevolence", "clutchhead", "rage", "slap", "throw", "vexed", "fume", "frighten", "upset", "paintred", "box"},
+	["angry"] = {"furious", "deride", "vexed", "angry", "malevolence", "clutchhead", "rage", "slap", "throw", 
+					"vexed", "fume", "frighten", "upset", "paintred", "box"},
 	["embarrassed"] = {"blush", "deny", "huh", "overreact", "shrug", "grovel", "no"},
 	["curious"] = {"lookout", "examineself", "greet", "read", "think", "reference", "photograph", "lean"},
 	["hot"] = {"ladance", "sweat", "paintred", "bigfan"},
-	["flirty"] = {"heart", "dote", "charmed", "blush", "shush", "ladance", "photograph", "blowkiss", "tea", "songbird", "paintred", "pose", "sabotender", "petals"},
-	["amused"] = {"chuckle", "clap", "allsaintscharm", "visage", "showleft", "blowbubbles", "toast", "flamedance", "hum", "dance", "happy", "earwiggle", "lophop", "pose", "apple", "visage", "tomestone", "sabotender", "bdance"},
+	["flirty"] = {"heart", "dote", "charmed", "blush", "shush", "ladance", "photograph", "blowkiss", "tea",
+					"tdance", "songbird", "paintred", "pose", "sabotender", "petals"},
+	["amused"] = {"chuckle", "clap", "allsaintscharm", "visage", "showleft", "blowbubbles",
+					"toast", "flamedance", "hum", "dance", "happy", "earwiggle", "lophop", "pose", "apple", 
+					"visage", "tomestone", "sabotender", "bdance", "spectacles"},
 	
 	--- Elementals; Lightning - Fire ---
 	-- Yellow Moods --
@@ -591,16 +595,16 @@ moods = {
 	["impatient"] = {"beckon", "panic", "snap", "slump", "sweep", "elucidate", "sweat", "clutchhead", "wringhands", "disappointed"},
 	["bathing"] = {"splash", "waterfloat", "cheer", "photograph"},
 	["diving"] = {"waterflip"},
-	["nosey"] = {"lookout", "converse", "photograph", "read", "shush", "lean", "tea", "insist", "attend", "hum"},
+	["nosey"] = {"lookout", "converse", "photograph", "read", "shush", "lean", "spectacles", "tea", "insist", "attend", "hum"},
 	-- ^^ change to 'curious' maybe
 	--- Elementals; Lightning - Wind ---
 	-- White Moods --
 	["happy"] = {"happy", "cheer", "clap", "chuckle", "dance", "earwiggle", "hug", "songbird", "fistpump", "highfive", "joy","paintyellow"},
-	["playful"] = {"magictrick", "lophop", "blowbubbles", "heart", "sdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
+	["playful"] = {"magictrick", "lophop", "blowbubbles", "heart", "sdance", "tdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
 	["confident"] = {"cheer", "paintblack", "photograph", "toast", "think", "lean", "visage", "heart", "scheme", "gratuity", "tea", "spectacles", "snap", "pose", "petals", "vpose"}, --Moved From Black
 	["social"] = {"converse", "beesknees", "tea", "clap", "sweep", "songbird", "flamedance", "welcome", 
 					"greet", "hum", "bombdance", "getfantasy", "shakedrink", "hug", "dote", "petals", "sabotender", "ohokaliy",
-					"vpose", "tomestone", "photograph", "sdance", "blowbubbles", "toast", "visage", "fist", "bigfan", "reference", "paintblack"},
+					"vpose", "tomestone", "photograph", "sdance", "blowbubbles", "toast", "visage", "fist", "bigfan", "reference", "paintblack", "spectacles"},
 	["neutral"] = {"airquotes", "apple", "hum", "atease", "beckon", "riceball", "hum", "lean"},
 	["responsible"] = {"bstance", "gcsalute","beckon", "bow", "ebow", "welcome", "greet", "kneel", "sweep", "goodbye", "yes", "ohokaliy"}, --Moved From Black
 }
@@ -822,6 +826,8 @@ gyreMethods = {
 --- ∵∴∵∴∵∴∵∴
 --- ☂☂☂☂☂☂☂☂
 ---<Sandy> It's Raining Again!<---
+
+aspectKeys = {"black", "blue", "red", "yellow", "green", "white"}
 
 aspectList = {
 	["black"] = {"focused", "dazed", "mischievous", "anxious", "flippant", "aetheric"},

@@ -425,6 +425,16 @@ local routines = {
 		},
 	},
 	
+	["frazzle"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				Frazzle()
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
 	["astonished"] = {
 		[1] = {
 			["test"] = true,
@@ -796,6 +806,55 @@ local routines = {
 		},
 		[8] = {
 			["do"] = "character",
+			["w"] = 1.350,
+		},
+	},
+	
+	["logout"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["cond"] = "Log out <appellation>?",
+			["do"] = "confirm",
+			["w"] = 3.000,
+		},
+		[2] = {
+			["test"] = true,
+			["func"] = function() return confirm end,
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 1.000,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["cond"] = "As you wish.",
+			["do"] = "end",
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				dbgMsg(".•.Saving Character Data.•.", 1)
+			end,
+			["w"] = 1.000,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function() 
+				CDUpdater()
+			end,
+			["w"] = 2.000,
+		},
+		[6] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["cond"] = "Farewell <appellation>.",
+			["do"] = "nop",
+			["w"] = 1.000,
+		},
+		[7] = {
+			["do"] = "logout",
 			["w"] = 1.350,
 		},
 	},

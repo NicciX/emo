@@ -718,6 +718,77 @@ function profiler(filter, mt)
 	dbgMsg("" .. eff, 0)
 end
 
+function tobig(txt)
+	local s, n
+	local ns = txt
+	for i=1,#txt,1 do
+		s=string.sub(txt, i, i)
+		n=string.byte(s)
+		if n>64 and n<91 then
+			ns = string.gsub(ns, s, string.char(n+57392))
+		end
+	end
+	return ns
+end
+
+-- 	 superscript numbers :: ₀₁₂₃₄₅₆₇₈₉
+
+function block_letters(txt)
+	local s, n
+	for i=1,#txt,1 do
+		s=string.byte(txt[i])
+		--if s>64 and s<91
+	end
+end
+
+function type_mark(var)
+	local t = type(var)
+	if t == "string" then
+		return "§"
+	elseif t == "number" then
+		if var < 1 and var > -1 then --it may look backwards, but should work :P
+			return "‰"
+		else
+			return "π"
+		end
+	elseif t == "boolean" then
+		if var == true then
+			return ""
+		else
+			return "○"
+		end
+	elseif t == "nil" then
+		return ""
+	else
+		return ""
+	end
+end
+
+function wrap_safely(hoo, boo)
+	if #hoo > 19 then
+		hoo = string.sub(hoo,1,17) .. ".."
+	end
+	if boo == nil then
+		return "「"..hoo.."」"
+	elseif boo == true then
+		return "〔"..hoo.."〕"
+	elseif boo == false then
+		return "【"..hoo.."】"
+	else
+		return ""..hoo.." "
+	end
+end
+
+function tfOrNil(var, tS, fS)
+	if var == tS then
+		return true
+	elseif var ~= fS then
+		return false
+	else
+		return nil
+	end
+end
+
 function dumpInfo(args)
 	dbgMsg(".dumpInfo.", 2)
 	local what, filter = shiftWord(args)
@@ -735,8 +806,12 @@ function dumpInfo(args)
 		--Game.SendChat("/e [".. k .. "].")
 	--end
 	
+	--۰۱۲۳۴۵۶۷۸۹
+	--߀߁߂߃߄߅߆߇߈߉
 	
 	
+	--SECURITY--
+	--
 	--GYRE
 	--
 	--TRACKING
@@ -769,18 +844,64 @@ function dumpInfo(args)
 	--
 	
 	dbgMsg("≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡", 0)
-	dbgMsg("                     Emobot ", 0)
+	dbgMsg("                           Emobot   ", 0)
 	
 	
 	if DBG then
-		dbgMsg("Current Version: v" .. emoVer .. "     ☃DBG: " .. DBG .. "☃", 0)
+		dbgMsg("EmoBot Version: v" .. emoVer .. "     ☃DBG: " .. DBG .. "☃", 0)
+		dbgMsg("WoLuaX Version: v" .. WoluaXVersion .. "     " .. tostring(CD.global.gil), 0)
 	else
 		dbgMsg("☃DBG: nil, now setting value to 0...", 0)
 		DBG = 0
 	end
 	
 	
-	
+	if what == "security" then
+		dbgMsg("⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-", 0)
+		dbgMsg("           ------"..tobig("SECURITY").."------", 0) -- Security
+		dbgMsg("— — — — — — — — — — — — — — — — — —", 0)
+		--○
+		dbgMsg(type_mark(safe).."safe:" .. wrap_safely(tostring(safe), safe) .. "", 0)
+		dbgMsg(type_mark(action).."action:" .. wrap_safely(tostring(action), tfOrNil(action, "sleep", "idle")) .. "", 0)
+		dbgMsg(type_mark(mode).."mode:" .. wrap_safely(tostring(mode), (mode == "release")) .. "", 0)
+		dbgMsg(type_mark(not rnd).."Random Emotes Off?" .. wrap_safely(tostring(not rnd), not rnd) .. "", 0)
+		dbgMsg(type_mark(blockNegativeEffects).."Negative Effects Off?" .. wrap_safely(tostring(blockNegativeEffects), blockNegativeEffects) .. "", 0)
+		dbgMsg(type_mark(blockAutonomousActions).."Autonomous Actions Off?" .. wrap_safely(tostring(blockAutonomousActions), blockAutonomousActions) .. "", 0)
+		dbgMsg(type_mark(not chatHooking).."Chat Hooking Off?" .. wrap_safely(tostring(not chatHooking), not chatHooking) .. "", 0)
+		dbgMsg(type_mark(not Sys.Routines).."Routines Off?" .. wrap_safely(tostring(not Sys.Routines), not Sys.Routines) .. "", 0)
+		dbgMsg(type_mark(not Sys.Nav).."Navigator Off?" .. wrap_safely(tostring(not Sys.Nav), not Sys.Nav) .. "", 0)
+		dbgMsg(type_mark(not Sys.Juju).."Juju Off?" .. wrap_safely(tostring(not Sys.Juju), not Sys.Juju) .. "", 0)
+
+		Sys.Nav = true
+		--[[
+		enableNegativeEffects = true
+		enableAutonomousActions = true
+		chatHooking = true
+		--safe = true
+		--mode = "dev"
+		mode = "release"
+
+		Sys = {}
+		Sys.Weather = true
+		Sys.Outfits = true
+		Sys.Buffs = true
+		Sys.Gyre = nil
+		Sys.Aether = true
+		Sys.Beacons = true
+		Sys.Emotes = true
+		Sys.Emotions = true
+		Sys.Routines = true
+		Sys.Moodles = true
+		Sys.Chat = true
+		Sys.SND = nil
+		]]--
+		
+		--dbgMsg(type_mark(AFK).."chatHooking" .. tostring(AFK) .. " ", 0)
+		--chatHooking = true
+		
+		
+		
+	end
 	
 	
 	if what == "all" or what == "updater" then
@@ -1072,44 +1193,69 @@ function dumpInfo(args)
 			end
 		else
 			if CD[playerName].outfits[currentOutfit] then
-				if CD[playerName].outfits[currentOutfit].panties > 0 then
-					if CD[playerName].outfits[currentOutfit].pantiesGlam ~= "" then
-						dbgMsg("✓Panties Set : " .. tostring(CD[playerName].outfits[currentOutfit].pantiesGlam) .. ".", 0)
-					else
-						dbgMsg("✓Panties Set : " .. tostring(CD[playerName].outfits[currentOutfit].pantiesName) .. ".", 0)
-					end
-					
-					if filter == "advanced" then
-						dbgMsg("Current? :: " .. tostring(currentOutfitSet.panties) .. ".", 0)
-					end
-				else
-					dbgMsg("Panties Not Set~ (i♥i)", 0)	
-				end
 				if CD[playerName].outfits[currentOutfit].bra > 0 then
 					if CD[playerName].outfits[currentOutfit].braGlam ~= "" then
-						dbgMsg("✓Bra Set : " .. tostring(CD[playerName].outfits[currentOutfit].braGlam) .. ".", 0)
+						tmp = (CD[playerName].outfits[currentOutfit].braGlam == Game.Player.Equipped.Body.GlamName)
+						if tmp == false then
+							tmp = "hoo"
+						end
+						--""..hoo.." "
+						dbgMsg("       `ω´     ✓Bra         \\v/     " .. wrap_safely(tostring(CD[playerName].outfits[currentOutfit].braGlam), tmp), 0)
 					else
-						dbgMsg("✓Bra Set : " .. tostring(CD[playerName].outfits[currentOutfit].braName) .. ".", 0)
+						tmp = (CD[playerName].outfits[currentOutfit].braName == Game.Player.Equipped.Body.ItemName)
+						if tmp == false then
+							tmp = "hoo"
+						end
+						dbgMsg("       `ω´     ✓Bra         \\v/     " .. wrap_safely(tostring(CD[playerName].outfits[currentOutfit].braName), tmp), 0)
 					end
 					
 					if filter == "advanced" then
 						dbgMsg("Current? :: " .. tostring(currentOutfitSet.bra) .. ".", 0)
 					end
 				else
-					dbgMsg("Bra Not Set~ (•Y•)", 0)
+						dbgMsg("    ‹ω›         ~Bra~         (•Y•)", 0)
+				end
+				if CD[playerName].outfits[currentOutfit].panties > 0 then
+					if CD[playerName].outfits[currentOutfit].pantiesGlam ~= "" then
+						tmp = (CD[playerName].outfits[currentOutfit].pantiesGlam == Game.Player.Equipped.Legs.GlamName)
+						if tmp == false then
+							tmp = "hoo"
+						end
+						dbgMsg("       ¯▽¯   ✓Panties     ̆♡̆    " .. wrap_safely(tostring(CD[playerName].outfits[currentOutfit].pantiesGlam), tmp), 0)
+					else
+						tmp = (CD[playerName].outfits[currentOutfit].pantiesName == Game.Player.Equipped.Legs.ItemName)
+						if tmp == false then
+							tmp = "hoo"
+						end
+						dbgMsg("       ¯▽¯   ✓Panties     ̆♡̆    " .. wrap_safely(tostring(CD[playerName].outfits[currentOutfit].pantiesName), tmp), 0)
+					end
+					
+					if filter == "advanced" then
+						dbgMsg("Current? :: " .. tostring(currentOutfitSet.panties) .. ".", 0)
+					end
+				else
+						dbgMsg("    ‹∨›     ~Panties~     (^♥^)", 0)	
 				end
 				if CD[playerName].outfits[currentOutfit].nails > 0 then
 					if CD[playerName].outfits[currentOutfit].nailsGlam ~= "" then
-						dbgMsg("✓Nails Set : " .. tostring(CD[playerName].outfits[currentOutfit].nailsGlam) .. ".", 0)
+						tmp = (CD[playerName].outfits[currentOutfit].nailsGlam == Game.Player.Equipped.Hands.GlamName)
+						if tmp == false then
+							tmp = "hoo"
+						end
+						dbgMsg("       _∩_    ✓Nails         ̆Ω̆    " .. wrap_safely(tostring(CD[playerName].outfits[currentOutfit].nailsGlam), tmp), 0)
 					else
-						dbgMsg("✓Nails Set : |^|^|" .. tostring(CD[playerName].outfits[currentOutfit].nailsName) .. ".", 0)
+						tmp = (CD[playerName].outfits[currentOutfit].nailsName == Game.Player.Equipped.Hands.ItemName)
+						if tmp == false then
+							tmp = "hoo"
+						end
+						dbgMsg("       _∩_    ✓Nails         ̆Ω̆    " .. wrap_safely(tostring(CD[playerName].outfits[currentOutfit].nailsName), tmp), 0)
 					end
-					
+					--∨∪∨ ^∩^̆ (̆♥̆) (^♥^) (•Y•) (\v/) фγ (\γ/) (̆Y̆)
 					if filter == "advanced" then
 						dbgMsg("Current? :: " .. tostring(currentOutfitSet.nails) .. ".", 0)
 					end
 				else
-					dbgMsg("Nails Not Set~ (|||)", 0)
+					dbgMsg("    .∩.       ~Nails~          ] ^ [", 0) -- Ω
 				end
 				if CD[playerName].outfits[currentOutfit]["facewear"] then
 					dbgMsg("✓Facewear Set : " .. tostring(CD[playerName].outfits[currentOutfit]["facewear"]) .. ".", 0)

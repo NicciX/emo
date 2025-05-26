@@ -15,6 +15,16 @@ local targetActions = {
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
+	["Manjimutt"] = {
+		["routine"] = "frazzle",
+		["cooldown"] = 3.69,
+		["last"] = 0,
+	},
+	["Wind-up Aidoneus"] = {
+		["routine"] = "astonished",
+		["cooldown"] = 37.0,
+		["last"] = 0,
+	},
 	["Orbitingway"] = {
 		["routine"] = "gacharage",
 		["cooldown"] = 66.0,

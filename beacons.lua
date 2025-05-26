@@ -528,7 +528,7 @@ local beacons = {
 				["XPos"] = -29.087305068969727,
 				["YPos"] = -60.50366973876953,
 				["ZPos"] = 3.1604483127593994,
-				["radius"] = 19.0,
+				["radius"] = 0.0,
 				["type"] = "emote",
 				["refresh"] = nil, -- if true, tells the token handler to only apply once,
 				["token"] = {	   -- and not refresh the token
@@ -576,7 +576,7 @@ local beacons = {
 				["XPos"] = -51.903446197509766,
 				["YPos"] = -43.38264846801758,
 				["ZPos"] = 3.731241464614868,
-				["radius"] = 9.0,
+				["radius"] = 0.0,
 				["type"] = "routine",
 				["refresh"] = nil, -- if nil, tells the token handler to only apply once,
 				["token"] = {	   -- and not refresh the token
@@ -607,13 +607,13 @@ local beacons = {
 					
 				},
 				["toast"] = "",
-				["cooldown"] = 36.9,
+				["cooldown"] = 33336.9,
 			},
 			["BF-GS-A"] = {
 				["XPos"] = -27.122278213500977,
 				["YPos"] = -85.68191528320312,
 				["ZPos"] = 3.730698347091675,
-				["radius"] = 17.0,
+				["radius"] = 0.0,
 				["test"] = true,
 				["func"] = function() 
 						if (emoState["sleepy"] > 30 or  emoState["tired"] > 25 or emoState["uncomfortable"] > 30) and not flags[4] then
@@ -665,11 +665,13 @@ local beacons = {
 				["toastWait"] = 6.99,
 				["lastCall"] = 0,
 			},
+			
+			
 			["BF-GS-B"] = {
 				["XPos"] = 100.06244659423828,
 				["YPos"] = -49.3834114074707,
 				["ZPos"] = -4.518758296966553,
-				["radius"] = 13,
+				["radius"] = 0,
 				["test"] = true,
 				["func"] = function() 
 						if (emoState["sleepy"] > 30 or  emoState["tired"] > 25 or emoState["uncomfortable"] > 30) and not flags[4] then
@@ -712,12 +714,11 @@ local beacons = {
 					["type"] = "buff",
 				},
 				["toast"] = "That bench looks like a good place to /sit ...",
-				["cooldown"] = 29.0,
+				["cooldown"] = 99999.0,
 				["toasted"] = 1,
 				["toastWait"] = 6.99,
 				["lastCall"] = 0,
 			},
-			
 			["WindSpot"] = {
 				["XPos"] = 67.25218200683594,
 				["YPos"] = -24.836362838745117,
@@ -729,7 +730,6 @@ local beacons = {
 				--["routine"] = "AetherEffectnil", --sandy skittles
 				["cooldown"] = nil,
 			},
-			
 			["Slice"] = {
 				["XPos"] = 77.19717407226562,
 				["YPos"] = -69.75956726074219,
@@ -805,7 +805,47 @@ local beacons = {
 				--["routine"] = "AetherEffectnil", --niccissa montclaire
 				["cooldown"] = 30,
 			},
-			["CliffhangerA"] = {
+			["Air Force One"] = {
+				["XPos"] = -55.096466064453125,
+				["YPos"] = -64.2600326538086,
+				["ZPos"] = 3.2673380374908447,
+				["radius"] = 4.761445979096911,
+				["type"] = "marker",
+				["toast"] = "",
+				--["routine"] = "AetherEffectnil", --sandy skittles
+				["cooldown"] = nil,
+			},
+			["Leap of Faith"] = {
+				["XPos"] = -55.096466064453125,
+				["YPos"] = -64.2600326538086,
+				["ZPos"] = 3.2673380374908447,
+				["radius"] = 4.761445979096911,
+				["type"] = "marker",
+				["toast"] = "",
+				--["routine"] = "AetherEffectnil", --sandy skittles
+				["cooldown"] = nil,
+			},
+			["The Slice Is Right"] = {
+				["XPos"] = 78.13119506835938,
+				["YPos"] = -66.35376739501953,
+				["ZPos"] = -5.000000476837158,
+				["radius"] = 4.761445979096911,
+				["type"] = "marker",
+				["toast"] = "",
+				--["routine"] = "AetherEffectnil", --sandy skittles
+				["cooldown"] = nil,
+			},
+			["Any Way the Wind Blows"] = {
+				["XPos"] = -55.096466064453125,
+				["YPos"] = -64.2600326538086,
+				["ZPos"] = 3.2673380374908447,
+				["radius"] = 4.761445979096911,
+				["type"] = "marker",
+				["toast"] = "",
+				--["routine"] = "AetherEffectnil", --sandy skittles
+				["cooldown"] = nil,
+			},
+			["CliffhangerWSE"] = {
 				["XPos"] = 49.600589752197266,
 				["YPos"] = 45.08869934082031,
 				["ZPos"] = 3.999720573425293,

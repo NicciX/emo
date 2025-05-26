@@ -66,6 +66,18 @@ function ChatHandler()
 			end
 		--elseif string.find(txt, "juju")	then
 			--Game.SendChat("/useitem 40392 ")
+		elseif txt == "log" and sender == playerName then
+			CallRoutine("logout")
+		elseif txt == "reloading scripts" then
+			--do nothing
+		elseif txt == "reload" and sender == playerName and action ~= "loading" then
+			action = "loading"
+			dbgMsg(".•.Saving Character Data.•.", 1)
+			Script.ClearQueue()
+			CDUpdater()
+			Game.PrintMessage("reloading scripts")
+			--Game.SendChat("/woluax reload")
+			Game.SendChat("/woluax reload")
 		elseif string.sub(txt, 1, 4) == "emo " then
 			--Script.QueueDelay(37)
 			--Script.QueueAction(delayedAction, txt)
@@ -73,8 +85,8 @@ function ChatHandler()
 			Game.SendChat("/" .. txt)
 		elseif txt == "save" then
 			CDUpdater()
-		elseif txt == "artisan" or txt == "xllog" or txt == "xldat" or txt == "wolua reload" then
-			Game.SendChat("/" .. txt)
+		--elseif txt == "artisan" or txt == "xllog" or txt == "xldat" or txt == "wolua reload" then
+			--Game.SendChat("/" .. txt)
 		--elseif txt == "penumbra" or txt == "chatalerts" or txt == "xlstats" or txt == "moodles" or
 			--txt == "penny toggle" or txt == "penny" or txt == "snd" or txt == "mare" then
 			--Game.SendChat("/" .. txt)
@@ -94,7 +106,7 @@ function ChatHandler()
 			txt = string.gsub(txt, "item ", "")
 			Game.SendChat("/xlitem " .. txt)
 		elseif string.find(txt, "lalafel") or string.find(txt, "lala") then
-			GetAngry()
+			GetAngry(match_type(txt, "lalafel", sender))
 		elseif string.find(txt, "ahoy")  or string.find(txt, "heya") then
 			Greetings()
 		elseif string.find(txt, "hiya") or string.find(txt, "hello") then
@@ -105,44 +117,48 @@ function ChatHandler()
 			--SetAfk(nil)
 		elseif string.find(txt, "red chair") or string.find(txt, "redchair") then
 			Game.SendChat("/mount \"Archon Throne\"")
+		elseif (string.find(txt:lower(), ":p") and sender == playerName) then
+			Razzle()
 		elseif string.find(txt, "bird") or string.find(txt, "birb") then
 			Game.SendChat("/useitem 41500")
 		elseif string.find(txt, "sunshine") or string.find(txt, "birb") then
 			Game.SendChat("/useitem 7809")
 		elseif string.find(txt, "beaver") or string.find(txt, "bvr") then
 			Game.SendChat("/minion \"Golden Beaver\"")
-		elseif string.find(txt, "apple") then
-			DoRandom("apple")
+		--elseif string.find(txt, "apple") then
+			--DoRandom("apple", )
 		elseif string.find(txt, "Kaldea") then
 			DoRandom("doubt")
-		elseif string.find(txt, "pizza") then
-			DoRandom("pizza")
-		elseif string.find(txt, "chocolate") then
-			DoRandom("choco")
+		--elseif string.find(txt, "pizza") then
+			--DoRandom("pizza")
+		--elseif string.find(txt, "chocolate") then
+			--DoRandom("choco")
 		elseif string.find(txt,"You gain the effect of") and string.find(txt, "Battle High V.") then
 			phrash = "kittytoes"
 			phrashDex = 1
 			phrashTime = os.time()
 			phrashDelay = 1
 		elseif (string.find(txt, "brb") or string.find(txt, "afk")) and sender == playerName then
-			CallRoutine("redchairafk")
+			--CallRoutine("redchairafk")
+		elseif txt == "haha" and sender == playerName then
+			DoRandom("laugh", " as directed by chat.")
 		elseif string.find(txt, "haha") and sender == playerName then
-			DoRandom("laugh")
+			DoRandom("laugh", " as suggested by chat.")
 		elseif string.find(txt, "rain") then
-			DoRandom("water")
+			DoRandom("water", " as inspired by chat.")
 		elseif (string.find(txt, "lol") or string.find(txt, "hehe")) and sender == playerName then
 			--Script.QueueDelay(123)
 			--Script.QueueAction(DoRandom, "chuckle")
 			DoRandom("chuckle")
 			--%s(no)%s
 		elseif string.match(txt, "%f[A-Za-z]no%f[^A-Za-z]") and sender == playerName then
-			DoRandom("no")
+			DoRandom("no", " as suggested by chat.")
 		elseif string.match(txt, "%f[A-Za-z]yes%f[^A-Za-z]") and sender == playerName then
-			DoRandom("yes")
+			DoRandom("yes", " as suggested by chat.")
 		elseif (string.match(txt, "%f[A-Za-z]embarrassed%f[^A-Za-z]") or string.match(txt, "%f[A-Za-z]embarrassing%f[^A-Za-z]")) and sender == playerName then
-			DoRandom("blush")
+			DoRandom("blush", " as inspired by chat.")
 		elseif (string.match(txt, "%f[A-Za-z]angry%f[^A-Za-z]") or string.match(txt, "%f[A-Za-z]mad%f[^A-Za-z]")) and string.find(txt, playerName) then
-			DoRandom("angry")
+			DoRandom("angry", " as suggested by chat.")
 		--[[elseif string.find(txt, "mischief") or string.find(txt, "shenanigans") or string.find(txt, "tomfoolery") then
 			local tmp = math.random(100)
 			if tmp > 77 then
@@ -179,13 +195,13 @@ function ChatHandler()
 			Game.SendChat("/updategearset") -- this is a vanilla command
 			--CallRoutine("gearUpdate")
 		elseif string.find(txt, "grats") then
-			DoRandom("congratulate")
+			DoRandom("congratulate", " as influenced by chat.")
 		elseif string.find(txt, "The time limit has expired.") then
 			Shame(txt)
-		elseif string.find(txt, "coffee") or string.find(txt, "tea") or string.find(txt, "thirsty") then
-			DoRandom("tea")
+		--elseif string.find(txt, "coffee") or string.find(txt, "tea") or string.find(txt, "thirsty") then
+			--DoRandom("tea", " as influenced by chat.")
 			--ApplyBuff("caffeinated")
-			dbgMsg("Tea Time!", 1)
+			--dbgMsg("Tea Time!", 1)
 		elseif string.find(txt, "shit") then
 			DoRandom("furious")
 		elseif string.find(txt, "dammit") or string.find(txt, "annoying") then
@@ -210,6 +226,37 @@ function ChatHandler()
 	end
 	func_time["ChatHandler"].END = os.time()
 	func_track("ChatHandler")
+end
+
+function favoriteFood()
+	local val = 0
+	local m = "unknown"
+	for k,v in pairs(CD[playerName].diet) do
+		if v > val then
+			val = v
+			m = k
+		end
+	end
+	if m then
+		return m .. " :: Has consumed " .. tostring(val)
+	else
+		return m
+	end
+end
+
+function match_type(txt, mtc, sender)
+	if sender == playerName then
+		if txt == mtc then
+			return "directed"
+		else
+			return "suggested"
+		end
+	end
+	if txt == mtc then
+		return "inspired"
+	else
+		return "influenced"
+	end
 end
 
 function Shame(txt)
@@ -255,7 +302,7 @@ local cats = {
 }
 
 local mischief = {
-	["makers"] = {"Motley Egg", "Mischief Maker", "Meerkat", "Shoebill", "Wind-up Cursor", "Manjimutt"},
+	["makers"] = {"Motley Egg", "Mischief Maker", "Meerkat", "Shoebill", "Wind-up Cursor", "Manjimutt", "Clockwork Lantern"},
 	["Motley Egg"] = true,
 	["Mischief Maker"] = true,
 	["Meerkat"] = true,
@@ -265,13 +312,12 @@ local mischief = {
 	["Shoebill"] = true,
 	["Wind-up Cursor"] = true,
 	["Manjimutt"] = true,
+	["Clockwork Lantern"] = true,
 	["Meerkat"] = true,
 	["Meerkat"] = true,
 	["Meerkat"] = true,
 	["Meerkat"] = true,
 	["Meerkat"] = true,
-	["Meerkat"] = true,
-	
 }
 
 local poppits = {
@@ -284,13 +330,84 @@ local poppits = {
 	["Wind-up Edda"] = true,
 }
 
+local turnips = {
+	["roots"] = {"Kidragora", "Onion Prince", "Eggplant Knight", "Garlic Jester", "Tomato King", 
+					"Mandragora Queen", "Korpokkur Kid", "Tiny Bulb", "Shoebill"},
+	["Kidragora"] = true,
+	["Onion Prince"] = true,
+	["Eggplant Knight"] = true,
+	["Shoebill"] = true,
+	["Garlic Jester"] = true,
+	["Tomato King"] = true,
+	["Mandragora Queen"] = true,
+	["Korpokkur Kid"] = true,
+	["Tiny Bulb"] = true,
+}
+
 local bunnies = {
-	["dust"] = {"Dust Bunny", "Unlucky Rabbit", "Meerkat", "Shoebill"},
+	["dust"] = {"Dust Bunny", "Unlucky Rabbit", "Dwarf Rabbit", "Meerkat", "Shoebill"},
 	["Dust Bunny"] = true,
 	["Unlucky Rabbit"] = true,
 	["Meerkat"] = true,
 	["Shoebill"] = true,
 }
+
+local razzle = {"pose", "dance", "deride", "spectacles", "shakedrink", "earwiggle", "photograph", "thumbsup"}
+
+local dazzle = {"mime", "magictrick", "allsaintscharm", "crimsonlotus", "blowbubbles", "wow", "victory", "heart", "spectacles"}
+
+local frazzle = {"aback", "shocked", "clutchhead", "panic", "furious", "no", "disappointed", "box", "malevolence"}
+
+validEarnings = {
+	["cosmic containers"] = 0,
+	["lunar credits"] = 0,
+	["cosmo credits"] = 0,
+	["Big Bang ticket"] = 0,
+	["Storm Seals"] = 0,
+	["MGP"] = 0,
+	["mate cookies "] = 0,
+	["whipped cream "] = 0,
+	["rroneek steak "] = 0,
+	["venture coffer"] = 0,
+	["cruiser holosaber"] = 0,
+	["tsai tou vounou"] = 0,
+	["seafarer s cowries"] = 0,
+}
+
+destinations = {
+	["saucer"] = "The Gold Saucer",
+	["limsa"] = "Limsa Lominsa",
+	["home"] = "Estate Hall (Free Company)",
+	["shar"] = "Old Sharlayan",
+	["tuli"] = "Tuliyollal",
+	["s9"] = "Solution Nine",
+	["radz"] = "Radz-at-Han",
+	["gridania"] = "Gridania",
+	["ulda"] = "Ul'dah",
+	["uldah"] = "Ul'dah",
+	["ishgard"] = "Foundation",
+	["foundation"] = "Foundation",
+	["kugane"] = "Kugane",
+	["shiro"] = "Kugane",
+}
+
+
+
+function Razzle(msg)
+	local r = math.random(1, #razzle)
+	DoRandom(razzle[r], msg)
+end
+
+function Dazzle(msg)
+	local r = math.random(1, #dazzle)
+	DoRandom(dazzle[r], msg)	
+end
+
+function Frazzle(msg)
+	local r = math.random(1, #frazzle)
+	--DoRandom(frazzle[r], " upon seeing <t>.")
+	DoRandom(frazzle[r], msg)	
+end
 
 function doBijou(tag)
 	if tag == "any" then
@@ -316,6 +433,21 @@ function getKitty(cat)
 		end
 	elseif cats[cat] then
 		Game.SendChat("/minion \"" .. cats[cat] .. "\"")
+	end
+	return true
+end
+
+function getKyurghen(turnip)
+	if turnip == "random" then
+		dbgMsg("getKyurghen: turnip :: " .. tostring(turnip), 1)
+		local r = math.random(1, #turnips.roots)
+		local k = turnips.roots[r]
+		dbgMsg("getKyurghen: k :: " .. tostring(k), 1)
+		if turnips[k] then
+			Game.SendChat("/minion \"" .. k .. "\"")
+		end
+	elseif turnips[turnip] then
+		Game.SendChat("/minion \"" .. turnips[turnip] .. "\"")
 	end
 	return true
 end
@@ -367,20 +499,21 @@ function getMotley(egg)
 	return true
 end
 
-function GetAngry()
+function GetAngry(msg)
 	local angry = moods.angry
 	local r = math.random(1, #angry)
 	if angry[r] then
-		DoRandom(angry[r])
+		DoRandom(angry[r],msg)
 	end
 end
 
-function emoReact(emo)
+function emoReact(emo, msg)
 	dbgMsg("emoReact: emo :: " .. tostring(emo), 9)
 	local mote = moods[emo]
 	local r = math.random(1, #mote)
 	if mote and mote[r] then
-		DoRandom(mote[r])
+		--DoRandom(mote[r], " as inspired by chat.")
+		DoRandom(mote[r], msg)
 	end
 end
 
@@ -435,6 +568,18 @@ function Blimey(that)
 	return that
 end
 
+function GetCharSet(dx)
+	local c
+	local s = ""
+	for i=dx,dx+200,1 do
+		c = string.char(i)
+		if c then
+			s = s..string.char(i)
+		end
+	end
+	return s
+end
+
 function StringsHandler(dat)
 	dbgMsg(".StringsHandler.", 2)
 	dbgMsg("type(dat): " .. type(dat), 9)
@@ -479,6 +624,9 @@ function ChattyChop(chat)
 end
 
 function doPhrash()
+	if not Sys.Juju then
+		return
+	end
 	local delay
 	local ph
 	if phrash and phrashDex and os.time() - phrashTime > phrashDelay then
@@ -507,6 +655,9 @@ end
 function JujuHoodoo(txt, chn)
 	dbgMsg(".JujuHoodoo.", 2)
 	foodoo = string.match(txt, "juju (.+)$")
+	if not Sys.Juju then
+		return
+	end
 	local doorun = false
 	if not foodoo or foodoo == "" then
 		dbgMsg("JujuHoodoo:  OooOoo :: ", 9)
@@ -652,6 +803,90 @@ function JujuHoodoo(txt, chn)
 	
 end
 
+function Expense(txt, chn, toss)
+	dbgMsg(".Expense.", 2)
+	dbgMsg("Expense: txt :: " .. tostring(txt), 1)
+	dbgMsg("Expense: toss :: " .. tostring(toss), 1)
+	if not validSysChan[chn] then
+		dbgMsg("Expense: invalid (chn) :: " .. tostring(chn), 1)
+		--return
+	end
+	if toss == "You purchase" or toss == "You spent" then
+		lastPurchase = txt
+		local gilamt = currentGil - Game.Player.GetGil()
+		if gilamt == 0 then
+			if lastGil then
+				gilamt = lastGil - Game.Player.GetGil()
+			end
+		end
+		txt = string.gsub(txt, toss, "")
+		txt = string.gsub(txt, " ", "")
+		
+		local val = string.match(txt, "(%d+,?%d+,?%d*)")
+		if not val then
+			val = string.match(txt, "(?%d+,?%d*)")
+		end
+		if not val then
+			val = string.match(txt, "(%d+)")
+		end
+		--dbgMsg("Windfall: val :: " .. tostring(val), 1)
+		--dbgMsg("Windfall: key :: " .. tostring(txt), 1)
+		if val then
+			txt = string.gsub(txt, val, "")
+			--txt = string.gsub(txt, " ", "")
+			txt = string.gsub(txt, "%.", "")
+			val = tonumber(val)
+		else
+			val = 1
+		end
+		
+		
+		
+		--local val = string.match(txt, "(%d+,?%d+,?%d*)")
+		if not val then
+			val = 0
+		end
+
+		local tmp = ChattyChop(txt)
+		txt = ""
+		for i,v in ipairs(tmp) do
+			txt = txt .. v
+			if i < #tmp then
+				txt = txt .. " "
+			end
+		end
+		
+		CD[playerName]["purchases"][txt] = CD[playerName]["purchases"][txt] or {}
+		CD[playerName]["purchases"][txt].total = CD[playerName]["purchases"][txt].total or 0
+		CD[playerName]["purchases"][txt].total = CD[playerName]["purchases"][txt].total + val
+		CD[playerName]["purchases"][txt].cost = CD[playerName]["purchases"][txt].cost or 0
+		CD[playerName]["purchases"][txt].cost = CD[playerName]["purchases"][txt].cost + gilamt
+		
+		dbgMsg("Expense: key :: " .. tostring(txt), 1) 
+		dbgMsg("Expense: val :: " .. tostring(val), 1) --Chloe had it backwards
+		dbgMsg("Expense: cost :: " .. tostring(gilamt), 1)
+		return
+	end
+end
+
+function cookTheBooks()
+	local x = 0
+	local tb = tcopy(CD[playerName]["earnings"])
+	CD[playerName]["earnings"] = {}
+	for k,v in pairs(tb) do
+		if not validEarnings[k] then
+			x = x + 1
+		else
+			CD[playerName]["earnings"][k] = v
+		end
+	end
+	if x > 0 then
+		return "The books have been cooked and " .. tostring(x) .. " invalid keys were removed!"
+	else
+		return "All keys found to be valid, the books do not need cooking."
+	end
+end
+
 function Windfall(txt, chn, toss)
 	dbgMsg(".Windfall.", 2)
 	dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
@@ -696,22 +931,28 @@ function Windfall(txt, chn, toss)
 		
 		--txt = string.gsub(txt, " ", "")
 		--txt = string.gsub(txt, " ", "")
-		CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] or 0
-		CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] + val
 		
-		if val < 10000 and val > 1000 then
-			DoRandom("surprised")
-		elseif val > 100000 then
-			DoRandom("cheer")
-		elseif val > 1000000 then
-			UseItem(8214)
+		if validEarnings[txt] then
+			dbgMsg("Windfall: valid ✓", 1)
+			CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] or 0
+			CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] + val
+		end
+		
+		if not Occupied and not safe then
+			if val < 10000 and val > 1000 then
+				DoRandom("surprised", " from recent windfall.")
+			elseif val > 10000 then
+				DoRandom("cheer", " from recent windfall.")
+			elseif val > 100000 then
+				UseItem(8214)
+			end
 		end
 		
 		dbgMsg("Windfall: key :: " .. tostring(txt), 1) 
 		dbgMsg("Windfall: val :: " .. tostring(val), 1) --Chloe had it backwards
 		return
 	elseif (chn == "RetainerSale" or chn == "say") and string.find(txt, "you put up for sale") then
-		dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+		--dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
 		lastSale = txt
 		txt = string.gsub(txt, "handfuls of", "")
 		--txt = string.gsub(txt, "handfuls of", "")
@@ -846,10 +1087,10 @@ function ProgHandler(txt, toss, chn)
 		--playerProg.SilverStar = playerProg.SilverStar + 1
 		local val = string.match(txt, "(%d+,?%d+,?%d*)")
 		if tonumber(val) then
-			local adj = 1
+			local adj = 3.71
 			if string.find(txt, "experience") then
 				txt = "Experience"
-				adj = (val / Game.Player.Level) * 0.000177
+				adj = (val / Game.Player.Level) * 0.00477
 			elseif string.find(txt, "points") then
 				adj = (val / Game.Player.Level) * 0.17
 				txt = "Points"
@@ -863,12 +1104,16 @@ function ProgHandler(txt, toss, chn)
 			playerProg[txt] = playerProg[txt] + val * adj
 			EmoGyre("aetheric", val * -0.0369)
 			Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
-			EmoGyre("responsible", val / 7.77 * adj)
+			EmoGyre("responsible", adj)
 		end
 	elseif string.find(txt, "You clean the stable") then
 		playerProg["cleaned stable"] = playerProg["cleaned stable"] or 0
 		playerProg["cleaned stable"] = playerProg["cleaned stable"] + 1
 		EmoGyre("responsible", 29)
+	elseif string.find(txt, "received a player commendation") then
+		playerProg["commendation"] = playerProg["commendation"] or 0
+		playerProg["commendation"] = playerProg["commendation"] + 1
+		EmoGyre("responsible", 69)
 	elseif string.find(txt, "Sightseeing log entry") then
 		playerProg["sightseeing log"] = playerProg["sightseeing log"] or {}
 		local val = string.match(txt, "“(%d+)”")
@@ -927,6 +1172,16 @@ function Report(txt)
 	Game.SendChat("/fc Reporting from <pos>.")
 end
 
+function ConsumableHandler(txt, chn, toss)
+	lastConsumed = txt
+	txt = string.gsub(txt, toss, "")
+	txt = string.gsub(txt, " ", "")
+
+	CD[playerName]["diet"][txt] = CD[playerName]["diet"][txt] or 0
+	CD[playerName]["diet"][txt] = CD[playerName]["diet"][txt] + 1
+
+end
+
 function FlameCheck(flame, toss, txt, chn, sender)
 	dbgMsg(".FlameCheck.", 2)
 	dbgMsg("MatchStick: " .. txt, 9)
@@ -951,6 +1206,7 @@ function FlameCheck(flame, toss, txt, chn, sender)
 				--IsPorting = nil --Porting function now handles this
 			end
 		end
+		Expense(txt, chn, toss)
 	elseif flame == "*porting*" or flame == "*travel*" then
 		IsPorting = os.time()
 		dbgMsg("PortingCall :: " .. tostring(toss), 1)
@@ -970,16 +1226,48 @@ function FlameCheck(flame, toss, txt, chn, sender)
 			if toss == "safe" then
 				safe = true
 				dbgMsg("PanicHandler switching to safe mode :: ✓", 0)
-			elseif toss == "kill" then
+			elseif toss == "off" or toss == "kill" or toss == "nuke" then
 				dbgMsg("PanicHandler shutting down...", 0)
 				action = "sleep"
 				rnd = nil
-				dbg = 1
+				safe = true
+				blockAutonomousActions = true
+				Game.SendChat("/vnav stop")
 				Script.ClearQueue()
+				dbg = 1
+				
 				dbgMsg("PanicHandler Emote queue stopped :: ✓ ", 0)
-				Update()
+				--Update()
+				if toss == "off" then
+					return
+				elseif toss == "nuke" then
+					dbgMsg("PanicHandler Shutting Down All Systems :: ", 0)
+					blockNegativeEffects = true
+					Sys.Weather = nil
+					Sys.Outfits = nil
+					Sys.Buffs = nil
+					Sys.Gyre = nil
+					Sys.Aether = nil
+					Sys.Beacons = nil
+					Sys.Emotions = nil
+					Sys.Moodles = nil
+					Sys.Chat = nil
+					Sys.SND = nil
+					Sys.Nav = nil
+					dbgMsg("PanicHandler Congratulations, you are no longer emo, you are now normal and may join the other normals in stasis around an aetheryte of your choice... :: ✓", 0)
+					chatHooking = nil
+				end
+				Sys.Juju = nil
+				Sys.Emotes = nil
+				Sys.Routines = nil
+				Script.ClearQueue()
 				dbgMsg("PanicHandler Halting All Lua Scripts :: ✓", 0)
 				Game.SendChat("/woluax halt-all")
+			elseif toss == "secure" or toss == "security" then
+				dumpInfo("security")
+			elseif toss == "stop" then
+				dbgMsg("PanicHandler Stopping Navigator :: ✓ ", 0)
+				Game.SendChat("/vnav stop")
 			end
 		end
 	elseif flame == "*duty*" then
@@ -990,6 +1278,10 @@ function FlameCheck(flame, toss, txt, chn, sender)
 		Windfall(txt, chn, toss)
 	elseif flame == "*gossip*" then
 		Report(txt)
+	elseif flame == "*food*" or flame == "*drink*" then
+		DoRandom(toss, match_type(txt, toss, sender))
+	elseif flame == "*consume*" then
+		ConsumableHandler(txt, chn, toss)
 	elseif flame == "*balmung*" then
 		emoReact("scared")
 	elseif flame == "*crystal*" then
@@ -1002,16 +1294,26 @@ function FlameCheck(flame, toss, txt, chn, sender)
 		getMotley("random")
 	elseif flame == "*poppit*" then
 		getPoppit("random")
+	elseif flame == "*turnip*" then
+		getKyurghen("random")
 	elseif flame == "*zoom*" and not InCombat then
 		CallRoutine("automove")
 	elseif flame == "*goober*" then
-		DoRandom("pose")
+		Razzle()
+	elseif flame == "*dazzle*" then
+		Dazzle()
 	elseif flame == "*plogon*" then
 		Game.SendChat("/"..txt)
 	elseif flame == "*emo*" then
 		emoReact(toss)
-	elseif flame == "*profit*" then
-		Windfall(txt, chn, toss)
+	elseif flame == "*destination*" then
+		if destinations[toss] and not safe then
+			Game.SendChat("/tp " .. destinations[toss])
+		end
+	--elseif flame == "*profit*" then
+		--Windfall(txt, chn, toss)
+	--elseif flame == "*expense*" then
+		--Expense(txt, chn, toss)
 	elseif flame == "*bijou*" then
 		doBijou("any")
 		--Game.SendChat("/useitem 12042")
@@ -1165,7 +1467,7 @@ function MatchStick(txt, sender, chn)
 end
 
 return {ChatHandler, Blimey, StringsHandler, Chatty, ChattyChop, JujuHoodoo, FlameCheck, MatchStick, Windfall,
-		TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous}
+		TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous, Expense, cookTheBooks}
 
 --	^								^	--
 --	^	^^^ Chat Handler ^^^ 		^	--

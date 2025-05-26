@@ -477,6 +477,20 @@ local traits = {
 			},
 		},
 	},
+	["lazy"] = {
+		["effects"] = {
+			["IsBusy"] = {
+				["happy"] = -1.1,
+			},
+		},
+	},
+	["hothead"] = {
+		["effects"] = {
+			["general"] = {
+				["angry"] = 1.23,
+			},
+		},
+	},
 	["muggle"] = {
 		["effects"] = {
 			["general"] = {
@@ -491,10 +505,18 @@ local traits = {
 			},
 		},
 	},
+	["smartass"] = {
+		["effects"] = {
+			["general"] = {
+				["flippant"] = 1.234,
+				["mischievous"] = 1.01,
+			},
+		},
+	},
 	["stubborn"] = {
 		["effects"] = {
 			["general"] = {
-				["angry"] = 0.027,
+				["angry"] = 0.327,
 			},
 		},
 	},
