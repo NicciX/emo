@@ -60,6 +60,31 @@ local targetActions = {
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
+	["Survey Point"] = {
+		["routine"] = "phantomsurvey",
+		["cooldown"] = 17.0,
+		["last"] = 0,		
+	},
+	["Treasure Coffer"] = {
+		["routine"] = "cofferlocation",
+		["cooldown"] = 17.0,
+		["last"] = 0,		
+	},
+	["Aether-imbued Stone"] = {
+		["routine"] = "aetherstone",
+		["cooldown"] = 17.0,
+		["last"] = 0,		
+	},
+	["Vantage Point"] = {
+		["routine"] = "phantomsurvey",
+		["cooldown"] = 17.0,
+		["last"] = 0,		
+	},
+	["Dead"] = {
+		["routine"] = "rezcheck",
+		["cooldown"] = 17.0,
+		["last"] = 0,		
+	}
 	
 }
 

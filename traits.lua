@@ -14,15 +14,9 @@ function AddTrait(tag)
 	dbgMsg(".AddTrait.", 2)
 	tag = string.lower(tag)
 	if traits[tag] then
-		CD[playerName]["traits"][tag] = true
-		Script.Storage[playerName] = CD[playerName]
-		Script.SaveStorage()
-		playerTraits = CD[playerName]["traits"]
-		--if tmp == 1 then
-			Game.SendChat("/e [" .. tag .. "] has been added to your traits.")
-		--else
-			--Game.SendChat("/e [" .. tag .. "] has been increased to: " .. tostring(tmp) .. ".")
-		--end
+		playerTraits[tag] = true
+		CDUpdater()
+		dbgMsg("[" .. tag .. "] has been added to your traits.", 0)
 	end
 end
 
@@ -30,11 +24,10 @@ function RemoveTrait(tag)
 	dbgMsg(".RemoveTrait.", 2)
 	tag = string.lower(tag)
 	if traits[tag] then
-		CD[playerName]["traits"][tag] = nil
 		Game.SendChat("/e [" .. tag .. "] has been removed from your traits.")
-		Script.Storage[playerName] = CD[playerName]
-		Script.SaveStorage()
-		playerTraits = CD[playerName]["traits"]
+		playerTraits[tag] = nil
+		CDUpdater()
+		dbgMsg("[" .. tag .. "] has been removed from your traits.", 0)
 	end
 end
 
@@ -371,28 +364,7 @@ local traits = {
 	["aetheric"] = {
 		["effects"] = {
 			["IsCrafting"] = {
-				["tired"] = -0.2,
-				["energized"] = 0.25,
-				["aetheric"] = 0.27,
-			},
-			["InCombat"] = {
-				["angry"] = 0.15,
-				["happy"] = 0.1,
-				["confident"] = 0.045,
-				["playful"] = 0.025,
-				["mischievous"] = 0.035,
-				["scared"] = -0.035,
-				["anxious"] = -0.1,
-				["hot"] = 0.10,
-				["cold"] = -0.010,
-				["tired"] = 0.1,
-				["energized"] = 0.1,
-				["focused"] = 0.15,
-				["dazed"] = -0.005,
-				["tense"] = -0.05,
-				["hungry"] = 0.005,
-				["amused"] = 0.015,
-				["social"] = 0.015,
+				["energized"] = -0.25,
 				["aetheric"] = -0.27,
 			},
 			["IsMoving"] = {
@@ -408,26 +380,6 @@ local traits = {
 			},
 			["IsFlying"] = {
 				["aetheric"] = 6.39,
-			},
-			["IsAlive"] = {
-				["angry"] = 0.35,
-				["happy"] = -1.0,
-				["confident"] = -1.5,
-				["sad"] = 1.25,
-				["playful"] = -1.25,
-				["anxious"] = 1.25,
-				["hot"] = -15.0,
-				["cold"] = 1.75,
-				["tired"] = -25.0,
-				["energized"] = 5.0,
-				["focused"] = 0.25,
-				["sleepy"] = -5.0,
-				["bored"] = -10.0,
-				["dazed"] = 1.75,
-				["hungry"] = -5,
-				["amused"] = 2.5,
-				["social"] = 3,
-				["aetheric"] = -99.99,
 			},
 			["IsSitting"] = {
 				["energized"] = 0.325,
@@ -465,7 +417,17 @@ local traits = {
 				["angry"] = -0.1,
 				["energized"] = 0.35,
 				["focused"] = 0.1,
-				["aetheric"] = -0.06,
+				["aetheric"] = -0.37,
+			},
+			["general"] = {
+				["aetheric"] = 0.31,
+			},
+		},
+	},
+	["necromantic"] = {
+		["effects"] = {
+			["general"] = {
+				["aetheric"] = -0.41,
 			},
 		},
 	},
@@ -487,7 +449,8 @@ local traits = {
 	["hothead"] = {
 		["effects"] = {
 			["general"] = {
-				["angry"] = 1.23,
+				["angry"] = 1.69,
+				["happy"] = -3.9
 			},
 		},
 	},
@@ -495,6 +458,7 @@ local traits = {
 		["effects"] = {
 			["general"] = {
 				["dazed"] = 0.151,
+				["aetheric"] = -0.477,
 			},
 		},
 	},
@@ -517,13 +481,7 @@ local traits = {
 		["effects"] = {
 			["general"] = {
 				["angry"] = 0.327,
-			},
-		},
-	},
-	["gossiper"] = {
-		["effects"] = {
-			["general"] = {
-				["nosey"] = 0.1377,
+				["happy"] = -0.327,
 			},
 		},
 	},
@@ -531,6 +489,24 @@ local traits = {
 		["effects"] = {
 			["general"] = {
 				["happy"] = 0.1167,
+			},
+		},
+	},
+	["gloomy"] = {
+		["effects"] = {
+			["general"] = {
+				["sad"] = 0.37,
+				["apathetic"] = 1.17,
+				["happy"] = -0.169,
+			},
+		},
+	},
+	["gossiper"] = {
+		["effects"] = {
+			["general"] = {
+				["nosey"] = 0.37,
+				["social"] = -0.169,
+				["responsible"] = -0.169,
 			},
 		},
 	},
@@ -545,6 +521,25 @@ local traits = {
 		["effects"] = {
 			["general"] = {
 				["flirty"] = -0.333,
+			},
+		},
+	},
+	["moody"] = {
+		["effects"] = {
+			["general"] = {
+				["flirty"] = 0.69,
+				["mischievous"] = 0.67,
+				["sad"] = 0.17,
+				["amazed"] = 0.66,
+				["impatient"] = 0.67,
+				["happy"] = -0.151,
+			},
+		},
+	},
+	["obedient"] = {
+		["effects"] = {
+			["general"] = {
+				["responsible"] = 0.21,
 			},
 		},
 	},

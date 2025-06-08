@@ -172,10 +172,230 @@ local routines = {
 
 	["automove"] = {
 		[1] = {
-			["do"] = "automove",
-			["w"] = 1.234,
+			["test"] = true,
+			["func"] = function()
+				if Game.Player.Moving then
+					return false
+				else
+					return true
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 3,
+			["w"] = 0.01,
 		},
+		[2] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 0.250,
+		},
+		[3] = {
+			["do"] = "automove",
+			["w"] = 0.015,
+		},
+		[4] = {
+			["do"] = "sheathe",
+			["w"] = 0.015,
+		},
+		[5] = {
+			["do"] = "gaction sprint",
+			["w"] = 0.15,
+		},
+		[6] = {
+			["run"] = true,
+			["func"] = function() 
+				EmoGyre("aetheric", -37)
+				EmoGyre("energized", -67)
+			end,
+			["w"] = 0.15,
+		},
+		
 	
+	},
+	
+	["leves"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if Game.Player.MapZone == 962 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["do"] = "tp shar",
+			["w"] = 13.11,
+		},
+		[3] = {
+			["do"] = "jmp",
+			["jmp"] = 1,
+			["w"] = 3.11,
+		},
+		[4] = {
+			["test"] = true,
+			["func"] = function()
+				if GetBeaconDistance("Leves") > 51 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 5,
+			["else"] = 7,
+			["w"] = 1.000,
+		},
+		[5] = {
+			["do"] = "li Scholar's Harbor",
+			["w"] = 9.11,
+		},
+		[6] = {
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 3.11,
+		},
+		[7] = {
+			["run"] = true,
+			["func"] = function() 
+				MoveToBeacon("Leves")
+			end,
+			["w"] = 9.11,
+		},
+		[8] = {
+			["test"] = true,
+			["func"] = function()
+				if Game.Player.Entity.Job.ShortName ~= "CUL" then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 9,
+			["else"] = 14,
+			["w"] = 1.11,
+		},
+		[9] = {
+			["test"] = true,
+			["func"] = function()
+				if not FindJobOutfit("CUL") then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 10,
+			["else"] = 12,
+			["w"] = 1.11,
+		},
+		[10] = {
+			["run"] = true,
+			["func"] = function() 
+				dbgMsg("No suitable outfit on record for Culinarian...", 0)
+			end,
+			["w"] = 1.11,
+		},
+		[11] = {
+			["do"] = "end",
+			["w"] = 1.77,
+		},
+		[12] = {
+			["test"] = true,
+			["func"] = function()
+				if not FindJobOutfit("CUL") then
+					return true
+				else
+					OutfitLoad(FindJobOutfit('CUL'))
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 10,
+			["else"] = 8,
+			["w"] = 1.11,
+		},
+		[13] = {
+			["test"] = true,
+			["func"] = function()
+				if not FindJobOutfit("CUL") then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 10,
+			["else"] = 12,
+			["w"] = 1.11,
+		},
+		[14] = {
+			["do"] = "chilledleves",
+			["w"] = 1.77,
+		},
+		[15] = {
+			["do"] = "chilledleves clear",
+			["w"] = 0.77,
+		},
+		[16] = {
+			["do"] = "chilledleves add 1647 30",
+			["w"] = 1.77,
+		},
+		[17] = {
+			["run"] = true,
+			["func"] = function() 
+				dbgMsg("You may proceed " .. appellation .. ".", 0)
+			end,
+			["w"] = 9.11,
+		},
+		
+	},
+	
+	["phantomsurvey"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				Glean("survey")
+			end,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function() 
+				Game.SendChat("/pinteract")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	["cofferlocation"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				Glean("coffer")
+			end,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function() 
+				Game.SendChat("/pinteract")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	["aetherstone"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				Glean("aetherstone")
+			end,
+			["w"] = 1.000,
+		},
 	},
 	
 	["underwear"] = {
@@ -208,6 +428,80 @@ local routines = {
 			["w"] = 1.5,
 		},
 		
+	},
+	
+	["undress"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				Game.SendChat("/isort condition armoury ilv des")
+				Game.SendChat("/isort execute armoury")
+				Game.SendChat("/armoury")
+			end,
+			["w"] = 0.125,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function() 
+				Game.SendChat("/armoury")
+			end,
+			["w"] = 0.525,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function()
+				if playerTraits.vixen then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 5,
+			["w"] = 0.525,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("hat")
+			end,
+			["w"] = 0.525,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("gloves")
+			end,
+			["w"] = 0.525,
+		},
+		[6] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("shoes")
+			end,
+			["w"] = 0.525,
+		},
+		[7] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("top")
+			end,
+			["w"] = 0.525,
+		},
+		[8] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("pants")
+			end,
+			["w"] = 0.525,
+		},
+		[9] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("examineself")
+			end,
+			["w"] = 0.525,
+		},
 	},
 	
 	["SliceIsRightNPC"] = {
@@ -850,7 +1144,7 @@ local routines = {
 			["test"] = true,
 			["func"] = function() return true end,
 			["cond"] = "Farewell <appellation>.",
-			["do"] = "nop",
+			["do"] = "bow motion",
 			["w"] = 1.000,
 		},
 		[7] = {
@@ -1476,6 +1770,40 @@ local routines = {
 		},
 	},
 	
+	["rezcheck"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if tardis(true) < 13 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 3,
+			["w"] = 0.010,
+		},
+		[2] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 1.000,
+		},
+		[3] = {
+			["do"] = "ac Swiftcast",
+			["w"] = 0.17,
+		},
+		[4] = {
+			["do"] = "ac 'Thin Air'",
+			["w"] = 0.17,
+		},
+		[5] = {
+			["do"] = "ac 'Raise'",
+			["w"] = 0.17,
+		},
+	},
+	
 	["AetherEffectA"] = {
 		[1] = {
 			["aetheric"] = true,
@@ -1487,6 +1815,13 @@ local routines = {
 		[1] = {
 			["aetheric"] = true,
 			["intensity"] = 3.69,
+			["w"] = 0.250,
+		},
+	},
+	["AetherEffectF"] = {
+		[1] = {
+			["aetheric"] = true,
+			["intensity"] = 4.44,
 			["w"] = 0.250,
 		},
 	},
@@ -1511,7 +1846,20 @@ local routines = {
 			["w"] = 0.250,
 		},
 	},
-
+	["AetherEffectS"] = {
+		[1] = {
+			["aetheric"] = true,
+			["intensity"] = 144,
+			["w"] = 0.250,
+		},
+	},
+	["AetherEffectX"] = {
+		[1] = {
+			["aetheric"] = true,
+			["intensity"] = 133,
+			["w"] = 0.250,
+		},
+	},
 	
 	["Beacon135A"] = {
 		[1] = {

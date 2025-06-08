@@ -40,7 +40,7 @@ local emDex = {
 	"insist", "photograph", "showleft", "showright", "reference", "ritualprayer", "study", "tomescroll",
 	"sundance", "brpa", "brpb", "rrpa", "rrpb", "yrpa", "yrpb", "reprimand", "spirit", "popotostep", "guard",
 	"dazed", "boxstep", "gdance", "edance", "consider", "crimsonlotus", "determined", "eureka", "toast",
-	"rage", "visage", "throw", "toast", "cookie", "overreact", "blowbubbles"
+	"rage", "visage", "throw", "toast", "cookie", "overreact", "blowbubbles", "twirl"
 }
 
 -- ["defEmo"] = true, --indicates a default emote
@@ -61,7 +61,7 @@ local emote = {
 	},
 	["airquotes"] = {
 		["slsh"] = "airquotes",
-		["type"] = "flippant",
+		["type"] = "apathetic",
 		["group"] = "black",
 		["cd"] = 90,
 		["cost"] = 1,
@@ -147,7 +147,7 @@ local emote = {
 	["attend"] = {
 		["slsh"] = "attend",
 		["type"] = "neutral",
-		["group"] = "blue",
+		["group"] = "white",
 		["where"] = "PvP Series 7 - Level 5",
 		["channeled"] = true,
 		["cost"] = 0.13,
@@ -166,7 +166,7 @@ local emote = {
 	["attention"] = {
 		["slsh"] = "attention",
 		["type"] = "neutral",
-		["group"] = "blue",
+		["group"] = "white",
 		["channeled"] = true,
 		["cost"] = -0.11,
 		["cd"] = 320,
@@ -183,7 +183,7 @@ local emote = {
 	["awe"] = {
 		["slsh"] = "awe",
 		["type"] = "amazed",
-		["group"] = "yelow",
+		["group"] = "yellow",
 		["cost"] = 0.69,
 		["cd"] = 120,
 		["last"] = 0,
@@ -363,6 +363,7 @@ local emote = {
 		["type"] = "flirty",
 		["group"] = "red",
 		["where"] = "Valentione's Day (2025)",
+		["channeled"] = true,
 		["cd"] = 369,
 		["cost"] = 1.69,
 		["weight"] = 23,
@@ -852,7 +853,7 @@ local emote = {
 		["slsh"] = "doze",
 		["type"] = "sleepy",
 		["defEmo"] = true,
-		["group"] = "black",
+		["group"] = "blue",
 		["cost"] = 0.11,
 		["weight"] = 33,
 		["cd"] = 120,
@@ -861,7 +862,7 @@ local emote = {
 			["sad"] = -1,
 			["anxious"] = -1,
 			["energized"] = 2,
-			["focused"] = -1,
+			["focused"] = -3,
 			["tense"] = -2,
 			["tired"] = -3,
 			["sleepy"] = -5.5
@@ -1068,7 +1069,8 @@ local emote = {
 	},
 	["furious"] = {
 		["slsh"] = "furious",
-		["type"] = "amused",
+		["type"] = "angry",
+		["group"] = "red",
 		["cost"] = -1,
 		["weight"] = 51,
 		["cd"] = 33,
@@ -1543,11 +1545,11 @@ local emote = {
 		["cd"] = 177,
 		["last"] = 0,
 		["effects"] = {
-			["mischievous"] = -3.5,
-			["amused"] = 1,
-			["sad"] = -2,
-			["flirty"] = 2,
+			["amused"] = -7,
+			["sad"] = -2.34,
+			["anxious"] = -3.33,
 			["aetheric"] = -7.77,
+			["bored"] = -3.37,
 			["bored"] = -2,
 			["flippant"] = -3
 		},
@@ -1649,7 +1651,9 @@ local emote = {
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["energized"] = -15
+			["energized"] = -15,
+			["focused"] = -15,
+			["aetheric"] = -15,
 		}
 	},
 	["paintblue"] = {
@@ -2069,17 +2073,18 @@ local emote = {
 		["slsh"] = "shiver",
 		["type"] = "cold",
 		["group"] = "blue",
-		["cost"] = 19,
+		["channeled"] = true,
+		["cost"] = 1.9,
 		["weight"] = 31,
 		["cd"] = 67,
 		["last"] = 0,
 		["effects"] = {
-			["amused"] = -1,
-			["social"] = -2,
+			["amused"] = -0.44,
+			["social"] = -0.11,
 			["energized"] = -1.11,
 			["happy"] = -0.79,
-			["cold"] = -1.41,
-			["hot"] = 1.11
+			["cold"] = -0.11,
+			["hot"] = 0.44
 		},
 		["where"] = "MB?"
 	},
@@ -2243,26 +2248,17 @@ local emote = {
 	},
 	["slump"] = {
 		["slsh"] = "slump",
-		["type"] = "amused",
-		["group"] = "red",
+		["type"] = "sad",
+		["group"] = "blue",
 		["defEmo"] = true,
 		["cost"] = 1,
 		["weight"] = 1,
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["mischievous"] = -1.5,
-			["cold"] = -1,
-			["energized"] = -0.5,
-			["tired"] = -0.15,
-			["uncomfortable"] = -0.5,
-			["social"] = -1,
-			["amused"] = -1,
-			["focused"] = -1,
-			["flirty"] = -2,
-			["happy"] = 0.25,
-			["flippant"] = -1,
-			["sad"] = -0.5
+			["sleepy"] = -1.5,
+			["embarrassed"] = -1,
+			["dazed"] = -2.5,
 		}
 	},
 	["snap"] = {
@@ -2335,6 +2331,14 @@ local emote = {
 		["slsh"] = "splash",
 		["type"] = "bathing",
 		["group"] = "green",
+		["cost"] = 3,
+		["weight"] = 57,
+		["cd"] = 120,
+		["last"] = 0,
+		["test"] = function()
+			return IsSwimming
+		end,
+		["restrict"] = "swimming",
 		["effects"] = {
 			["anxious"] = -1,
 			["tense"] = -2,
@@ -2468,20 +2472,15 @@ local emote = {
 		["group"] = "yellow",
 		["channeled"] = true,
 		["cost"] = 1,
-		["weight"] = 1,
+		["weight"] = 51,
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["hungry"] = 0.19,
-			["energized"] = -0.39,
 			["hot"] = 0.37,
-			["tired"] = -0.11,
 			["uncomfortable"] = -0.11,
 			["social"] = -0.37,
 			["sad"] = -0.37,
-			["neutral"] = -0.11,
 			["bored"] = -0.37,
-			["impatient"] = -0.11,
 			["flirty"] = 0.19,
 			["confident"] = 0.19
 		}
@@ -2679,6 +2678,24 @@ local emote = {
 			["uncomfortable"] = -1
 		}
 	},
+	["twirl"] = {
+		["slsh"] = "twirl",
+		["type"] = "energized",
+		["group"] = "yellow",
+		["cost"] = 1,
+		["weight"] = 44,
+		["cd"] = 144,
+		["last"] = 0,
+		["effects"] = {
+			["hot"] = 0.44,
+			["uncomfortable"] = -1.11,
+			["social"] = -1.44,
+			["sad"] = -1.44,
+			["bored"] = -0.41,
+			["flirty"] = 0.44,
+			["confident"] = 0.41
+		}
+	},
 	["upset"] = {
 		["slsh"] = "upset",
 		["type"] = "angry",
@@ -2728,6 +2745,7 @@ local emote = {
 		["slsh"] = "visage",
 		["type"] = "amused",
 		["group"] = "red",
+		["weight"] = 52,
 		["cost"] = 0.37,
 		["last"] = 0,
 		["cd"] = 137,
@@ -2759,7 +2777,21 @@ local emote = {
 	},
 	["vreveal"] = {
 		["slsh"] = "vreveal",
-		["type"] = "amused"
+		["type"] = "amused",
+		["group"] = "red",
+		["cost"] = 1,
+		["weight"] = 51,
+		["cd"] = 120,
+		["last"] = 0,
+		["effects"] = {
+			["anxious"] = -3,
+			["tense"] = -3,
+			["uncomfortable"] = -2,
+			["angry"] = -1,
+			["energized"] = 1,
+			["playful"] = -2,
+			["flirty"] = 2,
+		},
 	},
 	["waitforit"] = {
 		["slsh"] = "waitforit",

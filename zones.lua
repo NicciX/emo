@@ -830,6 +830,46 @@ local zones = {
 		["name"] = "Private Cottage - Mist",
 		["cont"] = "La Noscea",
 	},
+	[1252] = {
+		["name"] = "South Horn",
+		["cont"] = "Occult Crescent",
+	},
+	[1269] = {
+		["name"] = "Phantom Village",
+		["cont"] = "Occult Crescent",
+		["effects"] = {
+			["hot"] = 1.15,
+			["cold"] = -0.75,
+			["wet"] = 0.35,
+			["focused"] = 0.25,
+			["nosey"] = 0.45,
+			["curious"] = 0.75,
+			["bored"] = -0.25,
+			["mischievous"] = 0.15,
+			["confident"] = 0.15,
+			["aetheric"] = -1.37,
+		},
+		["nighthot"] = -1.25,
+		["nightcold"] = 0.65,
+	},
+	[1278] = {
+		["name"] = "Phantom Village",
+		["cont"] = "Occult Crescent",
+		["effects"] = {
+			["hot"] = 1.35,
+			["cold"] = -0.65,
+			["wet"] = 0.37,
+			["focused"] = -0.25,
+			["playful"] = 0.45,
+			["curious"] = 0.75,
+			["bored"] = -0.25,
+			["mischievous"] = 0.15,
+			["confident"] = -0.15,
+			["aetheric"] = -1.37,
+		},
+		["nighthot"] = -1.45,
+		["nightcold"] = 0.95,
+	},
 
 }
 

@@ -1,12 +1,12 @@
 -- Emobot
 --- by Nicci M.
 
-emoVer = "0.7.13" --current version
+emoVer = "0.7.31" --current version
 
 blockNegativeEffects = true --was changed from enableNegativeEffects 0.7.13
 blockAutonomousActions = true --was changed from enableAutonomousActions 0.7.13
-chatHooking = true
---safe = true
+chatHooking = true -- set to nil to turn off chat matching
+--safe = true --  set to true to disable potentially unsafe functions
 --mode = "dev"
 mode = "release"
 
@@ -27,7 +27,8 @@ Sys.Nav = true
 Sys.Juju = true
 
 CD = nil -- Character Data
-
+pause = true
+maintain = nil -- set to true to enable autonomous food and elixir use
 --
 
 chatStack = {}
@@ -91,6 +92,8 @@ lastGossip = 0
 gossipCD = 367 -- Chloe's Prime
 lastTransaction = 0
 speed = nil
+lastCombatCheck = os.time()
+lastNapCheck = os.time()
 
 --time related vars
 tZone = 5*3600 -- Timezone adjust -- CST
@@ -132,12 +135,15 @@ endedDuty = 0
 routineIdx = 0
 currentRoutine = nil
 routineToken = nil
+lastChatMsg = ""
+moodyTime = os.time()
 
 lastProg = "..."
 lastBijou = 0
 lastSale = "^,^"
 gossipCD = 369
 largestPrime = 1
+windfallTime = os.time()
 --lastGyreEffect = 0
 
 --[[if Game.Player.Entity.IsFemale then
@@ -186,10 +192,15 @@ validTemps, smartOutfitSelect, outfitTempEffects, validTypes, validStyles,
 validSlotId, gearSlotName, SNDRemoveCall, OutfitSave, OutfitLoad, SNDEquipHandler, 
 TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit = table.unpack(require "outfitter")
 
+buff = require "buffs"
+
 ChatHandler, Blimey, StringsHandler, Chatty, ChattyChop, JujuHoodoo, FlameCheck, MatchStick,
-Windfall, TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous, Expense, cookTheBooks = table.unpack(require "chatter")
+Windfall, TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous, Expense, cookTheBooks,
+validEarnings = table.unpack(require "chatter")
 
 func_time, dumpInfo, SetDBG, dbgMsg, trim_log, func_track, efficiency, filterLog, profiler = table.unpack(require "profiler")
+
+
 
 --
 
@@ -199,30 +210,7 @@ func_time, dumpInfo, SetDBG, dbgMsg, trim_log, func_track, efficiency, filterLog
 ---		vvv Data Tables/JSON vvv 	---
 ---
 
-local buff = {
-	["caffeinated"] = {
-		["token"] = {	   -- and not refresh the token
-			["what"] = "Caffeinated",
-			["G"] = true,
-			["boosts"] = {
-				["sleepy"] = -17.77,
-				["anxious"] = 2.34,
-				["energized"] = 3.77
-			},
-			["method"] = "math.sin(X)*7.77",
-			["refresh"] = nil,
-			["interval"] = 9.63,
-			["stackLim"] = 5,
-			["delayApply"] = 15,
-			["stacks"] = 1,
-			["drAdj"] = 77,
-			["toast"] = "",
-			["moodle"] = "Caffeinated",
-			["falloff"] = 300.0,
-			["type"] = "buff",
-		}
-	}
-}
+
 
 									---
 validSysChan = {
@@ -248,6 +236,7 @@ validSysChan = {
 	["NPCDialogueAnnouncements"] = "NPCDialogueAnnouncements",
 	["retainersale"] = "RetainerSale",
 	["65"] = "Loot",
+	["62"] = "gil",
 	["Debug"] = "Debug",
 	["debug"] = "Debug",
 	["SystemMessage"] = "SystemMessage",
@@ -399,8 +388,8 @@ emoState = {
 	["focused"] = 0,
 	["dazed"] = 0,
 	["mischievous"] = 0,
-	["anxious"] = 0,
-	["flippant"] = 0,
+	["disturbed"] = 0,
+	["apathetic"] = 0,
 	["aetheric"] = 0,
 	
 	["bored"] = 0,
@@ -408,7 +397,9 @@ emoState = {
 	["sleepy"] = 0,
 	["sad"] = 0,
 	["cold"] = 0,
-	["wet"] = 0,
+	["mortified"] = 0,
+	
+	--["wet"] = 0,
 
 	["angry"] = 0,
 	["embarrassed"] = 0,
@@ -428,14 +419,14 @@ emoState = {
 	["uncomfortable"] = 0,
 	["impatient"] = 0,
 	["bathing"] = 0,
-	["diving"] = 0,
+	["wet"] = 0,
 	["nosey"] = 0,
 	
-	["neutral"] = 0,
 	["happy"] = 0,
 	["playful"] = 0,
 	["confident"] = 0,
 	["social"] = 0,
+	["neutral"] = 0,
 	["responsible"] = 0,
 }
 
@@ -556,16 +547,73 @@ local effects = {
 	["crafting"] = function() return IsCrafting end,
 }
 
-local itemUse = {
-	["44178"] = {
-		["name"] = "Moqueca",
-		["effects"] = {
-			["hungry"] = -50,
-			["focused"] = 10,
-			["energized"] = 75,
-			["hot"] = 15,
-			["happy"] = 15,
-		},
+entrees = {
+	["Boiled Egg"] = {
+		["itemId"] = 4650,
+	},
+	["Calamari Ripieni"] = {
+		["itemId"] = 37282,
+		["allowHQ"] = true,
+	},
+}
+
+meals = {
+	["Mate Cookie"] = {
+		["itemId"] = 46003,
+		["allowHQ"] = true,
+		["dps"] = 44, -- weight value
+		--["buff"] = "cookie",
+	},
+	["Pineapple Orange Jelly"] = {
+		["itemId"] = 44182,
+		["allowHQ"] = true,
+		["caster"] = 44,
+		["healer"] = 33,
+		--["buff"] = "cookie",
+	},
+	["Creamy Alpaca Pasta"] = {
+		["itemId"] = 44087,
+		["allowHQ"] = true,
+		["caster"] = 33,
+		["healer"] = 27,
+		--["buff"] = "cookie",
+	},
+	["Moqueca"] = {
+		["itemId"] = 44178,
+		["allowHQ"] = true,
+		["dps"] = 31,
+		["melee"] = 31,
+	},
+	["Rroneek Steak"] = {
+		["itemId"] = 44091,
+		["allowHQ"] = true,
+		["crafter"] = 67,
+	},
+	["Stuffed Peppers"] = {
+		["itemId"] = 44103,
+		["allowHQ"] = true,
+		["gatherer"] = 44,
+	},
+	["Nasi Goreng"] = {
+		["itemId"] = 44078,
+		["allowHQ"] = true,
+		["gatherer"] = 33,
+	},
+	["Calamari Ripieni"] = {
+		["itemId"] = 37282,
+		["allowHQ"] = true,
+		["crafter"] = 22,
+	},
+}
+
+elixirs = {
+	["Superior Spiritbond Potion"] = {
+		["itemId"] = 37282,
+		["allowHQ"] = true,
+	},
+	["Cunning Craftsman's Tisane"] = {
+		["itemId"] = 44169,
+		["allowHQ"] = true,
 	},
 }
 
@@ -643,7 +691,7 @@ local weather_effects = {
 	["Fog"] = {
 		["neutral"] = {
 			["effects"] = {
-				["anxious"] = 0.75,
+				["disturbed"] = 0.75,
 				["sad"] = 0.25,
 				["focused"] = -1,
 				["confident"] = -2,
@@ -660,7 +708,6 @@ local weather_effects = {
 	["Wind"] = {
 		["neutral"] = {
 			["effects"] = {
-				["anxious"] = 2,
 				["focused"] = -1,
 				["confident"] = -3,
 				["energized"] = 1,
@@ -668,7 +715,6 @@ local weather_effects = {
 				["curious"] = 1,
 				["scared"] = 1,
 				["cold"] = 1,
-				["concerned"] = 1,
 				["aetheric"] = 0.45,
 			},
 		},
@@ -676,14 +722,13 @@ local weather_effects = {
 	["Gales"] = {
 		["neutral"] = {
 			["effects"] = {
-				["anxious"] = 2,
+				["disturbed"] = 2,
 				["focused"] = -1,
 				["confident"] = -3,
 				["energized"] = -1,
 				["uncomfortable"] = 1,
 				["scared"] = 1,
 				["cold"] = 1,
-				["concerned"] = 1,
 				["aetheric"] = 0.75,
 			},
 		},
@@ -691,7 +736,7 @@ local weather_effects = {
 	["Dust Storms"] = {
 		["neutral"] = {
 			["effects"] = {
-				["anxious"] = 2,
+				["disturbed"] = 2,
 				["focused"] = -1,
 				["confident"] = -4,
 				["energized"] = -1,
@@ -727,7 +772,7 @@ local weather_effects = {
 				["uncomfortable"] = 3,
 				["wet"] = 1,
 				["concerned"] = 1,
-				["anxious"] = 2,
+				["disturbed"] = 2,
 				["happy"] = -1,
 				["hot"] = -6,
 			},
@@ -758,7 +803,7 @@ local weather_effects = {
 				["energized"] = -1,
 				["angry"] = 1,
 				["concerned"] = 1,
-				["anxious"] = 2,
+				["disturbed"] = 2,
 				["social"] = -1,
 				["aetheric"] = 0.17,
 			},
@@ -773,7 +818,6 @@ local weather_effects = {
 				["energized"] = -1,
 				["angry"] = 2,
 				["anxious"] = 1,
-				["concerned"] = 1,
 				["social"] = -1,
 				["aetheric"] = 0.17,
 			},
@@ -787,8 +831,7 @@ local weather_effects = {
 				["sleepy"] = 2,
 				["energized"] = 1,
 				["angry"] = 1,
-				["concerned"] = 1,
-				["anxious"] = 2,
+				["disturbed"] = 2,
 				["social"] = -1,
 				["aetheric"] = 0.23,
 			},
@@ -802,8 +845,7 @@ local weather_effects = {
 				["scared"] = 2,
 				["energized"] = 0.25,
 				["scared"] = 1,
-				["concerned"] = 1,
-				["anxious"] = 2.5,
+				["disturbed"] = 2.5,
 				["social"] = -1,
 				["aetheric"] = 0.51,
 			},
@@ -817,8 +859,6 @@ local weather_effects = {
 				["scared"] = 2,
 				["energized"] = 1.65,
 				["tense"] = 1.5,
-				["concerned"] = 2,
-				["anxious"] = 3.5,
 				["angry"] = 2,
 				["aetheric"] = 1.39,
 			},
@@ -832,8 +872,7 @@ local weather_effects = {
 				["scared"] = 1.5,
 				["energized"] = 0.95,
 				["tense"] = 1,
-				["concerned"] = 2,
-				["anxious"] = 3.5,
+				["disturbed"] = 3.5,
 				["angry"] = 2,
 				["aetheric"] = 1.69,
 			},
@@ -847,8 +886,7 @@ local weather_effects = {
 				["scared"] = 1.5,
 				["energized"] = 2.95,
 				["tense"] = 2,
-				["concerned"] = 3,
-				["anxious"] = 3.5,
+				["disturbed"] = 3.5,
 				["angry"] = 2,
 				["hungry"] = -2,
 				["aetheric"] = 2.31,
@@ -955,7 +993,7 @@ local EmotionGroup = {
 	},
 }
 
-local moodAspect = {
+moodAspect = {
 	--Elemental Aspects; Earth; The Base = 1, 2, 3, 5, 7, 11, 13, 77
 	--					 Wind = 3, 6, 9, 15, 39, 63, 67, 88
 	--					 Lightning = 11, 6, 37, 19
@@ -1232,6 +1270,14 @@ function table_to_string(tbl, del)
 	return str
 end
 
+function boolToNumber(n)
+	if n == true then
+		return 1
+	else
+		return 0
+	end
+end
+
 function factors(n)
 	local i = 2
 	local fcts = {}
@@ -1248,6 +1294,16 @@ function factors(n)
 		fcts[#fcts+1] = i
 	end
 	return fcts
+end
+
+function totalX(x)
+	local c = 0
+	for k, v in pairs(_G) do
+		if type(v) == x or x == "all" then
+			c = c + 1
+		end
+	end
+	return tostring(c)
 end
 
 function sign(x)
@@ -1267,8 +1323,20 @@ function diff(a,b)
 	return math.abs(a-b)
 end
 
-local function int(x)
+function int(x)
 	return math.floor(x)
+end
+
+function gilXhour()
+	local gdif = currentGil - initialGil
+	local ivl = (os.time() - startday) / 3600
+	local ph = math.floor(gdif / ivl)
+	if currentGil and initialGil and startday then
+		--return tostring(reduce((currentGil - initialGil) * (math.floor(os.time() - startday) / 3600), 2)) .. ' per/hr'
+		return tostring(ph) .. ' per/hr'
+	else
+		return "Sorry, " .. appellation .. ", I'm unable to locate that information."
+	end
 end
 
 function fractionize(n, acc)
@@ -1438,6 +1506,42 @@ function BoostRandom(amt, aspect)
 	--dbgMsg("ƒBoostRandomƒ " .. tostring(remo) .. " :: " .. tostring(amt), 1)
 end
 
+
+-- encoding
+function b64_enc(data)
+	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+    return ((data:gsub('.', function(x) 
+        local r,b='',x:byte()
+        for i=8,1,-1 do r=r..(b%2^i-b%2^(i-1)>0 and '1' or '0') end
+        return r;
+    end)..'0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
+        if (#x < 6) then return '' end
+        local c=0
+        for i=1,6 do c=c+(x:sub(i,i)=='1' and 2^(6-i) or 0) end
+        return b:sub(c+1,c+1)
+    end)..({ '', '==', '=' })[#data%3+1])
+end
+
+-- decoding
+function b64_dec(data)
+	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+    data = string.gsub(data, '[^'..b..'=]', '')
+    return (data:gsub('.', function(x)
+        if (x == '=') then return '' end
+        local r,f='',(b:find(x)-1)
+        for i=6,1,-1 do r=r..(f%2^i-f%2^(i-1)>0 and '1' or '0') end
+        return r;
+    end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+        if (#x ~= 8) then return '' end
+        local c=0
+        for i=1,8 do c=c+(x:sub(i,i)=='1' and 2^(8-i) or 0) end
+            return string.char(c)
+    end))
+end
+
+function capit(str)
+	return str:lower():gsub("^%l", string.upper)
+end
 function tcopy(orig)
     local orig_type = type(orig)
     local copy
@@ -1538,16 +1642,17 @@ function doEnvironment()
 							dbgMsg("doEnvironment : x,y (pairs) :: " .. tostring(x) .. " | " .. tostring(y), 5)
 							--emoState[x] = math.abs(math.floor((emoState[x] + tmp)*10000)/10000)
 							if x == "aetheric" or x == "energetic" then
-								AetherHandler(math.floor(y*10000)/10000, x, "doEnvironment")
+								EmoGyre(x, y)
 							else
 								dbgMsg("doEnvironment : trace :: a: " .. tostring(emoState[x]), 5)
 								dbgMsg("doEnvironment : trace :: y: " .. tostring(y), 5)
-								emoState[x] = math.floor((emoState[x] + y)*10000)/10000
+								EmoGyre(x, y)
+								--emoState[x] = math.floor((emoState[x] + y)*10000)/10000
 								dbgMsg("doEnvironment : trace :: A", 5)
 							end
-							if emoState[x] < 0 then
-								emoState[x] = 0
-							end
+							--if emoState[x] < 0 then
+								--emoState[x] = 0
+							--end
 							dbgMsg("doEnvironment : trace :: B", 5)
 							dbgMsg("[" .. x .. "] increased by " .. tostring(tmp) .. " (" .. emoState[x] .. ") from ♦" .. k .. "♦ trait and ♠" .. weather .. "♠.", 5)
 						end
@@ -1556,58 +1661,6 @@ function doEnvironment()
 			end
 		end
 	end
-	
-	dbgMsg("Busy Effects", 3)
-	--Busy effects
-	if IsDead then
-		EmoGyre("sad", 13)
-		EmoGyre("happy", -23)
-		EmoGyre("cold", 23)
-	end
-	if IsCrafting then
-		EmoGyre("focused", -1.3)
-		--EmoGyre("happy", -23)
-		--EmoGyre("cold", 23)
-	end
-	for k,v in pairs(effects) do
-		_, ret = pcall(v)
-		if ret then
-			if k == "crafting" then
-				emoState["energized"] = emoState["energized"] - 0.5
-				emoState["focused"] = emoState["focused"] - 1
-				emoState["hot"] = emoState["hot"] + 1
-				emoState["cold"] = emoState["cold"] - 1
-				emoState["bored"] = emoState["bored"] + 1
-				emoState["sad"] = emoState["sad"] - 1
-				emoState["tired"] = emoState["tired"] + 1
-				emoState["busy"] = emoState["busy"] + 1
-				emoState["social"] = emoState["social"] + 1
-				emoState["hungry"] = emoState["hungry"] + 0.015
-			elseif k == "gathering" then
-				emoState["energized"] = emoState["energized"] - 1
-				emoState["focused"] = emoState["focused"] - 1
-				emoState["hot"] = emoState["hot"] + 3
-				emoState["cold"] = emoState["cold"] - 1
-				emoState["hungry"] = emoState["hungry"] + 0.025
-				emoState["sad"] = emoState["sad"] - 2
-				emoState["tired"] = emoState["tired"] + 2
-				emoState["busy"] = emoState["busy"] + 2
-				emoState["social"] = emoState["social"] - 1
-			elseif k == "trading" then
-				emoState["energized"] = emoState["energized"] + 1
-				emoState["focused"] = emoState["focused"] - 2
-				emoState["confident"] = emoState["confident"] - 1
-				emoState["flirty"] = emoState["flirty"] + 1
-				emoState["bored"] = emoState["bored"] + 1
-				emoState["sad"] = emoState["sad"] - 1
-				emoState["social"] = emoState["social"] + 10
-				emoState["busy"] = emoState["busy"] + 2
-				emoState["playful"] = emoState["playful"] + 1
-				emoState["mischievous"] = emoState["mischievous"] + 1
-				
-			end
-		end
-	end 
 	
 	dbgMsg("Weather Effects", 3)
 	--Zone effects
@@ -1632,14 +1685,19 @@ function doEnvironment()
 								--emos[k] = math.floor((emos[k] + tmp)*10000)/10000
 								
 							end
-							emoState[k] = math.floor((emoState[k] + tmp)*10000)/10000
+							if not emoState[k] then
+								dbgMsg("Weather Effects :: [" .. tostring(k) .. "] is not a valid emotion..", 1)
+							else
+								EmoGyre(k, tmp)
+								--emoState[k] = math.floor((emoState[k] + tmp)*10000)/10000
+								--if emoState[k] < 0 then
+									--emoState[k] = 0
+								--end
+								dbgMsg("[" .. k .. "] increased by " .. tostring(tmp) .. " (" .. emoState[k] .. ") from zone effects.", 6)
+							end
 							
 							--emos[k] = math.floor((emos[k] + tmp)*10000)/10000
-							if emoState[k] < 0 then
-								emoState[k] = 0
-							end
-							dbgMsg("[" .. k .. "] increased by " .. tostring(tmp) .. " (" .. emoState[k] .. ") from zone effects.", 6)
-							
+														
 						--end
 					--end
 				--end
@@ -1878,7 +1936,7 @@ function RoutineUpdate()
 	--dbgMsg("Routine Aetheric : " .. tostring(routines[currentRoutine][routineIdx].aetheric), 1)
 	local rout = routines[currentRoutine]
 	if not rout then
-		dbgMsg(tostring(currentRoutine) " is not a valid routine name.", 2)
+		dbgMsg(tostring(currentRoutine) .. " is not a valid routine name.", 1)
 		action = "idle"
 		currentRoutine = nil
 		routineIdx = 0
@@ -1918,6 +1976,8 @@ function RoutineUpdate()
 				else
 					Game.SendChat("/" .. rout["do"])
 				end
+			elseif rout["else"] then
+				routineIdx = rout["else"] - 1
 			end
 		elseif rout.run then
 			if rout.func then
@@ -1959,17 +2019,21 @@ function RoutineUpdate()
 				--end
 				--CD[playerName].traits.aetheric
 				if CD[playerName].traits.aetheric then
-					int = (67 * ad) / (3.7 * math.pi * cBD^2.1)
+					int = (67 * ad) / (2.7 * math.pi * cBD^2.1)
 					--emoState["aetheric"] = emoState["aetheric"] + int
+					EmoGyre("aetheric", int)
 					Moodle("Aether++", "apply", "self", "buffs", "exclusive")
-					AetherHandler(int, "aetheric", "RoutineUpdate")
+					--AetherHandler(int, "aetheric", "RoutineUpdate")
 					--dbgMsg("Aetheryte Effect: " .. tostring(int), 3)
+				elseif playerTraits.muggle then
+					int = (1.69 * ad) / cBD^1.77
+					EmoGyre("aetheric", int)
+					dbgMsg("Aetheryte Effect: (muggle) " .. tostring(int), 1)
 				else
 					int = (6.69 * ad) / cBD^3
-					--emoState["aetheric"] = emoState["aetheric"] + int
-					--dbgMsg("AetherHandler Check: " .. tostring(int), 3)
+					EmoGyre("aetheric", int)
 					Moodle("Aether++", "apply", "self", "buffs", "exclusive")
-					AetherHandler(int, "aetheric", "RoutineUpdate")
+					--AetherHandler(int, "aetheric", "RoutineUpdate")
 					--dbgMsg("Aetheryte Effect: " .. tostring(int), 3)
 				end
 				emoState["hot"] = emoState["hot"] + int/3.1
@@ -1981,34 +2045,6 @@ function RoutineUpdate()
 		else
 			Game.SendChat("/" .. rout["do"])
 		end
-		
-		--dbgMsg("RoutineUpdate : TraceCheck", 1)
-		--[[if rout.aethericRelease then
-			--emoState["aetheric"] = emoState["aetheric"] - rout.aethericRelease
-			AetherHandler(-rout.aethericRelease, "aetheric", "RoutineUpdate")
-			if emoState["aetheric"] < 0 then
-				emoState["aetheric"] = 0
-			end
-		end
-		if rout.energeticRelease then
-			emoState["energized"] = emoState["energized"] - rout.energeticRelease
-			if emoState["energized"] < 0 then
-				emoState["energized"] = 0
-			end
-		end
-		if rout.dazedRelease then
-			emoState["dazed"] = emoState["dazed"] - rout.dazedRelease
-			if emoState["dazed"] < 0 then
-				emoState["dazed"] = 0
-			end
-		end
-		if rout.embarrassedRelease then
-			emoState["embarrassed"] = emoState["embarrassed"] - rout.embarrassedRelease
-			if emoState["embarrassed"] < 0 then
-				emoState["embarrassed"] = 0
-			end
-		end]]--
-		
 		
 		--Script.QueueDelay(routines[currentRoutine][routineIdx]["w"])
 		currentRoutineWait = rout["w"]
@@ -2068,6 +2104,27 @@ function distTarget(px,py,pz,tx,ty,tz)
 	return disC
 end
 
+function Flagit(txt)
+	local map = Game.Player.MapZone
+	local x,y
+	if beacons[map] then
+		if beacons[map].flags then
+			if beacons[map].flags[txt] then
+				x = beacons[map].flags[txt].X
+				y = beacons[map].flags[txt].Y
+			end
+		end
+	end
+	dbgMsg("flagIt: X:" .. tostring(x) .. " :: Y:" .. tostring(y), 1)
+	if x then
+		Game.SendChat("/coord " .. tostring(x) .. " " .. tostring(y))
+	else
+		Game.SendChat("/vnav flyflag")
+		--Game.SendChat("/vnav flyflag")
+		--Game.SendChat("/vnav " .. tostring(x) .. " " .. tostring(y))
+	end
+end
+
 function GetBeaconDistance(bacon)
 	dbgMsg(".GetBeaconDistance.", 2)
 	--func_time["GetBeaconDistance"].ST = os.time()
@@ -2091,62 +2148,6 @@ function GetBeaconDistance(bacon)
 	end
 	--func_time["GetBeaconDistance"].END = os.time()
 	--func_track("GetBeaconDistance")
-end
-
-function RemoveBuff(bf)
-	if bf == "all" or bf == "" then
-		for k,v in pairs(tokenStack.GEN) do
-			tokenStack.GEN[k].remove = true
-			dbgMsg(".Token for.. " .. tostring("GEN") .. " :: " .. k .. " is scheduled for removal.", 1)
-		end
-	elseif #bf > 1 and tokenStack.GEN then
-		if tokenStack.GEN[bf] then
-			tokenStack.GEN[bf].remove = true
-			dbgMsg(".Token for.. " .. tostring("GEN") .. " :: " .. tostring(bf) .. " is scheduled for removal.", 1)
-		end
-	end
-end
-
-function ApplyBuff(bf)
-	--bf = string.lower(bf)
-	--dbgMsg("ApplyBuff: " .. tostring(bf), 1)
-	if buff[bf] then
-		local token = tcopy(buff[bf].token)
-		tokenStack.GEN = tokenStack.GEN or {}
-		tokenStack.GEN[bf] = tokenStack.GEN[bf] or {}
-		--if not tokenStack.GEN[bf] then
-			--tokenStack.GEN[bf] = tokenStack.GEN[bf] or {}
-		
-		if tokenStack.GEN[bf].firstCall and tokenStack.GEN[bf].initialized then
-			tokenStack.GEN[bf].lastCall = os.time()
-			dbgMsg("ApplyBuff: Increase Stack: " .. tostring(tokenStack.GEN[bf].token.stacks + 1), 1)
-			dbgMsg("ApplyBuff: Delay Apply? " .. tostring(token.delayApply), 1)
-			if tokenStack.GEN[bf].token.stacks and tokenStack.GEN[bf].token.stackLim then
-				if tokenStack.GEN[bf].token.stacks < tokenStack.GEN[bf].token.stackLim then
-					tokenStack.GEN[bf].token.stacks = tokenStack.GEN[bf].token.stacks + 1
-					tokenStack.GEN[bf].firstCall = os.time()
-					if not token.delayApply then
-						dbgMsg(":Applied Token: for.. " .. tostring("GEN") .. " :: " .. tostring(bf), 1)
-						Moodle(token.moodle, "apply", "self", "buffs", "default")
-					else
-						tokenStack.GEN[bf].token.delayApply = token.delayApply
-					end
-				end
-			end
-		else
-			tokenStack.GEN[bf].firstCall = os.time()
-			if not tokenStack.GEN[bf].token then
-				tokenStack.GEN[bf].token = token
-			end
-			if not token.delayApply then
-				dbgMsg("○Applied Token |for| " .. tostring(token.moodle), 1)
-				Moodle(token.moodle, "apply", "self", "buffs", "default")
-			else
-				dbgMsg(".Scheduling Token for.. " .. tostring("GEN") .. " :: " .. tostring(bf) .. "...", 1)
-			end
-		end
-		--end
-	end
 end
 
 function BeaconTypeHandler(map, beaconId, typ, token, cBD, bx, by, bz)
@@ -2183,6 +2184,7 @@ function BeaconTypeHandler(map, beaconId, typ, token, cBD, bx, by, bz)
 				if not tokenStack["GEN"][beaconId].token then
 					dbgMsg(".Applied Token for.. " .. tostring("GEN") .. " :: " .. tostring(beaconId), 1)
 					tokenStack["GEN"][beaconId].firstCall = os.time()
+					tokenStack["GEN"][beaconId].initialized = os.time()
 					--tokenStack["GEN"][beaconId].lastCall = os.time()
 					tokenStack["GEN"][beaconId].token = token
 					Moodle(token.what, "apply", "self", "tokens", "default")
@@ -2192,6 +2194,9 @@ function BeaconTypeHandler(map, beaconId, typ, token, cBD, bx, by, bz)
 				tokenStack[map] = tokenStack[map] or {}
 				tokenStack[map][beaconId] = tokenStack[map][beaconId] or {}
 				dbgMsg("Beacon Type Handler :: lastCall 2  :: ", 3)
+				if not tokenStack[map][beaconId].initialized then
+					tokenStack[map][beaconId].initialized = os.time()
+				end
 				--if token[map][beaconId].lastCall then
 				if tokenStack[map][beaconId].lastCall then
 					--beacons[map][beaconId].refresh
@@ -2257,7 +2262,8 @@ function BeaconCheck()
 							Game.SendChat("/waymark a <me> ")
 							wmarkSet = os.time()
 						end
-						Game.SendChat("/useitem 8215")
+						UseItem(8215)
+						--Game.SendChat("/useitem 8215")
 						beacons[map].beacon[k].found = true
 						Game.Toast.TaskComplete("Congratulations! You located the beacon!")
 				   end
@@ -2413,6 +2419,43 @@ function GetClosestAetherBeacon(range)
 	return hit
 end
 
+function Purchases(what)
+	local cnt = 0
+	local list = {}
+	for k,v in pairs(CD[playerName].purchases) do
+		if string.contains(k, what) then
+			cnt = cnt + 1
+			list[#list+1] = tostring(v.total) .. " " .. k .. " :: purchased for :: " .. tostring(v.cost)
+		end
+	end
+	--if rpt then
+	for i,v in pairs(list) do
+		Game.SendChat("/fc " .. v)
+	end
+	--end
+end
+
+function Glean(tag)
+	local map = Game.Player.MapZone
+	local x,y,z = "0", "0", "0"
+	local tbK
+	local tName = Game.Player.Target.Name
+	local tx,ty,tz = Game.Player.Target.PosX, Game.Player.Target.PosY, Game.Player.Target.PosZ
+	if tx then
+		x = tostring(reduce(tx,2))
+		y = tostring(reduce(ty,2))
+		z = tostring(reduce(tz,2))
+	end
+	tbK = tName .. "-" .. tostring(map) .. "-X" .. x .. "-Y" .. y .. "-Z" .. z
+	CD[playerName]["gleans"][tag] = CD[playerName]["gleans"][tag] or {}
+	CD[playerName]["gleans"][tag][tbK] = {}
+	CD[playerName]["gleans"][tag][tbK].Map = tostring(map)
+	CD[playerName]["gleans"][tag][tbK].X = tostring(tx)
+	CD[playerName]["gleans"][tag][tbK].Y = tostring(ty)
+	CD[playerName]["gleans"][tag][tbK].Z = tostring(tz)
+	
+end
+
 function MoveToBeacon(tag)
 	dbgMsg(".MoveToBeacon.", 2)
 	--func_time["MoveToBeacon"].ST = os.time()
@@ -2425,7 +2468,11 @@ function MoveToBeacon(tag)
 	if beacons[map]["beacon"][tag] then
 		x,y,z = beacons[map]["beacon"][tag].XPos, beacons[map]["beacon"][tag].YPos, beacons[map]["beacon"][tag].ZPos
 		dbgMsg("MoveToBeacon :: " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y) .. " .", 0)
-		Game.SendChat("/vnavmesh moveto " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y))
+		if not IsFlying then
+			Game.SendChat("/vnavmesh moveto " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y))
+		else
+			Game.SendChat("/vnavmesh flyto " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y))
+		end
 	end
 	--func_time["MoveToBeacon"].END = os.time()
 	--func_track("MoveToBeacon")
@@ -2611,6 +2658,30 @@ function Moodle(tag, what, trgt, group, method)
 	--Game.SendChat(moodle)
 end
 
+function MoodyDo(moody, too)
+	if os.time() - moodyTime < 139 then
+		return
+	end
+	local str = "Moody-"..capit(moody)
+	if too then
+		if tonumber(too) > 0 then
+			if too > 2 then
+				too = 2
+			end
+			str = str.."+"..tostring(too)
+		elseif tonumber(too) < 0 then
+			if too < -2 then
+				too = -2
+			end
+			str = str..tostring(too)
+		end
+	end
+	dbgMsg("Glamour - Applied: " .. tostring(str), 1)
+	Game.SendChat("/glamour apply "..str.." | <me>")
+	moodyTime = os.time()
+	return str
+end
+
 function MoodiTude() --deprecate?
 	--Femme Fatale
 	if emoState.flirty > 69 then
@@ -2647,28 +2718,27 @@ end
 function useDomi(elem)
 	if elem == "yellow" then
 		if CD[playerName].traits.vixen then
-			Game.SendChat("/useitem 7810") -- Hatching Tide
+			UseItem(7810) -- Hatching Tide
 		else
-			Game.SendChat("/useitem 7809") -- sunshine
+			UseItem(7809) -- sunshine
 		end
 	elseif elem == "red" then
-		Game.SendChat("/useitem 15614") -- meteor shower
+		UseItem(15614) -- meteor shower
 	elseif elem == "black" then
-		Game.SendChat("/useitem 40392") -- onibi
+		UseItem(40392) -- onibi
 	elseif elem == "blue" then
-		Game.SendChat("/useitem 38539") -- deceiver's diamonds
+		UseItem(15614) -- deceiver's diamonds
 	elseif elem == "green" then
 		if CD[playerName].traits.vixen then
-			Game.SendChat("/useitem 22411") -- Hatching Tide
+			UseItem(22411) -- hatching tide
+
 		else
-			Game.SendChat("/useitem 5900") -- onibi
+			UseItem(5900) -- emerald star
 		end
 	elseif elem == "white" then
-		Game.SendChat("/useitem 8215") -- meteor survivor
+		UseItem(8215) -- meteor survivor
 	end
 end
-
-
 
 function MoodFromEmote(emt)
 	dbgMsg(".MoodFromEmote.", 2)
@@ -2687,6 +2757,7 @@ function MoodFromEmote(emt)
 	
 	local emType = emote[emt].type
 	local emCost = emote[emt].cost or 1
+	emCost = emCost * (emotionsTotal / emotionsRange) * 0.67
 	EmoGyre(emType, emCost * -1.3)
 	EmoGyre("energized", emCost * -1.7)
 	EmoGyre("social", emCost * -1.3)
@@ -2710,9 +2781,7 @@ function MoodFromEmote(emt)
 	local group = emote[emt]["group"]
 	
 	if group then
-		--dbgMsg("Slap That Brush! " .. string.upper(group), 2)
 		if group == "paintbrush" then
-			--if EmotionGroup[domi]
 			local ky = emote[emt]["type"]
 			if domiMood == ky then
 				if EmotionGroup[ky] then
@@ -2749,14 +2818,7 @@ function MoodFromEmote(emt)
 			end
 		end
 	end
-	
-	--if emos then
-		--Script.Storage.emotions[playerName] = emos
-		--Script.SaveStorage()
-	--end
-	
-	--for k,v in pairs(group)
-	--CD[playerName]["emoteTracker"]
+
 	CD[playerName]["emoteTracker"] = CD[playerName]["emoteTracker"] or {}
 	if not CD[playerName]["emoteTracker"][emt] then
 		CD[playerName]["emoteTracker"][emt] = 1
@@ -2768,15 +2830,67 @@ function MoodFromEmote(emt)
 	if idleTime < 0 then
 		idleTime = 0
 	end
-	
-	
-	--local pType = emotionsTypes[Script.Storage.base[playerName]["type"]]
-	--local val
-	--Script.SaveStorage()
+
 	Script.QueueDelay(SQD)
 	Script.QueueAction(Update)
 	func_time["MoodFromEmote"].END = os.time()
 	func_track("MoodFromEmote")
+end
+
+function RemoveBuff(bf)
+	if (bf == "all" or bf == "") and tokenStack.GEN then
+		for k,v in pairs(tokenStack.GEN) do
+			tokenStack.GEN[k].remove = true
+			dbgMsg(".Token for.. " .. tostring("GEN") .. " :: " .. k .. " is scheduled for removal.", 1)
+		end
+	elseif #bf > 1 and tokenStack.GEN then
+		if tokenStack.GEN[bf] then
+			tokenStack.GEN[bf].remove = true
+			dbgMsg(".Token for.. " .. tostring("GEN") .. " :: " .. tostring(bf) .. " is scheduled for removal.", 1)
+		end
+	end
+end
+
+function ApplyBuff(bf)
+	--bf = string.lower(bf)
+	--dbgMsg("ApplyBuff: " .. tostring(bf), 1)
+	if buff[bf] then
+		local token = tcopy(buff[bf].token)
+		tokenStack.GEN = tokenStack.GEN or {}
+		tokenStack.GEN[bf] = tokenStack.GEN[bf] or {}
+		--if not tokenStack.GEN[bf] then
+			--tokenStack.GEN[bf] = tokenStack.GEN[bf] or {}
+		
+		if tokenStack.GEN[bf].firstCall and tokenStack.GEN[bf].initialized then
+			tokenStack.GEN[bf].lastCall = os.time()
+			dbgMsg("ApplyBuff: Increase Stack: " .. tostring(tokenStack.GEN[bf].token.stacks + 1), 1)
+			dbgMsg("ApplyBuff: Delay Apply? " .. tostring(token.delayApply), 1)
+			if tokenStack.GEN[bf].token.stacks and tokenStack.GEN[bf].token.stackLim then
+				if tokenStack.GEN[bf].token.stacks < tokenStack.GEN[bf].token.stackLim then
+					tokenStack.GEN[bf].token.stacks = tokenStack.GEN[bf].token.stacks + 1
+					tokenStack.GEN[bf].firstCall = os.time()
+					if not token.delayApply then
+						dbgMsg(":Applied Token: for.. " .. tostring("GEN") .. " :: " .. tostring(bf), 1)
+						Moodle(token.moodle, "apply", "self", "buffs", "default")
+					else
+						tokenStack.GEN[bf].token.delayApply = token.delayApply
+					end
+				end
+			end
+		else
+			tokenStack.GEN[bf].firstCall = os.time()
+			if not tokenStack.GEN[bf].token then
+				tokenStack.GEN[bf].token = token
+			end
+			if not token.delayApply then
+				dbgMsg("○Applied Token |for| " .. tostring(token.moodle), 1)
+				Moodle(token.moodle, "apply", "self", "buffs", "default")
+			else
+				dbgMsg(".Scheduling Token for.. " .. tostring("GEN") .. " :: " .. tostring(bf) .. "...", 1)
+			end
+		end
+		--end
+	end
 end
 
 function EmoRange() 
@@ -2794,7 +2908,17 @@ function EmoRange()
 		["white"] = 0
 	}
 	
-	for k,v in pairs(emoState) do
+	local emT = tcopy(emoState)
+	for k,v in pairs(emT) do
+		if v > 777777 then
+			dbgMsg("EmoRange: " .. tostring(k) .. " is out of range :: [" .. tostring(v) .. "], setting to 777,777.", 1)
+			emoState[k] = 777777
+			v = 777777
+		elseif v < 0 then
+			dbgMsg("EmoRange: " .. tostring(k) .. " is less than 0 and out of range :: [" .. tostring(v) .. "], setting to 0.", 1)
+			emoState[k] = 0
+			v = 0
+		end
 		tot = tot + v
 		if v > val then
 			val = v
@@ -2820,6 +2944,10 @@ function EmoRange()
 		domiMood = dmB
 		dbgMsg("EmoRange: " .. domiMood, 1)
 		Moodle(domiMood, "apply", "self", "domiMood", "exclusive")
+	end
+	if playerTraits.moody then
+		local x = math.floor(emotionsRange * 13 / emotionsTotal - 3.7)
+		MoodyDo(domiMood, x) 
 	end
 	emotionsRange = val
 	emotionsTotal = tot
@@ -2854,16 +2982,7 @@ function EmotionSet(args)
 		CD[playerName]["emotions"][tag] = val --Script.Storage.emotions[playerName][tag] = val
 		dbgMsg("Your emotions value for " .. tag .. " has been set to " .. tostring(val) .. ".")
 	end
-		
-		--Script.Storage.emotions[playerName][tag] = val
-		
-		
-	--else
-	--	val = 0
-		--tag = string.upper(tag)
-		--Script.Storage.base[playerName]["type"] = tag
-		--Game.SendChat("/e your emotions has been set to type: " .. tag .. ".")
-	--end
+
 	Script.SaveStorage()
 	--Script.Storage.emotions[playerName] = emotionsTypes["A"]
 end
@@ -2871,20 +2990,11 @@ end
 function EmotionGet(args)
 	dbgMsg(".EmotionGet.", 2)
 	local tag = shiftWord(args, string.lower)
-	--if val ~= "" then
-		--val = tonumber(val)
 		local val = emoState[tag]
 		if not val then
 			val = 0
 		end
 		dbgMsg("your emotions value for [" .. tag .. "] is " .. tostring(val) .. ".")
-	--else
-		--tag = string.lower(tag)
-		--Script.Storage.base[playerName]["type"] = tag
-		--Game.SendChat("/e your emotions has been set to type: " .. tag .. ".")
-	--end
-	--Script.SaveStorage()
-	--Script.Storage.emotions[playerName] = emotionsTypes["A"]
 end
 
 function EmoCheck()
@@ -3018,6 +3128,13 @@ end
 ---	v	vvv Emotes and Actions vvv	v	---
 ---	v								v	---
 
+
+
+--void DoRandom([string emote [, string source]])
+
+--The main emote handler for EmoBot. All emote calls should be done via this function unless
+--a valid reason exists to do otherwise.
+
 function DoRandom(ovr, src)
 	dbgMsg(".DoRandom.", 2)
 	func_time["DoRandom"].ST = os.time()
@@ -3031,21 +3148,26 @@ function DoRandom(ovr, src)
 			func_track("DoRandom")
 			return
 		end
-	else
-		rndTime = os.time()
-		rndWait = 0
+	elseif ovr then
+		if rndTime + 4.11 > os.time() then
+			Script.QueueDelay(SQD)
+			Script.QueueAction(Update)
+			func_time["DoRandom"].END = os.time()
+			func_track("DoRandom")
+			return
+		end
 	end
-	if not rnd and safe then
-		dbgMsg("DoRandom :: Random emote blocked by security settings (rnd : nil | and | safe : true).", 1)
+	
+	rndTime = os.time()
+	rndWait = 0
+
+	if (not rnd and safe) or pause then
+		dbgMsg("DoRandom :: Random emote blocked by security settings (rnd : " .. tostring(rnd) .. " | and | safe : " .. tostring(safe) .. " | or | pause : " .. tostring(pause) .. ").", 1)
 		func_time["DoRandom"].END = os.time()
 		func_track("DoRandom")
 		return
 	end
-	--val = tonumber(val)
-	
-	
-	--local r = getWeightedEmote()
-	--local r = math.random(1, #emTab)
+
 	local e = emoState.energized
 	local a = 0
 	local asp = "sad"
@@ -3064,6 +3186,10 @@ function DoRandom(ovr, src)
 	local enA, enB = Gyre["red"][3], Gyre["yellow"][4]
 
 	rndWait = EFreq - a + (enA + enB/2) * emotionsRange/(emotionsTotal + e^1.37)
+	
+	if rndWait < 7.77 or rndWait > 7777 then
+		rndWait = 77
+	end
 	
 	if type(ovr) == "string" then
 		dbgMsg("Direct call to DoRandom().", 3)
@@ -3109,7 +3235,6 @@ function DoRandom(ovr, src)
 		end
 		--dbgMsg("Scheduled call to DoRandom().", 3)
 	end
-	--if doEmo then
 		
 	if doEmo then
 		if not emote[doEmo] then
@@ -3119,7 +3244,6 @@ function DoRandom(ovr, src)
 			emotesPlayer[doEmo] = false
 			CD[playerName]["emotes"][doEmo] = false
 			Game.SendChat("/sad motion")
-		--else
 		else
 			if not ovr then
 				dbgMsg("" .. tostring(doEmo) .. " chosen for random emote.", 1)
@@ -3128,26 +3252,17 @@ function DoRandom(ovr, src)
 				CD[playerName].favorites[doEmo] = CD[playerName].favorites[doEmo] or 0
 				CD[playerName].favorites[doEmo] = CD[playerName].favorites[doEmo] + 1
 			elseif ovr == doEmo and src then
-				--string.gsub(src, 
 				dbgMsg("Performing " .. tostring(doEmo) .. "" .. " as " .. tostring(src) .. ".",1)
 			end
-			--Game.SendChat("/e doEmo: " .. doEmo)
 			Game.SendChat("/" .. doEmo .. " motion")
 			emote[doEmo].last = os.time()
 			MoodFromEmote(doEmo)
 		end
 	else
 		dbgMsg("no emote was scheduled for this pass.", 1)
-		--if doEmo then
-			--dbgMsg("emote [" .. doEmo .. "] not found in emote table.", 2)
-		--end
-		--if not emote then
-			--dbgMsg("missing emote table.", 2)
-		--end
 	end
 	lastEmote = doEmo or "sad"
-	--end
-	
+
 	rndTime = os.time()
 	if lastEmote then
 		if emote[lastEmote] then
@@ -3158,6 +3273,7 @@ function DoRandom(ovr, src)
 	else
 		dbgMsg("☃DoRandom☃ :: lastEmote = " .. tostring(lastEmote), 1)
 	end
+	--dbgMsg("DoRandom :: rndWait :: .. " .. tostring(rndWait) .. ".", 1)
 	dbgMsg("DoRandom :: next emote pass in .. " .. tostring(formatTime(rndWait)) .. ".", 1)
 	
 	Script.QueueDelay(SQD)
@@ -3172,8 +3288,6 @@ function getWeightedEmote()
 	--dbgMsg("getWeightedEmote(): domiEmo :: " .. tostring(domiEmo) .. ".", 3)
 	local emoChance = 0 -- = EmoRange() * 1.75
 	local md, em, adj
-	--local asp = "sad"
-	--local emos = Script.Storage.emotions[playerName]
 	
 	if not Sys.Gyre or not Sys.Emotions then
 		if Sys.Emotions then
@@ -3185,10 +3299,7 @@ function getWeightedEmote()
 			local n = math.random(1, emotionsTotal) * 1.37
 			
 			domiMood = domiMood or "white"
-			
-			--md = aspectList[slct][n]
-			
-			--md = moods[md]
+
 			if n > emotionsRange then
 				md = aspectList[domiMood]
 			else
@@ -3199,11 +3310,24 @@ function getWeightedEmote()
 				wc = true
 				r = math.random(1, #md)
 				em = moods[md[r]]
-				--asp = md[r]
 				r = math.random(1, #em)
 				em = em[r]
 				if not em then
 					dbgMsg("GWE: em :: " .. tostring(em), 1)
+				end
+				dbgMsg("GWE: ✓em :: " .. tostring(em), 1)
+				if emote[em].test then
+					wc = emote[em].test
+					if not wc then
+						dbgMsg("GWE: " .. tostring(em) " is restricted to ‡" .. emote[em].restrict .. "‡.", 1)
+					end
+				end
+				if not emote[em].type then
+					dbgMsg("GWE: missing 'type' param for :: " .. tostring(em), 1)
+					wc = nil
+				elseif not emoState[emote[em].type] then
+					dbgMsg("GWE: invalid type: ‡" .. tostring(emote[em].type) .. "‡ for †" .. tostring(em) .. "†.", 1)
+					wc = nil
 				end
 				if not emote[em]["last"] then
 					dbgMsg("GWE: missing 'last' param for :: " .. tostring(em), 1)
@@ -3220,33 +3344,33 @@ function getWeightedEmote()
 				--dbgMsg("GWE: emote.cost : " .. tostring(emote[em].cost), 1)
 				--dbgMsg("GWE: emoState : " .. tostring(emoState[emote[em].type]), 1)
 				--dbgMsg("GWE: emote : " .. tostring(em), 1)
-				cd = emote[em].cd - (os.time() - emote[em].last)
-				adj = emote[em].cost * (emotionsTotal / emotionsRange) * 0.67
-				if not emotesPlayer[em] then
-					dbgMsg("GWE: you haven't learned :: †" .. em .. "† yet.", 1)
-					wc = nil
-				elseif emoState[emote[em].type] < adj then
-					dbgMsg("GWE: emoState :: ‡" .. em .. "‡ (" .. tostring(emoState[emote[em].type]) .. ") :: lower than cost (" .. tostring(adj) .. ") " .. tostring(emote[em].type), 1)
-					wc = nil
-				elseif cd > 0 then
-					dbgMsg("GWE: †" .. em .. "† :: is on cooldown.", 1)
-					wc = nil
-				elseif emote[em].weight then
-					r = math.random(67)
-					if r > emote[em].weight then
-						dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote[em].weight) .. ") <- " .. tostring(r), 1)
-						wc = nil
-					else
-						dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote[em].weight) .. ") -> " .. tostring(r), 1)
+					if wc then
+						cd = emote[em].cd - (os.time() - emote[em].last)
+						adj = emote[em]["cost"] * (emotionsTotal / emotionsRange) * 0.67
+						if not emotesPlayer[em] then
+							dbgMsg("GWE: you haven't learned :: †" .. em .. "† yet.", 1)
+							wc = nil
+						elseif emote[em].group == "paintbrush" then
+							dbgMsg("GWE: Special Group: paintbrush :: †" .. em .. "†.", 1)
+							wc = true
+						elseif emoState[emote[em].type] < adj then
+							dbgMsg("GWE: emoState :: ‡" .. em .. "‡ (" .. tostring(emoState[emote[em].type]) .. ") :: lower than cost (" .. tostring(adj) .. ") " .. tostring(emote[em].type), 1)
+							wc = nil
+						elseif cd > 0 then
+							dbgMsg("GWE: †" .. em .. "† :: is on cooldown.", 1)
+							wc = nil
+						elseif emote[em].weight then
+							r = math.random(67)
+							if r > emote[em].weight then
+								dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote[em].weight) .. ") <- " .. tostring(r), 1)
+								wc = nil
+							else
+								dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote[em].weight) .. ") -> " .. tostring(r), 1)
+							end
+						else
+							dbgMsg("GWE: missing 'weight' param for :: " .. tostring(em), 1)
+						end
 					end
-				else
-					dbgMsg("GWE: missing 'weight' param for :: " .. tostring(em), 1)
-				end
-				--cd = emote[em].cd - (os.time() - emote[em].last)
-				--if not emotesPlayer[em] then
-					--dbgMsg("GWE: you haven't learned :: †" .. em .. "† yet.", 1)
-					--wc = nil
-				--end
 				
 				has = wc
 				
@@ -3261,11 +3385,9 @@ function getWeightedEmote()
 		end
 		func_time["getWeightedEmote"].END = os.time()
 		func_track("getWeightedEmote")
-		--dbgMsg("GWE: TRACE :: A", 1)
 		dbgMsg("GWE: selected :: " .. tostring(em), 1)
 		return em
 	end
-	
 	
 	for k,v in pairs(GyreConduit) do
 		currentConduit[k] = v
@@ -3276,7 +3398,6 @@ function getWeightedEmote()
 	dbgMsg("GWE: emoChance :: " .. tostring(emoChance), 3)
 	for k, v in pairs(currentConduit) do
 		roll = math.random(1, emoChance)
-		--dbgMsg("GWE: GyreConduit :: " .. tostring(k) .. " = " .. tostring(v), 1)
 		if k == domiEmo then
 			if roll * 0.77 < v and not slct then
 				slct = k
@@ -3292,14 +3413,11 @@ function getWeightedEmote()
 	
 	if slct then
 		dbgMsg("GWE: aspect :: " .. tostring(slct), 3)
-		--dbgMsg("GWE: roll :: " .. tostring(pm), 1)
 		n = pm - math.floor((pm-1)/6)*6
-		--dbgMsg("GWE: n :: " .. tostring(n), 1)
 		md = aspectList[slct][n]
 		dbgMsg("GWE: md :: " .. tostring(md), 3)
 		md = moods[md]
 		n = pm - math.floor((pm-1)/#md)*#md
-		--dbgMsg("GWE: n :: " .. tostring(n), 1)
 		dbgMsg("GWE: emote :: " .. tostring(md[n]), 3)
 		
 		func_time["getWeightedEmote"].END = os.time()
@@ -3307,52 +3425,20 @@ function getWeightedEmote()
 		return md[n]
 	end
 	
-	
-	
-	--[[
-	for k,v in pairs(emoState) do
-		if k == domiEmo then
-			emoChance = emoChance * 1.25
-		end
-		if emoChance < 1 then
-			emoChance = 1
-		end
-		if v > math.random(1,emoChance) then
-			local mdT = moods[k]
-			if type(mdT) == "table" then
-				local dwx = 1
-				local r, e
-				while dwx and dwx < 7 do
-					r = math.floor(math.random(1, #mdT))
-					e = mdT[r]
-					if emotesPlayer[e] == "X" then
-						dwx = nil
-					else
-						dwx = dwx + 1
-					end
-				end
-				dbgMsg("Scheduled Emote: " .. tostring(e),3)
-				dbgMsg("Dominant Mood: " .. tostring(k),3)
-				--domiEmo = k
-				--Moodle(domiMood, "apply", "self", "domiMood", "exclusive")
-				func_time["getWeightedEmote"].END = os.time()
-				func_track("getWeightedEmote")
-				return e
-			end
-			--return k
-		end
-	end
-	]]--
-	
 	dbgMsg("No emote was scheduled for this pass.", 1)
 	func_time["getWeightedEmote"].END = os.time()
 	func_track("getWeightedEmote")
 end
 
-function UseItem(itemId) -- deprecate?
+function UseItem(itemId, hq)
 	dbgMsg(".UseItem.", 2)
 	func_time["UseItem"].ST = os.time()
-	Game.SendChat("/useitem " .. tostring(itemId))
+	if hq then
+		itemId = itemId + 1000000
+	end
+	if not safe or not pause then
+		Game.SendChat("/useitem " .. tostring(itemId))
+	end
 	func_time["UseItem"].END = os.time()
 	func_track("UseItem")
 	return true
@@ -3559,19 +3645,10 @@ function ClipClip(typ)
 	local tx,ty,tz = Game.Player.Target.PosX, Game.Player.Target.PosY, Game.Player.Target.PosZ
 	local dist = distTarget(px,py,pz,tx,ty,tz)
 	local X = [[
-["KEY"] = {
 				["XPos"] = XCOORD,
 				["YPos"] = YCOORD,
 				["ZPos"] = ZCOORD,
-				["radius"] = RADIUS,
-				["toast"] = "",
-				["effects"] = {
-					["aetheric"] = 0.05,
-					["energized"] = 0.05,
-				},
-				["routine"] = "TYPE", --TCOMMENT
-				["cooldown"] = CD,
-			},]]
+]]
 	X = string.gsub(X, "XCOORD", tostring(tx))
 	X = string.gsub(X, "YCOORD", tostring(ty))
 	X = string.gsub(X, "ZCOORD", tostring(tz))
@@ -3772,6 +3849,22 @@ function TargetHandler()
 			return "TargetHandler :: Start Routine: " .. targetActions[tag].routine
 		end 
 	end
+	
+	local tag = "Alive" 
+	if not Game.Player.Target.Alive then -- Dead
+		tag = "Dead"
+	end
+	
+	if targetActions[tag] then
+		if targetActions[tag].cooldown then
+			if (os.time() - targetActions[tag].last) > targetActions[tag].cooldown then
+				targetActions[tag].last = os.time()
+				CallRoutine(targetActions[tag].routine)
+			end
+			return "TargetHandler :: Start Routine: " .. targetActions[tag].routine
+		end 
+	end
+	
 end
 
 --	^								^	--
@@ -3831,88 +3924,83 @@ function doLoad()
 	update = true
 	action = "loading"
 	lastPoke = os.time()
-	
+
+	---										---
+	--- 			globals					---
+	---										---		
+
 	playerName = Game.Player.Name
 	nickName = Game.Player.Entity.Firstname
 	
-	dbgMsg("Loaded this far: XUpdateStorageDataX", 4)
-	
 	CD = CD or {}
 	CD[playerName] = Script.Storage[playerName] or {}
-	CD["global"] = Script.Storage["global"] or {}
-	--CD = Script.Storage[playerName] or {}
+	CD.global = Script.Storage.global or {}
+	CD.global.Census = CD.global.Census or {}
+
+	CD.g = Script.Storage.g or {}
+	_g = CD.g
+	Script.Storage.version = emoVer
 	
-	if not Script.Storage.version or not CD[playerName] or not Script.Storage[playerName] then
-		--if not Script.Storage.emotions[playerName] then
-			UpdateStorageData()
-			dbgMsg("Loaded this far: UpdateStorageData", 4)
-		--end
+	--if not Script.Storage.version or not CD[playerName] or not Script.Storage[playerName] then
+		--UpdateStorageData()
+		--dbgMsg("doLoad: UpdateStorageData", 4)
+	--end
+	
+	if not CD.global.dbg then
+		CD.global.dbg = 1
 	end
 	
-	dbgMsg("Loaded this far: A", 4)
+	DBG = tonumber(CD.global.dbg)
+	
+	if type(DBG) ~= "number" then
+		DBG = 1
+		CD.global.dbg = 1
+	end
 	
 	CD.global.persist = CD.global.persist or {}
 	
-	--CD = Script.Storage[playerName] or {}
+	CD.global.lastChatUpdate = CD.global.lastChatUpdate or os.time()
+	lastChatUpdate = CD.global.lastChatUpdate
+
+	---										---
+	--- 	init character data and stats	---
+	---										---	
+	
 	CD[playerName] = CD[playerName] or {}
-	CD[playerName]["nickName"] = CD[playerName]["nickName"] or ""
-	if CD[playerName]["nickName"] == "" then
-		CD[playerName]["nickName"] = nickName
+	
+	CD[playerName].nickName = CD[playerName].nickName or ""
+	if CD[playerName].nickName == "" then
+		CD[playerName].nickName = nickName
 	end
-	nickName = CD[playerName]["nickName"]
-	CD["global"] = CD["global"] or {}
-	CD["g"] = Script.Storage["g"] or {}
-	--CD = Script.Storage[playerName] or {}
-	_g = CD["g"]
-	Script.Storage.version = emoVer
+	nickName = CD[playerName].nickName
+	currentGil = Game.Player.GetGil()
+	CD[playerName]["playerGil"] = currentGil
+	
+	if not CD[playerName].startday then
+		CD[playerName].startday = os.time()
+		CD[playerName].initialGil = currentGil
+	end
+	startday = CD[playerName].startday
+	initialGil = CD[playerName].initialGil
+
 	CD[playerName].traits = CD[playerName].traits or {}
 	
 	if not CD[playerName].traits.neutral then
 		CD[playerName].traits.neutral = true
-	else
-		playerTraits = CD[playerName]["traits"]
 	end
+	playerTraits = CD[playerName].traits
 	
+	CD[playerName]["churn"] = CD[playerName]["churn"] or "0"
 	
-	--- emotes and emotions
-	CD[playerName]["emotions"] = CD[playerName]["emotions"] or {}
-	CD[playerName]["emotes"] = CD[playerName]["emotes"] or {}
-	emotesPlayer = {}
+	CD[playerName]["lastBuff"] = CD[playerName]["lastBuff"] or {}
+	lastBuff = CD[playerName]["lastBuff"]
 	
-	for k,v in pairs(emote) do
-		if v.defEmo then
-			emotesPlayer[k] = true
-		elseif Game.Player.HasEmote(v.slsh) then
-			emotesPlayer[k] = true
-		else
-			emotesPlayer[k] = false
-		end
-	end
-	
-	CD[playerName]["emotes"] = emotesPlayer
-	
-	if not CD["global"]["dbg"] then
-		CD["global"]["dbg"] = 1
-	end
-	
-	DBG = tonumber(CD["global"]["dbg"])
-	
-	if type(DBG) ~= "number" then
-		DBG = 1
-		CD["global"]["dbg"] = 1
-	end
-	
-	CD.global.lastChatUpdate = CD.global.lastChatUpdate or os.time()
-	lastChatUpdate = CD.global.lastChatUpdate
-	--lastChat
-	
-	dbgMsg("Loaded this far: DBG: " .. tostring(DBG), 4)
-	
+	Aether = tonumber(CD[playerName]["churn"])
 	CD[playerName]["updCnt"] = CD[playerName]["updCnt"] or 0
 	CD[playerName]["idles"] = CD[playerName]["idles"] or 0
 	CD[playerName]["collisions"] = CD[playerName]["collisions"] or 0
-	CD[playerName]["largestPrime"] = CD[playerName]["largestPrime"] or 1
-	CD[playerName]["traits"] = CD[playerName]["traits"] or {}
+	--CD[playerName]["largestPrime"] = CD[playerName]["largestPrime"] or 1
+	--CD[playerName]["traits"] = CD[playerName]["traits"] or {}
 	CD[playerName]["quirks"] = CD[playerName]["quirks"] or {}
 	CD[playerName]["prog"] = CD[playerName]["prog"] or {}
 	CD[playerName]["salesTotal"] = CD[playerName]["salesTotal"] or 0
@@ -3923,53 +4011,24 @@ function doLoad()
 	lastTransaction = tonumber(CD[playerName].lastTransaction)
 	salesTotal = CD[playerName]["salesTotal"]
 	
+	maintain = CD[playerName].maintain
+	
 	playerProg.GoldStar = playerProg.GoldStar or 0
 	playerProg.SilverStar = playerProg.SilverStar or 0
 	playerProg.BronzeStar = playerProg.BronzeStar or 0
 	playerProg.Points = playerProg.Points or 0
 	playerProg.Score = playerProg.Score or 0
 	
+	CD[playerName]["gleans"] = CD[playerName]["gleans"] or {}
 	CD[playerName]["favorites"] = CD[playerName]["favorites"] or {}
-	
 	CD[playerName]["diet"] = CD[playerName]["diet"] or {}
 	
-	--dbgMsg("Loaded this far: B.3", 4)
-	
-	CD[playerName]["churn"] = CD[playerName]["churn"] or "0"
-	
-	CD[playerName]["lastBuff"] = CD[playerName]["lastBuff"] or {}
-	lastBuff = CD[playerName]["lastBuff"]
-	
-	Aether = tonumber(CD[playerName]["churn"])
-	
-	CD[playerName]["outfits"] = CD[playerName]["outfits"] or {}
-	CD[playerName]["currentOutfit"] = CD[playerName]["currentOutfit"] or ""
-	
-	currentOutfit = CD[playerName]["currentOutfit"]
-	
-	if not currentOutfit then
-		currentOutfit = Game.Player.Entity.Job.Name
-	end
-	
-	if currentOutfit then
-		CD[playerName]["outfits"][currentOutfit] = CD[playerName]["outfits"][currentOutfit] or {}
-		CD[playerName]["outfits"][currentOutfit]["job"] = CD[playerName]["outfits"][currentOutfit]["job"] or Game.Player.Entity.Job.ShortName
-	end
-	
 	CD[playerName]["profile"] = CD[playerName]["profile"] or {}
-	
-	dbgMsg("Loaded this far: B.4", 4)
-	
 	CD[playerName]["Tracking"] = CD[playerName]["Tracking"] or nil
 	CD[playerName]["emoGroups"] = CD[playerName]["emoGroups"] or {}
 	CD[playerName]["emoteTracker"] = CD[playerName]["emoteTracker"] or {}
-	
 	CD[playerName]["purchases"] = CD[playerName]["purchases"] or {}
-	
 	CD[playerName]["earnings"] = CD[playerName]["earnings"] or {}
-	--CD[playerName].earnings.points = CD[playerName].earnings.points or 0
-	
-	dbgMsg("Loaded this far: C", 4)
 	
 	CD[playerName]["profile"]["race"] = Game.Player.Entity.Race
 	CD[playerName]["profile"]["subRace"] = Game.Player.Entity.Tribe
@@ -3982,43 +4041,6 @@ function doLoad()
 	CD[playerName]["profile"]["nameday"] = CD[playerName]["profile"]["nameday"] or ""
 	CD[playerName]["appellation"] = CD[playerName]["appellation"] or ""
 	
-	---<< gil stuff >> ---
-	CD[playerName]["playerGil"] = CD[playerName]["playerGil"] or 0
-	CD[playerName]["playerGilBuff"] = CD[playerName]["playerGilBuff"] or ""
-	lastGil = CD[playerName]["playerGil"]
-	currentGil = lastGil
-	 
-	CD["global"]["gil"] = CD["global"]["gil"] or 0
-	local tmp = 0
-	for k,v in pairs(Script.Storage) do
-		if v.playerGil then
-			tmp = tmp + v.playerGil
-		end
-	end
-	CD["global"]["gil"] = tmp
-	
-	CD.global.glams = nil
-	CD[playerName].glams = CD[playerName].glams or {}
-	CD[playerName].glams.head = CD[playerName].glams.head or {}
-	CD[playerName].glams.body = CD[playerName].glams.body or {}
-	CD[playerName].glams.hands = CD[playerName].glams.hands or {}
-	CD[playerName].glams.legs = CD[playerName].glams.legs or {}
-	CD[playerName].glams.feet = CD[playerName].glams.feet or {}
-	CD[playerName].glams.ears = CD[playerName].glams.ears or {}
-	CD[playerName].glams.neck = CD[playerName].glams.neck or {}
-	CD[playerName].glams.wrist = CD[playerName].glams.wrist or {}
-	CD[playerName].glams.ring = CD[playerName].glams.ring or {}
-	CD[playerName].glams.panties = CD[playerName].glams.panties or {}
-	CD[playerName].glams.bra = CD[playerName].glams.bra or {}
-	CD[playerName].glams.nails = CD[playerName].glams.nails or {}
-	
-	
-	
-	CD[playerName]["emotionsSet"] = CD[playerName]["emotionsSet"] or nil
-	
-	dbgMsg("Loaded this far: D", 4)
-	
-	currentOutfit = CD[playerName]["currentOutfit"]
 	playerRace = CD[playerName]["profile"]["race"]
 	playerSubRace = CD[playerName]["profile"]["subRace"]
 	playerGuardian = CD[playerName]["profile"]["guardian"]
@@ -4043,51 +4065,126 @@ function doLoad()
 			CD[playerName]["appellation"] = appellation
 		end
 	end
+
+	---										---
+	--- 		emotes and emotions			---
+	---										---	
+
+	CD[playerName]["emotions"] = CD[playerName]["emotions"] or {}
+	CD[playerName]["emotes"] = CD[playerName]["emotes"] or {}
+	emotesPlayer = {}
 	
-	dbgMsg("Loaded this far: E", 4)
-	
-	--currentOutfit = Script.Storage.currentOutfit[playerName]
-	
-	--Script.Storage.outfits[playerName][currentOutfit] = Script.Storage.outfits[playerName][currentOutfit] or {}
-	
-	--Script.Storage.outfits[playerName][currentOutfit]["job"] = Game.Player.Entity.Job.ShortName
-	for k,v in pairs(CD[playerName]["outfits"][currentOutfit]) do
-		currentOutfitSet[k] = v
+	for k,v in pairs(emote) do
+		if v.defEmo then
+			emotesPlayer[k] = true
+		elseif Game.Player.HasEmote(v.slsh) then
+			emotesPlayer[k] = true
+		else
+			emotesPlayer[k] = false
+		end
 	end
 	
-	--Script.Storage.Tracking = Script.Storage.Tracking or {}
-	--CD[playerName]["Tracking"] = CD[playerName]["Tracking"] or {}
-	if type(CD[playerName]["Tracking"]) == "string" then
-		CD[playerName]["Tracking"] = {}
-	end
-	Tracking = CD[playerName]["Tracking"]
-	CD[playerName]["matchness"] = CD[playerName]["matchness"] or {}
-	
-	if CD[playerName]["matchness"]["*wildcard*"] then --deprecate?
-		matchMadness = CD[playerName]["matchness"]
-	end
-	
-	gilBuff = tonumber(CD[playerName]["playerGilBuff"]) or 0.11
-	dbgMsg("Loaded this far: H", 2)
-	DBG = tonumber(CD["global"]["dbg"])
-	CD[playerName].distanceTraveled = CD[playerName].distanceTraveled or 0
-	DisT = CD[playerName].distanceTraveled
-	
-	dbgMsg("Loaded this far: DBG: " .. tostring(DBG), 0)
-	
-	updCnt = CD[playerName]["updCnt"]
-	idles = CD[playerName]["idles"]
-	collisions = CD[playerName]["collisions"]
-	largestPrime = CD[playerName]["largestPrime"]
-	dbgMsg("Loaded this far: I", 2)
+	CD[playerName]["emotes"] = emotesPlayer
+	CD[playerName]["emotionsSet"] = CD[playerName]["emotionsSet"] or nil
 	
 	if not CD[playerName]["emotionsSet"] or not CD[playerName]["emoGroups"]["black"] or not CD[playerName]["emotions"] then
 		dbgMsg("Loaded this far: initPersona", 0)
 		initPersona()
 	end
-	if CD[playerName]["emotions"]["angry"] then
-		emoState = CD[playerName]["emotions"]
+	
+	for k,v in pairs(moods) do
+		emoState[k] = CD[playerName].emotions[k] or 0
 	end
+	
+	CD[playerName].emotions = emoState
+	
+	---										---
+	--- 			outfits					---
+	---										---
+	CD[playerName]["outfits"] = CD[playerName]["outfits"] or {}
+	CD[playerName]["currentOutfit"] = CD[playerName]["currentOutfit"] or ""
+	
+	currentOutfit = CD[playerName]["currentOutfit"]
+	
+	if not currentOutfit then
+		currentOutfit = Game.Player.Entity.Job.Name
+	end
+	
+	if currentOutfit then
+		CD[playerName]["outfits"][currentOutfit] = CD[playerName]["outfits"][currentOutfit] or {}
+		CD[playerName]["outfits"][currentOutfit]["job"] = CD[playerName]["outfits"][currentOutfit]["job"] or Game.Player.Entity.Job.ShortName
+	end
+	
+	CD.global.glams = nil
+	CD[playerName].glams = CD[playerName].glams or {}
+	CD[playerName].glams.head = CD[playerName].glams.head or {}
+	CD[playerName].glams.body = CD[playerName].glams.body or {}
+	CD[playerName].glams.hands = CD[playerName].glams.hands or {}
+	CD[playerName].glams.legs = CD[playerName].glams.legs or {}
+	CD[playerName].glams.feet = CD[playerName].glams.feet or {}
+	CD[playerName].glams.ears = CD[playerName].glams.ears or {}
+	CD[playerName].glams.neck = CD[playerName].glams.neck or {}
+	CD[playerName].glams.wrist = CD[playerName].glams.wrist or {}
+	CD[playerName].glams.ring = CD[playerName].glams.ring or {}
+	CD[playerName].glams.panties = CD[playerName].glams.panties or {}
+	CD[playerName].glams.bra = CD[playerName].glams.bra or {}
+	CD[playerName].glams.nails = CD[playerName].glams.nails or {}
+	currentOutfit = CD[playerName]["currentOutfit"]
+	for k,v in pairs(CD[playerName]["outfits"][currentOutfit]) do
+		currentOutfitSet[k] = v
+	end
+	
+	---										---
+	--- 	---<< gil stuff >> ---			---
+	---										---
+	
+	CD[playerName]["playerGilBuff"] = CD[playerName]["playerGilBuff"] or ""
+	lastGil = CD[playerName]["playerGil"]
+	startingGil = lastGil
+	currentGil = lastGil
+	 
+	CD["global"]["gil"] = CD["global"]["gil"] or 0
+	local tmp = 0
+	for k,v in pairs(Script.Storage) do
+		if v.playerGil then
+			tmp = tmp + v.playerGil
+		end
+	end
+	
+	CD["global"]["gil"] = tmp
+	gilBuff = tonumber(CD[playerName]["playerGilBuff"]) or 0.11
+	
+	---										---
+	--- 			misc					---
+	---										---
+
+	if type(CD[playerName]["Tracking"]) == "string" then
+		CD[playerName]["Tracking"] = {}
+	end
+	Tracking = CD[playerName]["Tracking"]
+	CD[playerName]["matchness"] = nil --clear from CD table, will deprecate @ver0.7.29
+	
+
+	--DBG = tonumber(CD["global"]["dbg"])
+	CD[playerName].distanceTraveled = CD[playerName].distanceTraveled or 0
+	DisT = CD[playerName].distanceTraveled
+	CD[playerName].combatTime = CD[playerName].combatTime or 0
+	combatTime = CD[playerName].combatTime
+	CD[playerName].onTheFloor = CD[playerName].onTheFloor or 0
+	onTheFloor = CD[playerName].onTheFloor
+	floorinIt = onTheFloor
+	napTime = floorinIt
+	--dbgMsg("Loaded this far: DBG: " .. tostring(DBG), 0)
+	
+	updCnt = CD[playerName]["updCnt"]
+	idles = CD[playerName]["idles"]
+	collisions = CD[playerName]["collisions"]
+	--largestPrime = CD[playerName]["largestPrime"] --deprecate
+	
+	---										---
+	--- 			finalize				---
+	---										---
+	
 	if CD[playerName]["lastSave"] then
 		local lastLog = math.floor(os.time() - CD[playerName]["lastSave"])
 		local slpAdj = lastLog * -0.137
@@ -4097,21 +4194,19 @@ function doLoad()
 			--Sys.Gyre = nil
 		end
 	end
-	--StartStatsTracker()
-	--StartStatsTracker()
+
 	Script.Storage.global.valid = true
-	dbgMsg("Loaded this far: K", 2)
+
 	Script.QueueDelay(1000)
 	loadTime = os.time()
 	Game.PrintMessage("EmoBot is loaded and ready to jack!")
-	 
-	--dbgMsg("is loaded and ready to jack!", 0)
-	--Game.PrintMessage("is loaded and ready to jack!")
+
 	if not safe then
-		Game.SendChat("/.chathandler toggle")
+		--Game.SendChat("/.chathandler toggle")
 	end
 	WoluaXVersion = string.match(Game.Player.WoluaXVersion, "(%d+%.%d+%.%d+%.%d+)")
 	action = "loaded"
+	pause = CD.global.pause
 	loaded = true
 	Script.QueueAction(Update)
 	func_time["doLoad"].END = os.time()
@@ -4145,7 +4240,7 @@ function Update()
 		func_track("Update")
 		return
 	end
-	local ctA, ctB, ctC, ctD, ctE, ctF, ctG, ctH, ctI
+	local ctA, ctB, ctC, ctD, ctE, ctF, ctG, ctH, ctI, ctM
 	
 	if phrash and not safe then
 		doPhrash()
@@ -4279,12 +4374,13 @@ function Update()
 	ctD = updCnt / 67 -- evenly divisible.
 	ctE = updCnt / 37
 	ctF = updCnt / 5 -- do not change
-	ctG = updCnt / 234
+	ctG = updCnt / 233
 	ctH = updCnt / 23
 	ctI = updCnt / 11 -- do not change
 	ctJ = updCnt / 7
 	ctK = updCnt / 13
 	ctL = updCnt / 29
+	ctM = updCnt / 53
 	
 	
 	--[[if math.floor(ti) > lastChatUpdate and Game.Chat.Stamp > lastChatUpdate then
@@ -4377,6 +4473,12 @@ function Update()
 		--largestPrime = updCnt
 		currentUpdateCall = "L"
 		MoodUpdate()
+	elseif ctM == math.floor(ctM) then
+		--largestPrime = updCnt
+		currentUpdateCall = "M"
+		if maintain then
+			SelfCare()
+		end
 		--Game.SendChat("/snd run EmoAreaCheck")
 	else
 		--if IsPrime(updCnt) then
@@ -4439,6 +4541,8 @@ function CDUpdater()
 	CD[playerName].traits = playerTraits
 	CD[playerName].prog = playerProg
 	CD[playerName].salesTotal = salesTotal
+	CD[playerName].combatTime = combatTime
+	CD[playerName].onTheFloor = napTime
 	CD[playerName].distanceTraveled = DisT
 	CD[playerName]["idleTime"] = idleTime
 	CD[playerName]["lastBuff"] = lastBuff
@@ -4515,45 +4619,13 @@ function GilEffects()
 	EmoGyre("responsible", adj * 0.71)
 end
 
-function FlagsHandler() --deprecate
-	if filterLog["2"] then
-		dbgMsg("ƒFlagsHandlerƒ", 2)
-	end
-	func_time["FlagsHandler"].ST = os.time()
-	--Check for porting
-	local f = flags
-	--local val1, val2, val3, val4 = f[7], f[12], f[21], f[22]
-	if (f[7] and not f[12]) or (f[21] or f[22]) then
-		--Porting(1.5)
-	end
-	if f[5] then
-		CastingEffects()
-		castingX = castingX + 6
-		IsCasting = true
-		aetherCheck()
-	elseif castingX > 0 then
-		castingX = castingX - 1
-	else
-		IsCasting = 0
-	end
-	if (f[7] and f[12] and castingX > 0) then
-		--Porting(castingX * 0.23)
-	end
-	if f[4] then
-		IsSitting = true
-	else
-		IsSitting = false
-	end
-	func_time["FlagsHandler"].END = os.time()
-	func_track("FlagsHandler")
-end
-
 function StatusHandler()
 	if filterLog["2"] then
 		dbgMsg("ƒStatusHandlerƒ", 2)
 	end
 	func_time["StatusHandler"].ST = os.time()
 	local busy = 0
+	local tmp = 0
 	if Game.Player.WellFed then
 		wellfed = true
 		UpdateHunger(2.345)
@@ -4616,9 +4688,9 @@ function StatusHandler()
 	
 	EmoGyre("hungry", busy)
 	EmoGyre("sleepy", busy)
-	EmoGyre("bored", busy * -1.61)
+	EmoGyre("bored", busy * -2.33)
 	if emoState.dazed > 37 then
-		Leech("focused", "dazed", 0.0067, -1)
+		Leech("focused", "dazed", 0.0167, -1)
 	end
 	--Leech("focused", "dazed", 0.67)
 	--currentGil = Game.Player.GetGil()
@@ -4633,6 +4705,20 @@ function StatusHandler()
 	
 	if emoState.sad > 37 then
 		Leech("happy", "sad", 0.0077, -1)
+	end
+	
+	if IsDead then
+		DeathEffects()
+	end
+	if InCombat then
+		tmp = (os.time() - lastCombatCheck)
+		if lastCombatCheck > 0 and tmp < 11 then
+			combatTime = combatTime + tmp
+		else
+			combatTime = combatTime + 1.37
+		end
+		lastCombatCheck = os.time()
+		--dbgMsg("ƒStatusHandlerƒ InCombat :: " .. tostring(combatTime), 1)
 	end
 	
 	
@@ -4709,25 +4795,6 @@ function UpdateFlags()
 	func_track("UpdateFlags")
 end
 
-function UpdateStats(args) --Deprecate
-	if filterLog["2"] then
-		dbgMsg("ƒUpdateStatsƒ", 2)
-	end
-	func_time["UpdateStats"].ST = os.time()
-	dbgMsg("StatsUpdate :: " .. tostring(args), 4)
-	local n = tonumber(args)
-	for i = 0, 3 do
-		if bit32.extract(n, i) == 1 then
-			HasStatus[i+1] = true
-		else
-			HasStatus[i+1] = nil
-		end
-	end
-	IsMoving = Game.Player.Moving
-	func_time["UpdateStats"].END = os.time()
-	func_track("UpdateStats")
-end
-
 function CollisionTracker(tbl)
 	if filterLog["2"] then
 		dbgMsg("ƒCollisionTrackerƒ", 2)
@@ -4765,36 +4832,161 @@ function UpdateEmoting(is)
 	func_track("UpdateEmoting")
 end
 
-function RunSndScript(script) --Deprecate
+function RunSndScript(script)
 	if filterLog["2"] then
 		dbgMsg("ƒRunSndScriptƒ", 2)
 	end
 	Game.SendChat("/snd run " .. script)
 end
 
-function EatFood(args)
+function SelfCare()
+	if safe or pause then
+		return
+	end
+	local r
+	local role = GetRole()
+	if playerTraits.aetheric then
+		--dbgMsg("Self Care :: aetheric? hungry :: [" .. tostring(emoState.hungry) .. "] ::- rnd: :: " .. tostring(IsMedicated) .. ".", 1)
+		if emoState.aetheric > 1111 then
+			dbgMsg("Self Care :: aetheric :: [" .. tostring(emoState.aetheric) .. "].", 1)
+
+			if not IsMedicated then
+				EatFood("elixir")
+			elseif emoState.energized < 111 and IsMedicated and not wellfed and (role == "crafter" or role == "gatherer") then
+				EatFood("meal")
+			elseif emoState.energized < 111 and IsMedicated and not wellfed then
+				EatFood("entree")
+			elseif emoState.hungry > 777 and not wellfed then
+				EatFood("meal")
+			elseif emoState.energized < 111 and not tokenStack.GEN then
+				DoRandom("tea", "from being low on energy") -- 
+			elseif emoState.energized < 111 and not tokenStack.GEN.caffeinated then
+				DoRandom("tea", "from being low on energy") -- 
+			elseif not wellfed then
+				EatFood("entree")
+			end
+		elseif emoState.aetheric < 111 and IsMedicated and role ~= "crafter" then
+			Game.SendChat("/statusoff Medicated")
+		elseif emoState.energized < 111 and IsMedicated and not wellfed and (role == "crafter" or role == "gatherer") then
+				EatFood("meal")
+		elseif emoState.energized < 111 and not tokenStack.GEN then
+			DoRandom("tea", "from being low on energy") -- 
+		elseif emoState.energized < 111 and not tokenStack.GEN.caffeinated then
+			DoRandom("tea", "from being low on energy") -- 
+		elseif emoState.energized < 111 and not wellfed then
+			EatFood("entree")
+		elseif emoState.hungry > 1777 and not wellfed then
+			EatFood("meal")
+		elseif emoState.hungry > 777 and not wellfed then
+			EatFood("entree")
+		end
+	else
+		if not wellfed then
+			if emoState.hungry > 1111 then
+				r = math.random(1,11777)
+				dbgMsg("Self Care :: eat meal? hungry :: [" .. tostring(emoState.hungry) .. "] ::- rnd: :: " .. tostring(r) .. ".", 1)
+				if r < emoState.hungry then
+					EatFood("meal")
+				end
+			elseif emoState.hungry > 777 then
+				r = math.random(1,5677)
+				dbgMsg("Self Care :: eat entree? hungry :: [" .. tostring(emoState.hungry) .. "] ::- rnd: :: " .. tostring(r) .. ".", 1)
+				if r < emoState.hungry then
+					EatFood("entree")
+				end
+			end
+		end
+	end
+end
+
+roleKey = {
+	["melee"] = "IsMeleeDPS",
+	["ranged"] = "IsRangedDPS",
+	["caster"] = "IsMagicDPS",
+	["healer"] = "IsHealer",
+	["tank"] = "IsTank",
+	["crafter"] = "IsCrafter",
+	["gatherer"] = "IsGatherer",
+}
+
+function GetRole()
+	if Game.Player.Entity.Job.IsMeleeDPS then
+		return "melee"
+	elseif Game.Player.Entity.Job.IsRangedDPS then
+		return "ranged"
+	elseif Game.Player.Entity.Job.IsHealer then
+		return "healer"
+	elseif Game.Player.Entity.Job.IsMagicDPS then
+		return "caster"
+	elseif Game.Player.Entity.Job.IsTank then
+		return "tank"
+	elseif Game.Player.Entity.Job.IsGatherer then
+		return "gatherer"
+	elseif Game.Player.Entity.Job.IsCrafter then
+		return "crafter"
+	else
+		return "unknown"
+	end
+end
+
+function EatFood(what)
 	if filterLog["2"] then
 		dbgMsg("ƒEatFoodƒ", 2)
 	end
 	func_time["EatFood"].ST = os.time()
-	if args and args ~= "" then
-		Script.Clipboard = args
-		Game.SendChat("/snd run EmoEatHelper")
-	elseif not wellfed then
-		dbgMsg("Eat Food.", 1)
-		if Game.Player.Entity.Job.IsMeleeDPS or Game.Player.Entity.Job.IsRangedDPS then
-			Script.Clipboard = "Moqueca <hq>"
-			Game.SendChat("/snd run EmoEatHelper")
-		elseif Game.Player.Entity.Job.IsMagicDPS or Game.Player.Entity.Job.IsHealer then
-			Script.Clipboard = "Pineapple Orange Jelly <hq>"
-			Game.SendChat("/snd run EmoEatHelper")
-		elseif Game.Player.Entity.Job.IsTank then
-			Script.Clipboard = "Marinated Broccoflower <hq>"
-			Game.SendChat("/snd run EmoEatHelper")
-		elseif Game.Player.Entity.Job.IsGatherer then	
-			Script.Clipboard = "Stuffed Peppers <hq>"
-			Game.SendChat("/snd run EmoEatHelper")
+	
+	local weight = 0
+	local slct
+	local role
+	if not what or what == "" then
+		what = "meal"
+	end
+	if what == "entree" then
+		if favoriteEntree then
+			slct = entrees[favoriteEntree].itemId
+		else
+			for k,v in pairs(entrees) do
+				if math.random(1,100) > 37 then
+					slct = k
+					break
+				end
+			end
 		end
+		if slct then
+			UseItem(entrees[slct].itemId, entrees[slct].allowHQ)
+		end
+	elseif what == "elixir" then
+		if role == "crafter" then
+			UseItem(1044169)
+		else
+			UseItem(1027960)
+		end
+		--UseItem(entrees[slct].itemId, entrees[slct].allowHQ)
+	elseif what == "meal" then
+		role = GetRole()
+		for k,v in pairs(meals) do
+			if v[role] then
+				if v[role] > weight then
+					weight = v[role]
+					slct = k
+				end
+			end
+		end
+		if slct then
+			dbgMsg("Eat Food :: " .. tostring(slct), 1)
+			UseItem(meals[slct].itemId, meals[slct].allowHQ)
+		end
+	
+	elseif what and what ~= "" then
+		if meals[what] then
+			if meals[what].itemId then
+				UseItem(meals[what].itemId, meals[what].allowHQ)
+			end
+		end
+	elseif not wellfed then
+		
+		dbgMsg("Eat Food.", 1)
+		
 	end
 	func_time["EatFood"].END = os.time()
 	func_track("EatFood")
@@ -4975,6 +5167,19 @@ function GotoGate()
 	--Game.SendChat("/vnavmesh moveto " .. tostring(dest.PosX) .. " " .. tostring(dest.PosZ) .. " " .. tostring(dest.PosY))
 end
 
+function DeathEffects()
+	tmp = (os.time() - lastNapCheck)
+	if lastNapCheck > 0 and tmp < 11 then
+		napTime = napTime + tmp
+	else
+		napTime = napTime + 1.37
+	end
+	floorinIt = napTime
+	onTheFloor = napTime
+	lastNapCheck = os.time()
+	dbgMsg("ƒStatusHandlerƒ Dead :: " .. tostring(onTheFloor), 1)
+end
+
 function UpdateHunger(amt)
 	if filterLog["2"] then
 		dbgMsg("ƒUpdateHungerƒ", 2)
@@ -5005,14 +5210,15 @@ function UpdateHunger(amt)
 		end
 		if IsMedicated then
 			if playerTraits.aetheric then
-				EmoGyre("focused", 0.39)
+				EmoGyre("energized", 0.39)
 			elseif playerTraits.spriggan then
 				EmoGyre("mischievous", 0.77)
 			elseif playerTraits.muggle then
 				EmoGyre("anxious", 0.27)
 			else
-				EmoGyre("dazed", 0.33)
+				EmoGyre("happy", 0.33)
 			end
+			EmoGyre("dazed", 0.33)
 		end
 		--Convert("energized", "sleepy", -1)
 		--EmoGyre("sleepy", -amt)
@@ -5025,6 +5231,8 @@ function UpdateHunger(amt)
 				if AethericBuffer then
 					Relax("aetheric", "energized", 9.11)
 				else
+					EmoGyre("energized", amt * 0.67)
+					--EmoGyre("aetheric", amt * 0.77)
 					Convert("aetheric", "energized", 7.77)
 				end
 				--Reduction("aetheric", "energized", 0.31)
@@ -5067,13 +5275,13 @@ function Porting(args)
 	lastPorted = os.time()
 	local adj = args or 0
 	
-	adj = adj * 0.0178122499
+	adj = adj * 0.037
 	if AethericBuffer then
-		adj = 0.65
+		adj = adj * 0.67
 	end
 	if TraitCheck("aetheric") then
 		--emoState["aetheric"] = emoState["aetheric"] + adj*6.39
-		EmoGyre("aetheric", adj*23)
+		EmoGyre("aetheric", adj*6.7)
 		--AetherHandler(adj*2.34, "aetheric", "Porting")
 	elseif TraitCheck("spriggan") then
 		EmoGyre("hungry", adj*1.77)
@@ -5205,29 +5413,43 @@ function CastingEffects()
 end
 
 function Poke(ti)
+	if not listenChn[Game.Chat.Chn] then
+		return
+	end
+	dbgMsg("ƒPoke~Checkƒ " .. tostring(Game.Chat.Chn), 4)
 	if not chatHooking then
 		return
 	elseif not lastPoke and not loaded and (action ~= "loading") then
 		lastPoke = os.time()
 		doLoad()
 		return
+	elseif tonumber(Game.Chat.Chn) == "8873" or tostring(Game.Chat.Chn) == "8746" then
+		return
 	end
-	dbgMsg("ƒPoke~Checkƒ " .. tostring(Game.Chat.Chn), 4)
+	if diff(Game.Chat.Stamp,lastChatUpdate) < 0.01 and Game.Chat.Msg == lastChatMsg then
+		lastPoke = os.time()
+		return
+	end
+	
 	stackIdx = #chatStack + 1
-	chatStack[stackIdx] = {}
-	chatStack[stackIdx].stamp = Game.Chat.Stamp
-	chatStack[stackIdx].msg = Game.Chat.Msg
-	chatStack[stackIdx].chn = Game.Chat.Chn
-	chatStack[stackIdx].chn:gsub("ls", "l")
-	chatStack[stackIdx].sender = Game.Chat.Sender
-	lastChatUpdate = Game.Chat.Stamp
-	Update()
+	if stackIdx < 11 then
+		chatStack[stackIdx] = {}
+		chatStack[stackIdx].stamp = Game.Chat.Stamp
+		chatStack[stackIdx].msg = Game.Chat.Msg
+		chatStack[stackIdx].chn = Game.Chat.Chn
+		chatStack[stackIdx].chn:gsub("ls", "l")
+		chatStack[stackIdx].sender = Game.Chat.Sender
+		lastChatMsg = Game.Chat.Msg
+		lastChatUpdate = Game.Chat.Stamp
+	end
+	lastPoke = os.time()
+	--Update()
 end
 
 
 
---Script.QueueDelay(3500)
---Script.QueueAction(doLoad)
+Script.QueueDelay(3500)
+Script.QueueAction(doLoad)
 
 --	^								^	--
 --	^		^^^ CORE ^^^ 			^	--
@@ -5260,6 +5482,11 @@ local function onInvoke(textline)
 	
 	if not loaded and Game.Player.Loaded and action ~= "loading" then
 		doLoad()
+	elseif playerName ~= Game.Player.Name and type(playerName) == "string" then
+		CDUpdater()
+		action = "loading"
+		Script.ClearQueue()
+		Script.QueueAction(doLoad)
 	end
 	--local e, z = shiftWord(args, string.lower)
 	
@@ -5275,12 +5502,17 @@ local function onInvoke(textline)
 		Poke(args)
 	elseif emote[cmd] then
 		DoRandom(cmd)
+	elseif cmd == "clear" then
 		
 	elseif cmd == "routine" then
 		CallRoutine(args)
 	elseif cmd == "start" then
 		action = "idle"
 		Update()
+	elseif cmd == "load" then
+		action = "loading"
+		Script.ClearQueue()
+		Script.QueueAction(doLoad)
 	elseif cmd == "name" or cmd == "nick" or cmd == "nickname" then
 		if #args > 0 then
 			nickName = args
@@ -5339,6 +5571,8 @@ local function onInvoke(textline)
 		end
 	elseif cmd == "access" or cmd == "check" then
 		CheckEmoteAccess(args)
+	elseif cmd == "census" then
+		Census()
 	elseif cmd == "add" then
 		AddTrait(args)
 	elseif cmd == "remove" then
@@ -5409,18 +5643,21 @@ local function onInvoke(textline)
 		Backup(args)
 	elseif cmd == "restore" then
 		Restore(args)
-	elseif cmd == "validate" then
-		CD["global"].valid = true
-		Script.Storage.global.valid = true
-		Backup()
+	--elseif cmd == "validate" then
+		--CD["global"].valid = true
+		--Script.Storage.global.valid = true
+		--Backup()
 	elseif cmd == "debuff" then
 		RemoveBuff(args)
-	elseif cmd == "chatalert" then
-		ChatHandler(args)
+	--elseif cmd == "chatalert" then
+		--ChatHandler(args)
+	elseif cmd == "chatpoke" then
+		dbgMsg("chatpoke: " .. args,1)
+		Poke(args)
 	elseif cmd == "gyre" then
 		dbgGyre(args) --∮ 
 	elseif cmd == "juju" then
-		JujuHoodoo("juju " .. args, "fc")
+		JujuHoodoo("juju " .. args, "e")
 	elseif cmd == "nav" then
 		Game.SendChat("/vnav stop")
 	elseif cmd == "profiler" then

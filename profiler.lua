@@ -584,10 +584,12 @@ function profiler(filter, mt)
 	end
 	local tmp = 0
 	dbgMsg("≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡", 0)
-	dbgMsg("                     Emobot ", 0)
+	dbgMsg("                           Emobot   ", 0)
+	
 	
 	if DBG then
-		dbgMsg("Current Version: v" .. emoVer .. "     ☃DBG: " .. DBG .. "☃", 0)
+		dbgMsg("EmoBot Version: v" .. emoVer .. "     ☃DBG: " .. DBG .. "☃", 0)
+		dbgMsg("WoLuaX Version: v" .. WoluaXVersion .. "     " .. tostring(CD.global.gil), 0)
 	else
 		dbgMsg("☃DBG: nil, now setting value to 0...", 0)
 		DBG = 0

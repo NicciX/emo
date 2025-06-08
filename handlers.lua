@@ -42,6 +42,7 @@ function emoHandler(tbl, what, moodle, stacks, drAdj, method, falloff, firstcall
 			dbgMsg("emoHandler: adj: " .. k .." :: " .. tostring(v * adj * tmp),3)
 			EmoGyre(k, v * adj * tmp)
 		elseif emoState[k] then
+			drAdj = drAdj or 37
 			adj = math.log(stacks*drAdj)
 			dbgMsg("emoHandler: adj: " .. k .." :: " .. tostring(v*adj),3)
 			EmoGyre(k, v * adj)
@@ -57,151 +58,6 @@ end
 function JujuChurn(juju)
 
 end
-
---Emotional Gyre
-
---Environment Handler
-
----> hot (red)
-
----> cold (blue)
-
----> aetheric (green)
-
----> energized (yellow)
-
----> hungry (black)
-
-
-	---									   x-1-2-3-4-5-6-  y
-	--- 									{⇩ ◯ ↙ ◯ ↙ ◯} -1-	↖↗↘↙↰↱↲↳↴↵⇦⇨⇩⇧⬅⬆⬇⬐
-	--- 								  E	{↵ ↖ ◯ ↖ ◯ ↖} -2-		↖↗↘↙↰↱↲↳↴↵⇦⇨⇩⇧⬅⬆⬇⬐←↑↓→←⇔⇒⇔
-	--- 					YELLOW			{◯ ◯ ◯ ⇨ ↗ ◯} -3-	☃♞♈☢☂☂  ◯♠◯ 
-	--- 									{◯ ⇨ ↗ ◯ ◯ ◯} -4-
-	--- 									{↗ ◯ ↙ ◯ ↙ ⬐} -5- <- start 
-	--- 									{◯ ↖ ◯ ↖ ◯ ↖} -6-
-	---											 E  
-
-
-
-	--Elemental Aspects; Earth; The Base = 1, 11, 31
-	--					 Wind = 2, 13, 37
-	--					 Lightning = 3, 17, 41
-	--					 Ice = 5, 19, 43
-	--					 Water = 7, 23, 47
-	--					 Fire = 9, 29, 53
-			
-			
-			---    feed
-			---	   h
-			---	   u		  c
-			---	   n		  o
-			---	   g		  l
-			---	   r          d	 -+-				---
-			---	   y	  	  v	 		<<<	  	v	energized <<--- 
-			---	:  v    [.]  [.]   [.]    [.]	v	---	
-	--- black	: [1],  [13], [37], [59], [37], [13] : >> white   >>
-	--- blue	: [2],  [17], [41], [59], [31], [11] : >> green   >>
-	--- red		: [3],  [19], [43], [53], [29], [7] : >> yellow  >>
-	--- yellow	: [5],  [23], [47], [47], [23], [5] : >> red     >>
-	--- green	: [7],  [29], [53], [43], [19], [3] : >> blue    >>
-	--- white	: [11], [31], [59], [41], [17], [2] : >> black   >>
-			---		   [.]   [.]   [.]   [.]   V
-	   ---->>  aetheric ^      >>>  ^          h
-			---                -+-  h		   u
-			---                     o		   n
-			---                     t		   g
-			---								   r
-			---								   y
-			
-	
-
-	--- black  focused : (1, 7, 17)       ::  dazed  : (17, 31, 2)   ::  mischievous : (19, 29, 37)
-	---		   nosey   : (47, 11, 23)     :: anxious : (41, 31)      :: flippant	 : (47, 37, 1)
-	---		   hungry  : (1,5,3,47,41,53) ::  bored  : (3, 11, 5)    :: apathetic    : (9, 13, 23) 
-	---		   amazed  : (37, 43, 29)    :: social  : (17, 31, 2) 
-	
-	--- Earth:     {1,  13, 37}
-	--- Ice:       {2,  17, 41}
-	--- Water:     {3,  19, 43}
-	--- Fire:      {5,  23, 47}
-	--- Wind:      {7,  29, 53}
-	--- Lightning: {11, 31, 59}
-	
-	---									   x-1- -2- -3- -4- -5- -6-	 y
-	--- black: elements > Earth - Ice 		{1,  13, 37, 41, 17, 2} -1-
-	--- blue: elements > Ice - Water		{2,  17, 41, 43, 19, 3} -2-
-	--- red: elements > Earth - Fire		{1,  13, 37, 47, 23, 5} -3-
-	--- yellow: elements > Lightning Fire 	{11, 31, 59, 47, 23, 5} -4-
-	--- green: elements > Wind - Water		{7,  29, 53, 43, 19, 3} -5-
-	--- white: elements > Lightning - Wind	{11, 31, 59, 53, 29, 7} -6-
-	
-	
-																									---									   x-1--2--3--4--5--6-  y
-																									--- 							
-																									--- 									
-																									--- 					GREEN			
-																									--- 									
-																									--- 									
-																									--- 									
-																									---											 E  	
-																									
-																									
-																																---										
-																																---								      
-																																--- 									
-																																--- 							
-																																--- 								
-	---			   		  BLACK					   			BLUE V start				   RED						      YELLOW						GREEN									WHITE
-	---  		   x-1--2--3--4--5--6-  y			x-1--2--3--4--5--6-  y			x-1--2--3--4--5--6-  y			x-1--2--3--4--5--6-  y		    x-1--2--3--4--5--6-  y				x-1--2--3--4--5--6-  y
-	--- 	start->	{※ ※ ※ ※ ※ ※}  -1-			{◯ ◯ ◯ ◯ ※ ◯} -1-  start->	{※ ◯ ◯ ◯ ◯ ※} -1- E		  E  {※ ◯ ※ ◯ ※ ◯} -1-	start->	{※ ※ ◯ ◯ ※ ※} -1- E				 {※ ※ ◯ ◯ ※ ※} -1-
-	--- 			{◯ ※ ◯ ◯ ※ ◯} -2-			{※ ※ ※ ※ ※ ◯} -2-			{※ ※ ◯ ◯ ※ ※} -2-	 	     {◯ ※ ◯ ※ ◯ ※} -2-			{◯ ※ ◯ ◯ ※ ◯} -2-		 start-> {※ ◯ ※ ※ ◯ ※} -2- E
-	--- 			{◯ ◯ ※ ※ ◯ ◯} -3-			{※ ◯ ◯ ◯ ◯ ◯} -3-			{◯ ※ ※ ※ ◯ ◯} -3-			 {◯ ◯ ◯ ※ ※ ◯} -3-			{※ ◯ ◯ ◯ ◯※} -3-				 {◯ ※ ◯ ◯ ※ ◯} -3-
-	--- 			{◯ ※ ◯ ◯ ※ ◯} -4-			{※ ※ ※ ※ ※ ※} -4-			{◯ ◯ ※ ※ ◯ ◯} -4-    		 {◯ ※ ※ ◯ ◯ ◯} -4-			{◯ ※ ◯ ◯ ※ ◯} -4-				 {※ ◯ ◯ ◯ ◯ ※} -4-
-	--- 			{※ ※ ◯ ◯ ※ ※} -5-			{◯ ◯ ◯ ◯ ◯ ※} -5-			{◯ ※ ◯ ◯ ※ ◯} -5-			 {※ ※ ◯ ◯ ※ ※} -5- 			{※ ◯ ◯ ◯ ◯ ※} -5-				 {※ ◯ ※ ※ ◯ ※} -5-
-	--- 			{◯ ◯ ※ ※ ◯ ◯} -6-			{◯ ◯ ※ ※ ※ ※} -6-			{※ ※ ※ ※ ※ ※} -6-			 {※ ◯ ※ ※ ◯ ※} -6-	<-ST 	{※ ※ ※ ※ ※ ※} -6-				 {◯ ※ ◯ ◯ ※ ◯} -6-																			--- 									{※ ◯ ◯ ◯ ◯ ※} -4-
-	---													   E																																											
-	
-																		---									   x-1- -2- -3- -4- -5- -6-	 y
-																		--- black: elements > Earth - Ice 		{1,  13, 37, 41, 17, 2} -1-
-																		--- blue: elements > Ice - Water		{2,  17, 41, 43, 19, 3} -2-
-																		--- red: elements > Earth - Fire		{1,  13, 37, 47, 23, 5} -3-
-																		--- yellow: elements > Lightning Fire 	{11, 31, 59, 47, 23, 5} -4-
-																		--- green: elements > Wind - Water		{7,  29, 53, 43, 19, 3} -5-
-																		--- white: elements > Lightning - Wind	{11, 31, 59, 53, 29, 7} -6-
-	
-	---				       BLACK							   BLUE							RED		   					  YELLOW							GREEN								WHITE		
-	---			    x-1--2--3--4--5--6-  y			 x-1--2--3--4--5--6-  y			x-1--2--3--4--5--6-  y			x-1--2--3--4--5--6-  y			x-1--2--3--4--5--6-  y				x-1--2--3--4--5--6-  y
-	--- 	start->	{01 13 37 41 17 02} -1-			 {XX XX XX XX 17 XX} -1-		{01 XX XX XX XX 02} -1-			{01 XX 37 XX 17 XX} -1-			{01 13 XX XX 17 02} -1-				{01 13 XX XX 17 02} -1-
-	--- 			{XX 17 XX XX 19 XX} -2-			 {02 17 41 43 XX XX} -2-		{02 17 XX XX 19 XX} -2-			{XX 17 XX 43 XX 03} -2-			{XX 17 XX XX 19 XX} -2-				{02 XX 41 43 XX 03} -2-
-	--- 			{XX XX 37 47 XX XX} -3-			 {01 XX XX XX XX XX} -3-		{XX 13 37 47 XX XX} -3-			{XX XX XX 47 23 XX} -3-			{01 XX XX XX XX 05} -3-				{XX 13 XX XX 23 XX} -3-
-	--- 			{XX 31 XX XX 23 XX} -4-			 {11 31 59 47 23 05} -4-		{XX XX 59 47 XX XX} -4-			{XX 31 59 XX XX XX} -4-			{XX 31 XX XX 23 XX} -4-				{11 XX XX XX XX 05} -4-
-	--- 			{07 29 XX XX 29 03} -5-			 {XX XX XX XX XX 03} -5-		{XX 29 XX XX 19 XX} -5-			{07 29 XX XX 19 03} -5-			{07 XX XX XX XX 03} -5-				{07 XX 53 43 XX 03} -5-
-	--- 			{XX XX 59 53 XX XX} -6-			 {XX 31 59 53 29 07} -6-		{11 31 59 53 29 07} -6-			{11 XX 59 53 XX 07} -6-	St		{11 31 59 53 29 07} -6-				{XX 31 XX XX 29 XX} -6-
-	
-	--- Affinity
-	--- black  focused : (1, 17, 37)   ::  dazed  : (31, 7, 29)   ::  mischievous : (59, 53, 29)
-	---		   anxious :   (3, 23, 47) :: flippant : (19, 2, 17)  :: aetheric	 : (41, 37, 13)
-	
-	--- Affinity
-	--- blue   bored : (17, 43, 41)   ::    scared  : (17, 2, 1)   ::  sleepy : (11, 31, 59)
-	---		   sad :   (47, 23, 5)  ::       cold :  (3, 7, 29)   ::   wet	 :  (53, 59, 31)
-	
-	--- Affinity
-	--- red   angry : (1, 2, 17)   ::    embarrassed  : (13, 37, 59)   ::  curious : (29, 11, 31)
-	---		   hot :   (59, 53, 29)  ::       flirty :  (7, 19, 47)   ::   amused	 :  (47, 19, 2)
-	
-	--- Affinity
-	--- yellow   hungry : (7, 3, 19)   ::    puzzled  : (53, 59, 29)   ::     energized : (11, 7, 31)
-	---		     busy :   (59, 47, 23)  ::   amazed  : (3, 17, 43)   ::    surprised : (37, 17, 1)
-	
-	--- Affinity
-	--- green   tense : (1, 13, 17)   ::    uncomfortable  : (1, 31, 7)   ::     impatient : (11, 31, 59)
-	---		     bathing :   (53, 29, 7)  ::       diving  : (3, 23, 5)   ::    nosey : (19, 17, 2)
-	
-	--- Affinity
-	--- white   neutral : (2, 1, 13)   ::    happy  : (41, 13, 11)   ::     playful : (7, 31, 53)
-	---		     confident :   (43, 29, 3)  ::       social  : (5, 23, 43)   ::    responsible : (17, 2, 3)
 
 
 aspectAffinity = {
@@ -228,7 +84,7 @@ aspectAffinity = {
 	},
 	[2] = { --
 		["black"] = {
-			["flippant"] = 2,
+			["apathetic"] = 2,
 		},
 		["blue"] = {
 			["scared"] = 2,
@@ -546,12 +402,10 @@ moods = {
 	-- Black Moods --
 	["focused"] = {"read", "tomestone", "reference", "ritualprayer", "flamedance", "examineself", "kneel", "earwiggle", "think"},
 	["dazed"] = {"stagger", "vexed", "shocked", "panic", "no", "overreact", "cutchhead", "sulk", "shrug", "aback", "deny", "disappointed", "huh"},
-	["mischievous"] = {"magictrick", "malevolence", "allsaintscharm", "scheme", "toast", "visage", "frighten", "mogdance", "ladance", "paintblack", "earwiggle", "pose", "sabotender", "snap"},
-	["anxious"] = {"panic", "deny", "shocked", "reference", "overreact", "shush", "grovel", "no"},
-	["flippant"] = {"airquotes", "disappointed", "huh", "yes", "shrug", "elucidate", "facepalm"},
-	--["apathetic"] = {"airquotes", "shrug", "huh", "lean", "malevolence"}, -- Moved from Blue
-	["aetheric"] = {"deride", "clap", "snap", "flamedance", "malevolence", "throw"},
-	
+	["mischievous"] = {"magictrick", "malevolence", "allsaintscharm", "mime", "scheme", "toast", "visage", "frighten", "mogdance", "ladance", "paintblack", "earwiggle", "pose", "sabotender", "snap"},
+	["disturbed"] = {"panic", "deny", "shocked", "reference", "overreact", "shush", "grovel", "no"},
+	["apathetic"] = {"airquotes", "disappointed", "huh", "yes", "shrug", "elucidate", "facepalm"},
+	["aetheric"] = {"deride", "clap", "snap", "flamedance", "malevolence", "mime", "throw"},
 	
 	--- Elementals: Ice - Water ---
 	-- Blue Moods --
@@ -560,10 +414,7 @@ moods = {
 	["sleepy"] = {"doze", "stretch", "lean", "sit", "pdead", "tea"},
 	["sad"] = {"slump", "cry", "disappointed", "sulk"},
 	["cold"] = {"shiver", "slump", "paintblue", "squats", "tea"},
-	["wet"] = {"shiver", "slump", "angry", "bigfan", "upset"},
-	--["tired"] = {"doze", "sit", "stretch"},
-	--["concerned"] = {"comfort", "hug", "aback", "beckon", "lookout", "reference"},
-	
+	["mortified"] = {"malevolence", "dazed", "pdead", "frighten"},
 	
 	--- Elementals; Earth - Fire ---
 	-- Red Moods --
@@ -575,16 +426,16 @@ moods = {
 	["flirty"] = {"heart", "dote", "charmed", "blush", "shush", "ladance", "photograph", "blowkiss", "tea",
 					"tdance", "songbird", "paintred", "pose", "sabotender", "petals"},
 	["amused"] = {"chuckle", "clap", "allsaintscharm", "visage", "showleft", "blowbubbles",
-					"toast", "flamedance", "hum", "dance", "happy", "earwiggle", "lophop", "pose", "apple", 
-					"visage", "tomestone", "sabotender", "bdance", "spectacles"},
+					"toast", "flamedance", "hum", "dance", "mime", "happy", "earwiggle", "lophop", "pose", "apple", 
+					"visage", "tomestone", "sabotender", "bdance", "spectacles", "vreveal"},
 	
 	--- Elementals; Lightning - Fire ---
 	-- Yellow Moods --
 	["hungry"] = {"bread", "apple", "egg", "pizza", "cookie", "choco", "riceball", "tea", "toast"}, --Moved From Yellow
-	["puzzled"] = {"think", "read", "panic", "shocked", "shrug"},
-	["energized"] = {"lophop", "backflip", "cheer", "shakedrink", "blowbubbles", "magictrick", "fist", "cheeron", "cheerjump", "sdance", "paintyellow", "squats", "pushups", "situps", "yoldance", "sabotender"},
+	["puzzled"] = {"think", "read", "panic", "shocked", "shrug", "mime"},
+	["energized"] = {"lophop", "backflip", "cheer", "shakedrink", "blowbubbles", "twirl", "magictrick", "fist", "cheeron", "cheerjump", "sdance", "paintyellow", "squats", "pushups", "situps", "yoldance", "sabotender"},
 	["busy"] = {"read", "reference", "think", "tomestone", "gcsalute"},
-	["amazed"] = {"awe", "joy", "psych", "surprised", "wow", "mogdance", "showright", "photograph"},
+	["amazed"] = {"awe", "joy", "psych", "surprised", "wow", "mogdance", "blowbubbles", "showright", "photograph"},
 	["surprised"] = {"aback", "shocked", "panic", "overreact", "surprised", "lookout"},
 	
 	
@@ -593,14 +444,14 @@ moods = {
 	["tense"] = {"sweat", "upset", "wringhands", "bigfan", "overreact", "facepalm", "sulk", "no"},
 	["uncomfortable"] = {"upset", "clutchhead", "deny", "paintblue", "paintyellow", "sit"},
 	["impatient"] = {"beckon", "panic", "snap", "slump", "sweep", "elucidate", "sweat", "clutchhead", "wringhands", "disappointed"},
-	["bathing"] = {"splash", "waterfloat", "cheer", "photograph"},
-	["diving"] = {"waterflip"},
+	["bathing"] = {"splash", "waterfloat", "cheer", "photograph", "waterflip"},
+	["wet"] = {"shiver", "slump", "angry", "bigfan", "upset"},
 	["nosey"] = {"lookout", "converse", "photograph", "read", "shush", "lean", "spectacles", "tea", "insist", "attend", "hum"},
-	-- ^^ change to 'curious' maybe
+
 	--- Elementals; Lightning - Wind ---
 	-- White Moods --
-	["happy"] = {"happy", "cheer", "clap", "chuckle", "dance", "earwiggle", "hug", "songbird", "fistpump", "highfive", "joy","paintyellow"},
-	["playful"] = {"magictrick", "lophop", "blowbubbles", "heart", "sdance", "tdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
+	["happy"] = {"happy", "cheer", "clap", "chuckle", "dance", "twirl", "earwiggle", "hug", "songbird", "fistpump", "highfive", "joy","paintyellow"},
+	["playful"] = {"magictrick", "lophop", "blowbubbles", "heart", "mime", "sdance", "tdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
 	["confident"] = {"cheer", "paintblack", "photograph", "toast", "think", "lean", "visage", "heart", "scheme", "gratuity", "tea", "spectacles", "snap", "pose", "petals", "vpose"}, --Moved From Black
 	["social"] = {"converse", "beesknees", "tea", "clap", "sweep", "songbird", "flamedance", "welcome", 
 					"greet", "hum", "bombdance", "getfantasy", "shakedrink", "hug", "dote", "petals", "sabotender", "ohokaliy",
@@ -830,20 +681,20 @@ gyreMethods = {
 aspectKeys = {"black", "blue", "red", "yellow", "green", "white"}
 
 aspectList = {
-	["black"] = {"focused", "dazed", "mischievous", "anxious", "flippant", "aetheric"},
-	["blue"] = {"bored", "scared", "sleepy", "sad", "cold", "wet"},
-	["red"] = {"angry", "embarrassed", "curious", "anxious", "flippant", "aetheric"},
+	["black"] = {"focused", "dazed", "mischievous", "disturbed", "apathetic", "aetheric"},
+	["blue"] = {"bored", "scared", "sleepy", "sad", "cold", "mortified"},
+	["red"] = {"angry", "embarrassed", "curious", "hot", "flirty", "amused"},
 	["yellow"] = {"hungry", "puzzled", "energized", "busy", "amazed", "surprised"},
-	["green"] = {"tense", "uncomfortable", "impatient", "bathing", "diving", "nosey"},
-	["white"] = {"neutral", "happy", "playful", "confident", "social", "responsible"},
+	["green"] = {"tense", "uncomfortable", "impatient", "bathing", "wet", "nosey"},
+	["white"] = {"happy", "playful", "confident", "social", "neutral", "responsible"},
 }
 
 aspectTable = {
 	["focused"] = "black",
 	["dazed"] = "black",
 	["mischievous"] = "black",
-	["anxious"] = "black",
-	["flippant"] = "black",
+	["disturbed"] = "black",
+	["apathetic"] = "black",
 	["aetheric"] = "black",
 	
 	["bored"] = "blue",
@@ -851,7 +702,7 @@ aspectTable = {
 	["sleepy"] = "blue",
 	["sad"] = "blue",
 	["cold"] = "blue",
-	["wet"] = "blue",
+	["mortified"] = "blue",
 
 	["angry"] = "red",
 	["embarrassed"] = "red",
@@ -871,14 +722,14 @@ aspectTable = {
 	["uncomfortable"] = "green",
 	["impatient"] = "green",
 	["bathing"] = "green",
-	["diving"] = "green",
+	["wet"] = "green",
 	["nosey"] = "green",
 	
-	["neutral"] = "white",
 	["happy"] = "white",
 	["playful"] = "white",
 	["confident"] = "white",
 	["social"] = "white",
+	["neutral"] = "white",
 	["responsible"] = "white",
 }
 
@@ -1030,6 +881,11 @@ function GyreLite(emo, amt)
 	end
 	func_time["GyreLite"].ST = os.time()
 	amt = amt or 0
+	if playerTraits.moody then
+		if moodAspect[emo] == domiMood then
+			amt = amt + (amt * 0.37)
+		end
+	end
 	--dbgMsg("ƒGyreLite: amt :: ƒ" .. tostring(amt), 1)
 	emoState[emo] = emoState[emo] or 0
 	emoState[emo] = emoState[emo] + amt
@@ -1366,7 +1222,7 @@ function tokenHandler()
 						end
 						if tk.type == "emote" then
 							if tk.what then
-								DoRandom(tk.what)
+								DoRandom(tk.what, "influenced by surroundings")
 								--Game.SendChat("/" .. tk.what)
 							end
 						elseif tk.type == "routine" then
@@ -1498,10 +1354,15 @@ function tokenHandler()
 	func_track("tokenHandler")
 end
 
-function UpdateStorageData()
+function UpdateStorageData() --deprecate
 	if filterLog["2"] then
 		dbgMsg("ƒUpdateStorageDatarƒ", 2)
 	end
+	local deprecate = true
+	if deprecate then
+		return
+	end
+	
 	func_time["UpdateStorageData"].ST = os.time()
 	local dX = 0
 	playerName = Game.Player.Name

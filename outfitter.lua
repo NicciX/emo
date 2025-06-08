@@ -392,6 +392,19 @@ function SmartOutfit(slct)
 	end
 end
 
+function FindJobOutfit(job)
+	local oj
+	for k, v in pairs(CD[playerName].outfits) do
+		if v.job then
+			if v.job == job then
+				oj = k
+				break
+			end
+		end
+	end
+	return oj
+end
+
 function UpdateOutfit(co)
 	if not co then
 		return
