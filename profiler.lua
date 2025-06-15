@@ -1195,6 +1195,9 @@ function dumpInfo(args)
 			end
 		else
 			if CD[playerName].outfits[currentOutfit] then
+				if type(CD[playerName].outfits[currentOutfit].bra) == "string" then
+					CD[playerName].outfits[currentOutfit].bra = 0
+				end
 				if CD[playerName].outfits[currentOutfit].bra > 0 then
 					if CD[playerName].outfits[currentOutfit].braGlam ~= "" then
 						tmp = (CD[playerName].outfits[currentOutfit].braGlam == Game.Player.Equipped.Body.GlamName)
@@ -1217,6 +1220,9 @@ function dumpInfo(args)
 				else
 						dbgMsg("    ‹ω›         ~Bra~         (•Y•)", 0)
 				end
+				if type(CD[playerName].outfits[currentOutfit].panties) == "string" then
+					CD[playerName].outfits[currentOutfit].panties = 0
+				end
 				if CD[playerName].outfits[currentOutfit].panties > 0 then
 					if CD[playerName].outfits[currentOutfit].pantiesGlam ~= "" then
 						tmp = (CD[playerName].outfits[currentOutfit].pantiesGlam == Game.Player.Equipped.Legs.GlamName)
@@ -1237,6 +1243,9 @@ function dumpInfo(args)
 					end
 				else
 						dbgMsg("    ‹∨›     ~Panties~     (^♥^)", 0)	
+				end
+				if type(CD[playerName].outfits[currentOutfit].nails) == "string" then
+					CD[playerName].outfits[currentOutfit].nails = 0
 				end
 				if CD[playerName].outfits[currentOutfit].nails > 0 then
 					if CD[playerName].outfits[currentOutfit].nailsGlam ~= "" then
@@ -1264,6 +1273,7 @@ function dumpInfo(args)
 				else
 					dbgMsg("Facewear Not Set~ (⌐■_■)", 0) --♪π∞
 				end
+				CD[playerName].outfits[currentOutfit]["temp"] = tostring(reduce(OutfitTempFactor(), 3))
 				if CD[playerName].outfits[currentOutfit]["temp"] then
 					dbgMsg("✓Current Outfit Environment: " .. tostring(CD[playerName].outfits[currentOutfit]["temp"]) .. ".", 0)
 				else

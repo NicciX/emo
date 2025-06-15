@@ -195,7 +195,7 @@ local routines = {
 			["w"] = 0.015,
 		},
 		[4] = {
-			["do"] = "sheathe",
+			["do"] = "sheathe motion",
 			["w"] = 0.015,
 		},
 		[5] = {
@@ -213,6 +213,51 @@ local routines = {
 		
 	
 	},
+
+	["shower"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if tardis(true) < 1 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function() 
+				MoveToTarget()
+			end,
+			["w"] = 1.11,
+		},
+		[3] = {
+			["do"] = "jmp",
+			["jmp"] = 1,
+			["w"] = 1.11,
+		},
+		[4] = {
+			["do"] = "pinteract",
+			["w"] = 1.11,
+		},
+	},
+	
+	["cofferhelper"] = {
+		[1] = {
+			["do"] = "target Treasure Coffer",
+			["w"] = 0.77,
+		},
+		[2] = {
+			["do"] = "pinteract",
+			["w"] = 0.77,
+		},
+		
+	},
+	
 	
 	["leves"] = {
 		[1] = {

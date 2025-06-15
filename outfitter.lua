@@ -1,24 +1,386 @@
 --Outfit Stuff
 
+local glams = {
+	["Pearl Roselle Capeline"] = {
+		["slot"] = "head",
+		["temp"] = 2,
+	},
+	["Dirndl's Hat"] = {
+		["slot"] = "head",
+		["temp"] = 1.5,
+	},
+	["Far Eastern Schoolgirl's Hair Ribbon"] = {
+		["slot"] = "head",
+		["temp"] = 1.39,
+	},
+	["Turali Trader's Shirt"] = {
+		["slot"] = "body",
+		["temp"] = 11,
+	},
+	["Claws of the Beast"] = {
+		["slot"] = "hands",
+		["temp"] = 0.11,
+	},
+	["Demonic Slops"] = {
+		["slot"] = "legs",
+		["temp"] = 6.66,
+	},
+	["Casual Boots"] = {
+		["slot"] = "feet",
+		["temp"] = 2,
+	},
+	["Isle Vacationer's Tanga"] = {
+		["slot"] = "legs",
+		["temp"] = 0.69,
+	},
+	["Far Eastern Schoolgirl's Boots"] = {
+		["slot"] = "feet",
+		["temp"] = 2,
+	},
+	["Far Eastern Matriarch's Sun Hat"] = {
+		["slot"] = "head",
+		["temp"] = 3,
+	},
+	["Songbird Jacket"] = {
+		["slot"] = "body",
+		["temp"] = 3,
+	},
+	["Isle Vacationer's Wrist Torques"] = {
+		["slot"] = "hands",
+		["temp"] = 0.25,
+	},
+	["No.2 Type B Boots"] = {
+		["slot"] = "feet",
+		["temp"] = 3,
+	},
+	["Neon Street Blouson"] = {
+		["slot"] = "body",
+		["temp"] = 13,
+	},
+	["Dirndl's Wrist Torque"] = {
+		["slot"] = "hands",
+		["temp"] = 0.35,
+	},
+	["Southern Seas Tanga"] = {
+		["slot"] = "legs",
+		["temp"] = 1,
+	},
+	["Augmented Quetzalli Visor of Aiming"] = {
+		["slot"] = "head",
+		["temp"] = 1,
+	},
+	["Thavnairian Wool Autumn Shirt"] = {
+		["slot"] = "body",
+		["temp"] = 3,
+	},
+	["Model A-1 Tactical Fingerless Gloves"] = {
+		["slot"] = "hands",
+		["temp"] = 1,
+	},
+	["Spring Skirt"] = {
+		["slot"] = "legs",
+		["temp"] = 6.39,
+	},
+	["Demonic Thighboots"] = {
+		["slot"] = "feet",
+		["temp"] = 3.33,
+	},
+	["Survival Hat"] = {
+		["slot"] = "head",
+		["temp"] = 2,
+	},
+	["Bouncer's Holster Vest"] = {
+		["slot"] = "body",
+		["temp"] = 5.5,
+	},
+	["Recreationisle Dive Watch"] = {
+		["slot"] = "hands",
+		["temp"] = 0.25,
+	},
+	["Moonward Hat of Aiming"] = {
+		["slot"] = "head",
+		["temp"] = 1,
+	},
+	["Salon Server's Dress Vest"] = {
+		["slot"] = "body",
+		["temp"] = 6,
+	},
+	["Thavnairian Armlets"] = {
+		["slot"] = "hands",
+		["temp"] = 3.9,
+	},
+	["Cotton Tights"] = {
+		["slot"] = "legs",
+		["temp"] = 4.4,
+	},
+	["Dirndl's Pumps"] = {
+		["slot"] = "feet",
+		["temp"] = 3,
+	},
+	["Songbird Hat"] = {
+		["slot"] = "head",
+		["temp"] = 1,
+	},
+	["Far Eastern Matriarch's Dress"] = {
+		["slot"] = "body",
+		["temp"] = 9,
+	},
+	["Bunny Chief Tights"] = {
+		["slot"] = "legs",
+		["temp"] = 3,
+	},
+	["Valentione Emissary's Dress Boots"] = {
+		["slot"] = "feet",
+		["temp"] = 1.7,
+	},
+	["Replica Sky Pirate's Beret of Aiming"] = {
+		["slot"] = "head",
+		["temp"] = 2,
+	},
+	["Scion Adventurer's Jacket"] = {
+		["slot"] = "body",
+		["temp"] = 7.7,
+	},
+	["False Nails"] = {
+		["slot"] = "hands",
+		["temp"] = 0.11,
+	},
+	["Spring Bottoms"] = {
+		["slot"] = "legs",
+		["temp"] = 1,
+	},
+	["Hypostatic Hairpin of Aiming"] = {
+		["slot"] = "head",
+		["temp"] = 0.22,
+	},
+	["Hypostatic Tunic of Aiming"] = {
+		["slot"] = "body",
+		["temp"] = 5,
+	},
+	["Free Spirit's Ringbands"] = {
+		["slot"] = "hands",
+		["temp"] = 0.5,
+	},
+	["Bridesmaid's Tights"] = {
+		["slot"] = "legs",
+		["temp"] = 3,
+	},
+	["Summer Indigo Shirt"] = {
+		["slot"] = "body",
+		["temp"] = 4,
+	},
+	["Shishu Gozen Hakama"] = {
+		["slot"] = "legs",
+		["temp"] = 7,
+	},
+	["Recreationisle Shoes"] = {
+		["slot"] = "feet",
+		["temp"] = 2.1,
+	},
+	["Cactuar Pajama Shirt"] = {
+		["slot"] = "body",
+		["temp"] = 6.11,
+	},
+	["Isle Vacationer's Visor"] = {
+		["slot"] = "head",
+		["temp"] = 1,
+	},
+	["Striped Southern Seas Swimsuit"] = {
+		["slot"] = "body",
+		["temp"] = 3.9,
+	},
+	["Isle Vacationer's Sandals"] = {
+		["slot"] = "feet",
+		["temp"] = 0.69,
+	},
+	["Seneschal Prince's Jacket"] = {
+		["slot"] = "body",
+		["temp"] = 8,
+	},
+	["Fat Cat Shorts"] = {
+		["slot"] = "legs",
+		["temp"] = 3.3,
+	},
+	["Dalmascan Leather Shoes"] = {
+		["slot"] = "feet",
+		["temp"] = 1,
+	},
+	["Arcanaut's Robe of Healing"] = {
+		["slot"] = "body",
+		["temp"] = 13,
+	},
+	["Free Spirit's Hat"] = {
+		["slot"] = "head",
+		["temp"] = 1,
+	},
+	["Model B-2 Tactical Jacket"] = {
+		["slot"] = "body",
+		["temp"] = 9,
+	},
+	["Isle Farmhand's Cutoffs"] = {
+		["slot"] = "legs",
+		["temp"] = 3,
+	},
+	["Martial Artist's Sleeveless Vest"] = {
+		["slot"] = "body",
+		["temp"] = 3,
+	},
+	["Frontier Shoes"] = {
+		["slot"] = "feet",
+		["temp"] = 2,
+	},
+	["Tamamo Headband"] = {
+		["slot"] = "head",
+		["temp"] = -0.39,
+	},
+	["Hannish Wool Autumn Shirt"] = {
+		["slot"] = "body",
+		["temp"] = 9,
+	},
+	["Street Handwear"] = {
+		["slot"] = "hands",
+		["temp"] = 0.69,
+	},
+	["Far Eastern Maiden's Bottoms"] = {
+		["slot"] = "legs",
+		["temp"] = 5,
+	},
+	["Skyworker's Singlet"] = {
+		["slot"] = "body",
+		["temp"] = 2,
+	},
+	["Valentione Rose Ribboned Gloves"] = {
+		["slot"] = "hands",
+		["temp"] = 1,
+	},
+	["Southern Seas Swimsuit"] = {
+		["slot"] = "body",
+		["temp"] = 3.9,
+	},
+	["Martial Artist's Pumps"] = {
+		["slot"] = "feet",
+		["temp"] = 1,
+	},
+	["Loyal Housemaid's Apron Dress"] = {
+		["slot"] = "body",
+		["temp"] = 11,
+	},
+	["Loyal Housemaid's Wristdresses"] = {
+		["slot"] = "hands",
+		["temp"] = 1.5,
+	},
+	["Loyal Housemaid's Pumps"] = {
+		["slot"] = "feet",
+		["temp"] = 1.69,
+	},
+	["Loyal Housemaid's Bloomers"] = {
+		["slot"] = "legs",
+		["temp"] = 3,
+	},
+	["Hooded Fireglass Leather Vest"] = {
+		["slot"] = "body",
+		["temp"] = 3,
+	},
+	["Thavnairian Wool Autumn Shirt"] = {
+		["slot"] = "body",
+		["temp"] = 7.77,
+	},
+	["Calfskin Rider's Shoes"] = {
+		["slot"] = "feet",
+		["temp"] = 0.77,
+	},
+	["Gentlebean Parka"] = {
+		["slot"] = "body",
+		["temp"] = 11,
+	},
+	["Free Spirit's Cropped Slops"] = {
+		["slot"] = "legs",
+		["temp"] = 4,
+	},
+	["Isle Explorer's Shirt"] = {
+		["slot"] = "body",
+		["temp"] = 3.9,
+	},
+	["Free Spirit's Cropped Slops"] = {
+		["slot"] = "legs",
+		["temp"] = 4,
+	},
+	["Seneschal Prince's Headset"] = {
+		["slot"] = "head",
+		["temp"] = 0.13,
+	},
+	["Taoist's Shoes"] = {
+		["slot"] = "feet",
+		["temp"] = 0.69,
+	},
+	["Lady's Knickers (Black)"] = {
+		["slot"] = "legs",
+		["temp"] = 1.39,
+	},
+	["Lady's Knickers (White)"] = {
+		["slot"] = "legs",
+		["temp"] = 1.69,
+	},
+	["Lix Hose"] = {
+		["slot"] = "legs",
+		["temp"] = 3.69,
+	},
+	["Loose Fit Overshirt"] = {
+		["slot"] = "body",
+		["temp"] = 7.77,
+	},
+	
+	
+	
+	
+	
+}
+
 local validTemps = {
-	["arctic"] = "arctic",
-	["cold"] = "cold", -- ☃▽
-	["cool"] = "cool", -- ☆▼
-	["warm"] = "warm", -- ○ 
-	["normal"] = "normal", -- ★    °
-	["def"] = "normal", -- ★ ≡
-	["hot"] = "hot", -- ●▲
-	["wet"] = "wet", -- ☂ ☁
-	["aetheric"] = "aetheric",  --₆☀∮
-	["space"] = "space",
-	["hell"] = "hellworld", -- ☀
-	["naked"] = "scorchin",
-	["scorchin"] = "scorchin",
+	["arctic"] = -21,
+	["cold"] = -11, -- ☃▽
+	["tundra"] = -27,
+	["cool"] = -7, -- ☆▼
+	["warm"] = 4, -- ○ 
+	["normal"] = 0, -- ★    °
+	["def"] = 0, -- ★ ≡
+	["hot"] = 7, -- ●▲
+	["moderate"] = 3,
+	["plains"] = 3.9,
+	["umbralplains"] = -2,
+	["indoors"] = -1.6,
+	["indoors-moderate"] = -0.77,
+	["coastal"] = 1.77,
+	["enchantedforest"] = -1,
+	["temperate"] = 0,
+	--["wet"] = "wet", -- ☂ ☁
+	["aetheric"] = 3,  --₆☀∮
+	["space"] = -11,
+	["hell"] = 17, -- ☀
+	["naked"] = 13,
+	["scorchin"] = 21,
+	["island"] = 2.7,
+	["enchanted-island"] = 0,
+}
+
+local climates = {
+	["arctic"] = "dry",
+	["desert"] = "dry",
+	["coastal"] = "wet",
+	["plains"] = "dry",
+	["island"] = "wet",
+	["temperate"] = "normal",
+	["enchantedforest"] = "normal",
+	["umbralplains"] = "arid",
+	["tundra"] = "dry",
+	["sylvan"] = "wet",
+	["enchanted-island"] = "normal",
+	["desert"] = "arid",
+
 }
 
 -- hot = ▲
 -- warm = △
-
 local smartOutfitSelect = {
 	["cool"] = {
 		["warm"] = "temp",
@@ -30,7 +392,7 @@ local smartOutfitSelect = {
 	},
 }
 
-local outfitTempEffects = {
+local outfitTempEffects = {--deprecate?
 	["arctic"] = {
 		["hot"] = 3.77,
 		["cold"] = -5.54,
@@ -118,6 +480,7 @@ local validSlotId = {
 	["pants"] = "legs", --6
 	["skirt"] = "legs",
 	["shorts"] = "legs",
+	["stockings"] = "legs",
 	["bottoms"] = "legs",
 	["shoes"] = "feet",
 	["boots"] = "feet",
@@ -153,6 +516,27 @@ local gearSlotName = {
 	["11"] = "RRing", -- RingR			ArmoryRings = 3300
 	["12"] = "LRing",
 }
+
+function GetClimate()
+	local map = Game.Player.MapZone
+	if zones[map] then
+		if zones[map].climate then
+			return zones[map].climate
+		end
+	end
+	return {["type"] = "temperate", ["temp"] = "normal", ["humidity"] = "normal"}
+end
+
+function SetClimate()
+	local map = Game.Player.MapZone
+	if zones[map] then
+		if zones[map].climate then
+			if zones[map].climate.temp then
+				currentClimate = zones[map].climate.temp
+			end
+		end
+	end
+end
 
 local SNDRemoveCall = { --Deprecate
 	["0"] = "EmoHideWeapon", -- Mainhand			ArmoryMainHand = 3500
@@ -244,29 +628,136 @@ function OutfitLoad(co)
 	end
 end
 
-function SNDEquipHandler(args) -- deprecate
-	if args == "Fail!" then
-		dbgMsg("Failed to equip anything," .. slot, 0)
-		dbgMsg("Please try again after resolving the issue...", 0)
-	else
-		dbgMsg("Item successfully equiped!", 0)
+function OutfitTempFactor()
+	local warm = -7.77
+
+	local slot = CD[playerName].outfits[currentOutfit].headGlam
+	
+	if not slot then
+		slot = CD[playerName].outfits[currentOutfit].headName
 	end
+	if slot then
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 1
+		end
+	end
+	
+	if IsUnderwear("top") == true then
+		slot = CD[playerName].outfits[currentOutfit].braGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].braName
+		end
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 1
+		end
+	elseif IsUnderwear("top") == false then
+		slot = CD[playerName].outfits[currentOutfit].bodyGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].bodyName
+		end
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 9
+		end
+	elseif IsUnderwear("top") == nil then -- naked!
+		warm = warm - 1
+	end
+	
+	if IsUnderwear("nails") then
+		slot = CD[playerName].outfits[currentOutfit].braGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].braName
+		end
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 0.17
+		end
+	elseif IsUnderwear("nails") == false then
+		slot = CD[playerName].outfits[currentOutfit].bodyGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].bodyName
+		end
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 1
+		end
+	elseif IsUnderwear("nails") == nil then -- naked!
+		--
+	end
+	
+	if IsUnderwear("pants") == true then
+		slot = CD[playerName].outfits[currentOutfit].pantiesGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].pantiesName
+		end
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 1.5
+		end
+	elseif IsUnderwear("pants") == false then
+		slot = CD[playerName].outfits[currentOutfit].legsGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].legsName
+		end
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 7
+		end
+	elseif IsUnderwear("pants") == nil then -- naked!
+		warm = warm - 1.5
+	end
+	
+	slot = CD[playerName].outfits[currentOutfit].feetGlam
+	
+	if not slot then
+		slot = CD[playerName].outfits[currentOutfit].feetName
+	end
+	if slot then
+		if glams[slot] then
+			warm = warm + glams[slot].temp
+		else
+			warm = warm + 1.77
+		end
+	end
+	
+	return warm
 end
 
 function TakeoffRandom(list)
 	dbgMsg(".OutfitLoad.", 2)
 	dbgMsg("TakeoffRandom: :: ", 1)
-	local r
+	local r, s
+	local ct = 6
+	local slot
 	if type(list) == "table" then
-		r = math.floor(math.random(1, #list))
-		if list[r] then
-			if validSlotId[list[r]] then
-				dbgMsg("TakeoffRandom: :: " .. tostring(list[r]), 1)
-				RemoveItem(list[r])
+		repeat
+			ct = ct - 1
+			r = math.floor(math.random(1, #list))
+			if list[r] then
+				slot = validSlotId[list[r]]
+				if slot and Game.Player.Equipped[slot:sub(1,1):upper()..slot:sub(2)].Item > 0 then
+					dbgMsg("TakeoffRandom: :: " .. tostring(list[r]), 1)
+					if Game.Player.Entity.Job.ShortName == "DNC" then
+						Game.SendChat("/ac Windmill")
+					end
+					RemoveItem(list[r])
+					s = true
+				end
 			end
-		end
+		until (s or ct == 0)
 	end
-
+	if s then
+		return true
+	end
 end
 
 function RemoveItem(args)
@@ -304,18 +795,21 @@ function RemoveItem(args)
 		elseif slot == "facewear" and CD[playerName]["outfits"][currentOutfit]["facewear"] then
 			currentOutfitSet[slot] = nil
 			Game.SendChat("/facewear \"" .. CD[playerName]["outfits"][currentOutfit]["facewear"] .. "\"")
-		elseif slot == "panties" and currentOutfitSet[slot] == currentOutfitSet.legs then
+		elseif slot == "panties" and CD[playerName].outfits[currentOutfit].panties == currentOutfitSet.legs then
 			currentOutfitSet[slot] = 0
 			Game.Player.Equipped.Legs.Remove()
-		elseif slot == "bra" and currentOutfitSet[slot] == currentOutfitSet.bra then
+		elseif slot == "bra" and CD[playerName].outfits[currentOutfit].bra == currentOutfitSet.body then
 			currentOutfitSet[slot] = 0
 			Game.Player.Equipped.Body.Remove()
-		elseif slot == "nails" and currentOutfitSet[slot] == currentOutfitSet.nails then
+		elseif slot == "nails" and CD[playerName].outfits[currentOutfit].nails == currentOutfitSet.nails then
 			currentOutfitSet[slot] = 0
 			Game.Player.Equipped.Hands.Remove()
-		elseif slot == "panties" and currentOutfitSet[slot] ~= currentOutfitSet.legs then
+		elseif slot == "panties" and CD[playerName].outfits[currentOutfit].panties ~= currentOutfitSet.legs then
 			currentOutfitSet[slot] = 0
 			dbgMsg("Panties removed for " .. currentOutfit .. " O₀oLaLa.", 0)
+		elseif slot == "bra" and CD[playerName].outfits[currentOutfit].bra ~= currentOutfitSet.body then
+			currentOutfitSet[slot] = 0
+			dbgMsg("Bra removed for " .. currentOutfit .. " (•Y•)", 0)
 			--Game.Player.Equipped.Legs.Remove()
 		else
 			currentOutfitSet[slot] = nil
@@ -405,11 +899,115 @@ function FindJobOutfit(job)
 	return oj
 end
 
+function IsUnderwear(slot)
+	if validSlotId[slot] == "body" then
+		if Game.Player.Equipped.Body.ItemName == "" then
+			return nil
+		end
+		if (Game.Player.Equipped.Body.GlamName == CD[playerName].outfits[currentOutfit].braGlam) or
+			(Game.Player.Equipped.Body.ItemName == CD[playerName].outfits[currentOutfit].braName) then
+			return true
+		end
+		return false
+	elseif validSlotId[slot] == "legs" then
+		if Game.Player.Equipped.Legs.ItemName == "" then
+			return nil
+		end
+		if (Game.Player.Equipped.Legs.GlamName == CD[playerName].outfits[currentOutfit].pantiesGlam) or
+			(Game.Player.Equipped.Legs.ItemName == CD[playerName].outfits[currentOutfit].pantiesName) then
+			return true
+		end
+		return false
+	elseif validSlotId[slot] == "hands" then
+		if Game.Player.Equipped.Hands.ItemName == "" then
+			return nil
+		end
+		if (Game.Player.Equipped.Hands.GlamName == CD[playerName].outfits[currentOutfit].handsGlam) or
+			(Game.Player.Equipped.Hands.ItemName == CD[playerName].outfits[currentOutfit].handsName) then
+			return true
+		end
+		return false
+	end
+end
+
+function DressBest()
+	local ztf = ZoneTempFactor
+	--local otf = reduce(OutfitTempFactor() * 0.37, 3)
+	local job = Game.Player.Entity.Job.ShortName
+	local df = 7777
+	local cd
+	local slct
+	--dbgMsg("Dress Best: Trace A :: ", 1)
+	if optOutfitTemp then
+		for k, v in pairs(CD[playerName].outfits) do
+			if v.job == job and v.temp then
+				--dbgMsg("Dress Best: dress check :: " .. k, 1)
+				if math.abs(optOutfitTemp + v.temp * 0.37) < df then
+				--if 6 - math.abs(v.temp * 0.37 - optOutfitTemp) < df then
+				--if diff(optOutfitTemp, tonumber(v.temp) * 0.37) < df then
+					slct = k
+					df = math.abs(optOutfitTemp + v.temp * 0.37)
+					dbgMsg("Dress Best: dress check :: " .. k .. " :: " .. tostring(df), 1)
+				end
+			end
+		end
+		if slct then
+			if slct == currentOutfit then
+				if (os.time() - lastDressCheck) > 211 then
+					OutfitLoad(slct)
+					lastDressCheck = os.time()
+					return false
+				end
+				dbgMsg("Dress Best: Trace A :: ", 1)
+				if (os.time() - lastDressCheck) > 77 and not playerTraits.modest and emoState.hot > 69 then
+					dbgMsg("Dress Best: Trace A.2 :: ", 1)
+					cd = TakeoffRandom({"top", "pants"})
+					if cd then
+						lastDressCheck = os.time()
+						return true
+					else
+						lastDressCheck = os.time() + 777
+						return false
+					end
+					
+				end
+				dbgMsg("Dress Best: Trace B :: ", 1)
+				if (os.time() - lastDressCheck) > 33 and emoState.hot > 37 then
+					dbgMsg("Dress Best: Trace B.2 :: ", 1)
+					if playerTraits.vixen then
+						cd = TakeoffRandom({"gloves", "shoes"})
+					else
+						cd = TakeoffRandom({"hat", "gloves", "shoes"})
+					end
+					if cd then
+						lastDressCheck = os.time()
+						return true
+					else
+						lastDressCheck = os.time() - 77
+						return false
+					end
+					lastDressCheck = os.time()
+					return false
+				end
+				dbgMsg("Dress Best: Trace C :: ", 1)
+				--lastDressCheck = os.time()
+				return false
+				--dbgMsg("Dress Best: " .. currentOutfit, 3)
+			else
+				lastDressCheck = os.time()
+				OutfitLoad(slct)
+				return true
+			end
+		end
+	end
+end
+
 function UpdateOutfit(co)
 	if not co then
 		return
 	end
 	local glam
+	local climate = GetClimate()
 	currentOutfit = co
 	dbgMsg("Update Outfit: " .. currentOutfit, 0)
 	local ls = Game.Player.Equipped.LoadSlots()
@@ -438,6 +1036,11 @@ function UpdateOutfit(co)
 				CD[playerName].glams.head[glam] = {}
 				CD[playerName].glams.head[glam]["temp"] = "normal"
 			end
+			CD.global.glams[glam] = CD.global.glams[glam] or {}
+			CD.global.glams[glam].slot = "head"
+			if climate then
+				CD.global.glams[glam].climate = CD.global.glams[glam].climate or climate
+			end
 		end
 		--Body
 		CD[playerName].outfits[currentOutfit].body = Game.Player.Equipped.Body.Item
@@ -451,6 +1054,11 @@ function UpdateOutfit(co)
 			if not CD[playerName].glams.body[glam] then
 				CD[playerName].glams.body[glam] = {}
 				CD[playerName].glams.body[glam]["temp"] = "normal"
+			end
+			CD.global.glams[glam] = CD.global.glams[glam] or {}
+			CD.global.glams[glam].slot = "body"
+			if climate then
+				CD.global.glams[glam].climate = CD.global.glams[glam].climate or climate
 			end
 		end
 		--Hands
@@ -466,6 +1074,11 @@ function UpdateOutfit(co)
 				CD[playerName].glams.hands[glam] = {}
 				CD[playerName].glams.hands[glam]["temp"] = "normal"
 			end
+			CD.global.glams[glam] = CD.global.glams[glam] or {}
+			CD.global.glams[glam].slot = "hands"
+			if climate then
+				CD.global.glams[glam].climate = CD.global.glams[glam].climate or climate
+			end
 		end
 		--Legs
 		CD[playerName].outfits[currentOutfit].legs = Game.Player.Equipped.Legs.Item
@@ -480,6 +1093,11 @@ function UpdateOutfit(co)
 				CD[playerName].glams.legs[glam] = {}
 				CD[playerName].glams.legs[glam]["temp"] = "normal"
 			end
+			CD.global.glams[glam] = CD.global.glams[glam] or {}
+			CD.global.glams[glam].slot = "legs"
+			if climate then
+				CD.global.glams[glam].climate = CD.global.glams[glam].climate or climate
+			end
 		end
 		--Feet
 		CD[playerName].outfits[currentOutfit].feet = Game.Player.Equipped.Feet.Item
@@ -493,6 +1111,11 @@ function UpdateOutfit(co)
 			if not CD[playerName].glams.feet[glam] then
 				CD[playerName].glams.feet[glam] = {}
 				CD[playerName].glams.feet[glam]["temp"] = "normal"
+			end
+			CD.global.glams[glam] = CD.global.glams[glam] or {}
+			CD.global.glams[glam].slot = "feet"
+			if climate then
+				CD.global.glams[glam].climate = CD.global.glams[glam].climate or climate
 			end
 		end
 		--Ears
@@ -559,8 +1182,9 @@ function UpdateOutfit(co)
 		CD[playerName].outfits[currentOutfit].panties = CD[playerName].outfits[currentOutfit].panties or 0
 		CD[playerName].outfits[currentOutfit].bra = CD[playerName].outfits[currentOutfit].bra or 0
 		CD[playerName].outfits[currentOutfit].nails = CD[playerName].outfits[currentOutfit].nails or 0
-		
-		CD[playerName].outfits[currentOutfit]["job"] = Game.Player.Entity.Job.ShortName
+		--Is set by the Profiler
+		--CD[playerName].outfits[currentOutfit].temp = tostring(reduce(OutfitTempFactor(), 3))
+		CD[playerName].outfits[currentOutfit].job = Game.Player.Entity.Job.ShortName
 	end
 	return ls
 end
@@ -788,5 +1412,6 @@ end
 
 
 return {validTemps, smartOutfitSelect, outfitTempEffects, validTypes, validStyles,
-		validSlotId, gearSlotName, SNDRemoveCall, OutfitSave, OutfitLoad, SNDEquipHandler, 
-		TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit}
+		validSlotId, gearSlotName, OutfitSave, OutfitLoad, GetClimate, SetClimate,
+		TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit,
+		glams, IsUnderwear, OutfitTempFactor}

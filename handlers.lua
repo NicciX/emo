@@ -146,7 +146,7 @@ aspectAffinity = {
 		},
 		["green"] = {
 			["uncomfortable"] = 3,
-			["bathing"] = 3,
+			["refreshed"] = 3,
 		},
 		["white"] = {
 			["playful"] = 1,
@@ -266,7 +266,7 @@ aspectAffinity = {
 			["puzzled"] = 3,
 		},
 		["green"] = {
-			["bathing"] = 2,
+			["refreshed"] = 2,
 		},
 		["white"] = {
 			["confident"] = 2,
@@ -361,7 +361,7 @@ aspectAffinity = {
 			["puzzled"] = 1,
 		},
 		["green"] = {
-			["bathing"] = 1,
+			["refreshed"] = 1,
 		},
 		["white"] = {
 			["playful"] = 3,
@@ -414,7 +414,7 @@ moods = {
 	["sleepy"] = {"doze", "stretch", "lean", "sit", "pdead", "tea"},
 	["sad"] = {"slump", "cry", "disappointed", "sulk"},
 	["cold"] = {"shiver", "slump", "paintblue", "squats", "tea"},
-	["mortified"] = {"malevolence", "dazed", "pdead", "frighten"},
+	["grungy"] = {"blush", "dazed", "pdead", "frighten", "vexed", "examineself", "upset", "sweat", "sulk", "clutchhead"},
 	
 	--- Elementals; Earth - Fire ---
 	-- Red Moods --
@@ -444,7 +444,7 @@ moods = {
 	["tense"] = {"sweat", "upset", "wringhands", "bigfan", "overreact", "facepalm", "sulk", "no"},
 	["uncomfortable"] = {"upset", "clutchhead", "deny", "paintblue", "paintyellow", "sit"},
 	["impatient"] = {"beckon", "panic", "snap", "slump", "sweep", "elucidate", "sweat", "clutchhead", "wringhands", "disappointed"},
-	["bathing"] = {"splash", "waterfloat", "cheer", "photograph", "waterflip"},
+	["refreshed"] = {"splash", "waterfloat", "cheer", "photograph", "waterflip", "hum", "toast", "spectacles", "petals", "pose", "tea", "visage", "twirl", "psych", },
 	["wet"] = {"shiver", "slump", "angry", "bigfan", "upset"},
 	["nosey"] = {"lookout", "converse", "photograph", "read", "shush", "lean", "spectacles", "tea", "insist", "attend", "hum"},
 
@@ -457,7 +457,7 @@ moods = {
 					"greet", "hum", "bombdance", "getfantasy", "shakedrink", "hug", "dote", "petals", "sabotender", "ohokaliy",
 					"vpose", "tomestone", "photograph", "sdance", "blowbubbles", "toast", "visage", "fist", "bigfan", "reference", "paintblack", "spectacles"},
 	["neutral"] = {"airquotes", "apple", "hum", "atease", "beckon", "riceball", "hum", "lean"},
-	["responsible"] = {"bstance", "gcsalute","beckon", "bow", "ebow", "welcome", "greet", "kneel", "sweep", "goodbye", "yes", "ohokaliy"}, --Moved From Black
+	["responsible"] = {"bstance", "gcsalute","beckon", "bow", "ebow", "welcome", "greet", "rally", "kneel", "sweep", "goodbye", "yes", "ohokaliy"}, --Moved From Black
 }
 
 Gyre = {	---	 -1-  -2- -3- -4- -5- -6-
@@ -682,10 +682,10 @@ aspectKeys = {"black", "blue", "red", "yellow", "green", "white"}
 
 aspectList = {
 	["black"] = {"focused", "dazed", "mischievous", "disturbed", "apathetic", "aetheric"},
-	["blue"] = {"bored", "scared", "sleepy", "sad", "cold", "mortified"},
+	["blue"] = {"bored", "scared", "sleepy", "sad", "cold", "grungy"},
 	["red"] = {"angry", "embarrassed", "curious", "hot", "flirty", "amused"},
 	["yellow"] = {"hungry", "puzzled", "energized", "busy", "amazed", "surprised"},
-	["green"] = {"tense", "uncomfortable", "impatient", "bathing", "wet", "nosey"},
+	["green"] = {"tense", "uncomfortable", "impatient", "refreshed", "wet", "nosey"},
 	["white"] = {"happy", "playful", "confident", "social", "neutral", "responsible"},
 }
 
@@ -702,7 +702,7 @@ aspectTable = {
 	["sleepy"] = "blue",
 	["sad"] = "blue",
 	["cold"] = "blue",
-	["mortified"] = "blue",
+	["grungy"] = "blue",
 
 	["angry"] = "red",
 	["embarrassed"] = "red",
@@ -721,7 +721,7 @@ aspectTable = {
 	["tense"] = "green",
 	["uncomfortable"] = "green",
 	["impatient"] = "green",
-	["bathing"] = "green",
+	["refreshed"] = "green",
 	["wet"] = "green",
 	["nosey"] = "green",
 	
@@ -734,19 +734,34 @@ aspectTable = {
 }
 
 function dbgGyre(args)
-	
 	local s
-	
-	dbgMsg("⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻", 13)
-	dbgMsg("        --------------", 13) -- GYRE
-	dbgMsg("— — — — — — — — — — — — — — —", 13)
+	if args then
+		if not validChn[args] then
+			args = nil
+		else
+			args = args .. " "
+		end
+	end
+	if args then
+		Game.SendChat("/" .. args .. "⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻")
+		Game.SendChat("/" .. args .. "        --------------") -- GYRE
+		Game.SendChat("/" .. args .. "— — — — — — — — — — — — — — —")
+	else
+		dbgMsg("⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻", 13)
+		dbgMsg("        --------------", 13) -- GYRE
+		dbgMsg("— — — — — — — — — — — — — — —", 13)
+	end
 	
 	for k,v in pairs(Gyre) do
 		s=" A∫∫¥ ∴ " .. k .. " π"
 		for i, j in ipairs(v) do
 			s=s.." ("..tostring(j)..")"
 		end
-		dbgMsg(s, 13)
+		if args then
+			Game.SendChat("/" .. args .. s)
+		else
+			dbgMsg(s, 13)
+		end
 	end
 	return true
 end
@@ -774,13 +789,17 @@ function aspectPass(pm, asp, amt, emo)
 			for k,v in pairs(aspAff) do
 				--if math.random(1, v*2) < 2.3 then
 				n = amt / v * 0.61 * boostA
-				emoState[k] = emoState[k] + n
-				if emoState[k] < 0 then
-					emoState[k] = 0
+				if not emoState[k] then
+					dbgMsg("aspectPass.: invalid emote: " .. tostring(k) .. " -> " .. tostring(n), 1)
+				else
+					emoState[k] = emoState[k] + n
+					if emoState[k] < 0 then
+						emoState[k] = 0
+					end
+					emoState[k] = reduce(emoState[k], 4)
+					dbgMsg("aspectPass.: n: " .. k .. " -> " .. tostring(n), 13)
+					dbgMsg("aspectPass.: boostA: " .. k .. " -> " .. tostring(boostA), 13)
 				end
-				emoState[k] = reduce(emoState[k], 4)
-				dbgMsg("aspectPass.: n: " .. k .. " -> " .. tostring(n), 13)
-				dbgMsg("aspectPass.: boostA: " .. k .. " -> " .. tostring(boostA), 13)
 				--end
 			end
 		end
@@ -835,13 +854,22 @@ end
 
 function GyreCheck()
 		--- Schmitt trigger for the Gyre - You're in the Hysteresis Zone now!
+	if gYRo > 0 then
+		gYRo = gYRo - 1
+		if gYRo > 0 then
+			return
+		end
+	end
 	if playerTraits.aetheric then
-		if Sys.Gyre and emoState.aetheric > 7777 then
+		if Sys.Gyre and emoState.aetheric > 17777 then
+			--~~
+		elseif Sys.Gyre and emoState.aetheric > 7777 then
 			dbgMsg("Your emotional energies return to a normal, although altered state...", 1)
 			Sys.Gyre = nil
 		elseif not Sys.Gyre and emoState.aetheric > 3777 then
 			dbgMsg("Hysteric Aetheric energies have invoked the Emotional Gyre within you...", 1)
 			Sys.Gyre = true
+			--gYRo = 6
 		elseif Sys.Gyre and emoState.aetheric < 2357 then -- prime || sum = 17
 			dbgMsg("Your emotional energies return to a more normal state...", 1)
 			Sys.Gyre = nil
@@ -884,6 +912,20 @@ function GyreLite(emo, amt)
 	if playerTraits.moody then
 		if moodAspect[emo] == domiMood then
 			amt = amt + (amt * 0.37)
+		end
+	end
+	if playerTraits.spriggan then
+		if emoState[emo] == math.floor(emoState[emo]) and emoState[emo] > 77 then
+			doBijou("onibi")
+			local e = emoState[emo]
+			
+			if math.random(1,99) > 77 then
+				emoState[emo] = reduce(math.random() * 3.1 * emoState[emo], 4)
+				dbgMsg("Gyre Powerful internal forces increase " .. emo .. " (" .. tostring(e) .. ") ‰ (" .. tostring(emoState[emo]) .. ").", 1)
+			else
+				dbgMsg("Gyre Powerful internal forces reduce " .. emo .. " (" .. tostring(e) .. ") ‰ (" .. tostring(emoState[emo]) .. ").", 1)
+				emoState[emo] = reduce(math.random() * emoState[emo], 4)
+			end
 		end
 	end
 	--dbgMsg("ƒGyreLite: amt :: ƒ" .. tostring(amt), 1)

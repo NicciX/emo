@@ -1664,6 +1664,20 @@ local beacons = {
 	[1185] = { -- Tuliyollal
 		["name"] = "Tuliyollal",
 		["cont"] = "Yok Tural",
+		["aetherytes"] = {"A","B","C","D","E","F","G","H"},
+		["aetheryte"] = 1,
+		["flags"] = {
+			["A"] = {["X"] = 12.8, ["Y"] = 10.9},
+			["B"] = {["X"] = 13.0, ["Y"] = 13.6},
+			["C"] = {["X"] = 5.1, ["Y"] = 10.0},
+			["D"] = {["X"] = 16.7, ["Y"] = 11.7},
+			["E"] = {["X"] = 10.3, ["Y"] = 14.9},
+			--On top of the ridge to the left, not the path downward.
+			["F"] = {["X"] = 9.6, ["Y"] = 11.0},
+			["G"] = {["X"] = 14.8, ["Y"] = 4.3},
+			["H"] = {["X"] = 11.4, ["Y"] = 6.9},
+			["I"] = {["X"] = 11.4, ["Y"] = 6.9},
+		},
 		["beacon"] = {
 			["A"] = {
 				["XPos"] = -24.093994140625,
@@ -1871,6 +1885,7 @@ local beacons = {
 			},
 		},
 	},
+	
 	[1187] = { -- Urqopacha
 		["name"] = "Urqopacha",
 		["cont"] = "Yok Tural",
@@ -2045,6 +2060,7 @@ local beacons = {
 			},
 		},
 	},
+	
 	[1188] = { -- Kozama'uka
 		["name"] = "Kozama'uka",
 		["cont"] = "Yok Tural",
@@ -2529,6 +2545,7 @@ local beacons = {
 	
 		},
 	},
+	
 	[1191] = { -- Heritage Found
 		["name"] = "Heritage Found",
 		["cont"] = "Xak Tural",
@@ -2678,6 +2695,196 @@ local beacons = {
 				["XPos"] = 407.69970703125,
 				["YPos"] = 223.55702209472656,
 				["ZPos"] = 145.5255889892578,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+		},
+	},
+	
+	[1192] = { -- Living Memory
+		["name"] = "Heritage Found",
+		["cont"] = "Xak Tural",
+		["confluences"] = {"AC4","AC5","AC2","AC6","AC6B","AC6C","AC8","AC9","AC7","AC10","AC1","AC3"},
+		["curCur"] = 1,
+		["flags"] = {
+			["AC1"] = {["X"] = 7.5, ["Y"] = 30.9},
+			["AC2"] = {["X"] = 36.5, ["Y"] = 28.4},
+			["AC3"] = {["X"] = 11.1, ["Y"] = 35.1},
+			["AC4"] = {["X"] = 26.1, ["Y"] = 32.3},
+			["AC5"] = {["X"] = 33.9, ["Y"] = 34.2},
+			["AC6"] = {["X"] = 29.1, ["Y"] = 11.0},
+			["AC6B"] = {["X"] = 31.6, ["Y"] = 8.4},
+			["AC7"] = {["X"] = 10.2, ["Y"] = 11.3},
+			["AC8"] = {["X"] = 27.5, ["Y"] = 10.0},
+			["AC9"] = {["X"] = 24.8, ["Y"] = 15.3},
+			["AC10"] = {["X"] = 11.8, ["Y"] = 20.4},
+		},
+		["beacon"] = {
+			["AC1"] = {
+				["XPos"] = -666.2203979492188,
+				["YPos"] = 443.5352783203125,
+				["ZPos"] = 0.05000019073486328,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC2"] = {
+				["XPos"] = 739.7014770507812,
+				["YPos"] = 336.39801025390625,
+				["ZPos"] = 46.89213180541992,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC3"] = {
+				["XPos"] = -519.1686401367188,
+				["YPos"] = 672.7710571289062,
+				["ZPos"] = 0.04999995231628418,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC4"] = {
+				["XPos"] = 225.13031005859375,
+				["YPos"] = 564.0449829101562,
+				["ZPos"] = 0.000507354736328125,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC5"] = {
+				["XPos"] = 616.5938720703125,
+				["YPos"] = 628.2691040039062,
+				["ZPos"] = 9.022848129272461,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC6"] = { -- pathfinding may fail on this one
+				["XPos"] = 380.71868896484375,
+				["YPos"] = -523.7406005859375,
+				["ZPos"] = 101.06880950927734,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC6B"] = { -- pathfinding may fail on this one
+				["XPos"] = 484.7375183105469,
+				["YPos"] = -693.134765625,
+				["ZPos"] = 44.31113815307617,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC6C"] = { -- pathfinding may fail on this one
+				["XPos"] = 443.24664306640625,
+				["YPos"] = -693.8435668945312,
+				["ZPos"] = 85.28944396972656,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC7"] = {
+				["XPos"] = -564.1216430664062,
+				["YPos"] = -503.6033020019531,
+				["ZPos"] = -6.000450134277344,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC8"] = {
+				["XPos"] = 299.9405517578125,
+				["YPos"] = -569.0748901367188,
+				["ZPos"] = 52.330665588378906,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC9"] = {
+				["XPos"] = 155.3379669189453,
+				["YPos"] = -303.1348876953125,
+				["ZPos"] = 28.323522567749023,
+				["radius"] = 50,
+				["confluence"] = true,
+				["toast"] = "You sense a nearby aether confluence.",
+				["effects"] = {
+					["energized"] = -3.55,
+					["hungry"] = 0.75,
+				},
+				--["routine"] = "Beacon1190A",
+				["cooldown"] = 90,
+			},
+			["AC10"] = {
+				["XPos"] = -489.47100830078125,
+				["YPos"] = -51.87343978881836,
+				["ZPos"] = 38,
 				["radius"] = 50,
 				["confluence"] = true,
 				["toast"] = "You sense a nearby aether confluence.",
@@ -2876,6 +3083,7 @@ local beacons = {
 			},
 		},
 	},
+	
 	[1249] = { -- Private Cottage - Mist
 		["name"] = "Private Cottage - Mist",
 		["cont"] = "La Noscea",
@@ -2895,9 +3103,28 @@ local beacons = {
 			},
 		},
 	},
+	
 	[1252] = { -- Occult Crescent - South Horn
 		["name"] = "South Horn",
 		["cont"] = "Occult Crescent",
+		["coffers"] = {"cofferA","cofferB", "cofferC","cofferD", "cofferE","cofferF", "cofferG","cofferH",
+					   "cofferI","cofferJ", "cofferK","cofferL", "cofferM","cofferN", "cofferO","cofferP",
+					   "cofferQ","cofferR", "cofferS","cofferT", "cofferU"},
+		["pois"] = {},
+		["flags"] = {
+			["cofferA"] = {["X"] = 28.5, ["Y"] = 15.7},
+			["cofferB"] = {["X"] = 12.5, ["Y"] = 22.0},
+			["cofferC"] = {["X"] = 18.3, ["Y"] = 18.8},
+			["cofferD"] = {["X"] = 13.4, ["Y"] = 28.1},
+			["cofferE"] = {["X"] = 22.5, ["Y"] = 15.6},
+			--On top of the ridge to the left, not the path downward.
+			["cofferF"] = {["X"] = 21.6, ["Y"] = 30.0},
+			["cofferG"] = {["X"] = 37.2, ["Y"] = 23.6},
+			["cofferH"] = {["X"] = 11.4, ["Y"] = 6.9},
+			["cofferJ"] = {["X"] = 27.3, ["Y"] = 34.2},
+			["cofferK"] = {["X"] = 38.1, ["Y"] = 35.4},
+			
+		},
 		["beacon"] = {
 			["A"] = {
 				["XPos"] = 830.746826171875,
@@ -3035,6 +3262,336 @@ local beacons = {
 				},
 				["routine"] = "AetherEffectX", --aetheryte shard
 				["cooldown"] = 33,
+			},
+			["cofferA"] = {
+				["XPos"] = 354.1160888671875,
+				["YPos"] = -288.92962646484375,
+				["ZPos"] = 95.65869140625,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferB"] = {
+				["XPos"] = -444.11383056640625,
+				["YPos"] = 26.230224609375,
+				["ZPos"] = 90.684326171875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferC"] = {
+				["XPos"] = -158.6480712890625,
+				["YPos"] = -132.73828125,
+				["ZPos"] = 98.6190185546875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferD"] = {
+				["XPos"] = -401.66326904296875,
+				["YPos"] = 332.539794921875,
+				["ZPos"] = 85.0384521484375,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferE"] = {
+				["XPos"] = 55.283447265625,
+				["YPos"] = -289.08221435546875,
+				["ZPos"] = 111.314453125,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferF"] = {
+				["XPos"] = 8.98748779296875,
+				["YPos"] = 426.962646484375,
+				["ZPos"] = 103.1966552734375,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferG"] = {
+				["XPos"] = 788.8760986328125,
+				["YPos"] = 109.391845703125,
+				["ZPos"] = 120.3782958984375,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferH"] = {
+				["XPos"] = 277.7904052734375,
+				["YPos"] = 241.9012451171875,
+				["ZPos"] = 103.7764892578125,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferI"] = {
+				["XPos"] = 666.5291748046875,
+				["YPos"] = -480.36932373046875,
+				["ZPos"] = 79.117919921875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferJ"] = {
+				["XPos"] = 256.1531982421875,
+				["YPos"] = 492.36279296875,
+				["ZPos"] = 73.1668701171875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferK"] = {
+				["XPos"] = 835.0804443359375,
+				["YPos"] = 699.092041015625,
+				["ZPos"] = 69.9930419921875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferL"] = {
+				["XPos"] = 642.9693603515625,
+				["YPos"] = 407.79736328125,
+				["ZPos"] = 69.9930419921875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferM"] = {
+				["XPos"] = 726.2835693359375,
+				["YPos"] = -67.91790771484375,
+				["ZPos"] = 108.140625,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferN"] = {
+				["XPos"] = 726.2835693359375,
+				["YPos"] = -67.91790771484375,
+				["ZPos"] = 108.140625,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferO"] = {
+				["XPos"] = -648.0048828125,
+				["YPos"] = 403.9520263671875,
+				["ZPos"] = 74.998046875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferP"] = {
+				["XPos"] = 256.1531982421875,
+				["YPos"] = 492.36279296875,
+				["ZPos"] = 73.1668701171875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferQ"] = {
+				["XPos"] = -140.45928955078125,
+				["YPos"] = -414.2672119140625,
+				["ZPos"] = 22.35443115234375,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferR"] = {
+				["XPos"] = 609.613037109375,
+				["YPos"] = 117.2655029296875,
+				["ZPos"] = 107.988037109375,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferS"] = {
+				["XPos"] = 475.73046875,
+				["YPos"] = -87.08331298828125,
+				["ZPos"] = 95.994384765625,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferT"] = {
+				["XPos"] = -158.6480712890625,
+				["YPos"] = -132.73828125,
+				["ZPos"] = 98.6190185546875,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferU"] = {
+				["XPos"] = 354.1160888671875,
+				["YPos"] = -288.92962646484375,
+				["ZPos"] = 95.65869140625,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
+			["cofferV"] = {
+				["XPos"] = 277.53338623046875,
+				["YPos"] = 242.39520263671875,
+				["ZPos"] = 103.85517883300781,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
 			},
 		},
 	},

@@ -11,12 +11,13 @@ local zones = {
 		["name"] = "Limsa Lominsa - Upper Decks",
 		["cont"] = "La Noscea",
 		["climate"] = {
-			["temp"] = "warm",
+			["type"] = "coastal",
+			["temp"] = "coastal",
 			["humidity"] = "med",
+			["nighthot"] = 0.67, -- percentage
+			["nightcold"] = 1.27,
 		},
 		["effects"] = {
-			["hot"] = 0.55,
-			["cold"] = -3,
 			["wet"] = 0.15,
 			["tired"] = -0.2,
 			["tense"] = -0.25,
@@ -33,12 +34,13 @@ local zones = {
 		["name"] = "Limsa Lominsa - Lower Decks",
 		["cont"] = "La Noscea",
 		["climate"] = {
-			["temp"] = "warm",
+			["type"] = "coastal",
+			["temp"] = "coastal",
 			["humidity"] = "med",
+			["nighthot"] = 0.67, -- percentage
+			["nightcold"] = 1.27,
 		},
 		["effects"] = {
-			["hot"] = 0.65,
-			["cold"] = -3,
 			["wet"] = 0.15,
 			["tired"] = -0.2,
 			["tense"] = -0.25,
@@ -95,13 +97,16 @@ local zones = {
 			["aetheric"] = -0.13,
 		}
 	},
-	[132] = {
+	[132] = {--New Gridania
 		["name"] = "New Gridania",
-		["climate"] = {
-			["temp"] = "warm",
-			["humidity"] = "high",
-		},
 		["cont"] = "The Black Shroud",
+		["climate"] = {
+			["type"] = "sylvan",
+			["temp"] = "moderate",
+			["humidity"] = "med",
+			["nighthot"] = 1.17, -- percentage
+			["nightcold"] = 1.77,
+		},
 		["effects"] = {
 			["hot"] = 1.35,
 			["cold"] = -3.5,
@@ -119,12 +124,15 @@ local zones = {
 			["aetheric"] = 1.31,
 		}
 	},
-	[133] = {
+	[133] = {--Old Gridania
 		["name"] = "Old Gridania",
 		["cont"] = "The Black Shroud",
 		["climate"] = {
-			["temp"] = "warm",
-			["humidity"] = "high",
+			["type"] = "sylvan",
+			["temp"] = "moderate",
+			["humidity"] = "med",
+			["nighthot"] = 1.17, -- percentage
+			["nightcold"] = 1.77,
 		},
 		["effects"] = {
 			["hot"] = 1.25,
@@ -143,12 +151,15 @@ local zones = {
 			["aetheric"] = 1.37,
 		}
 	},
-	[134] = {
+	[134] = {--Middle La Noscea
 		["name"] = "Middle La Noscea",
 		["cont"] = "La Noscea",
 		["climate"] = {
-			["temp"] = "normal",
-			["humidity"] = "moderate",
+			["type"] = "coastal",
+			["temp"] = "coastal",
+			["humidity"] = "med",
+			["nighthot"] = 0.67, -- percentage
+			["nightcold"] = 1.27,
 		},
 		["effects"] = {
 			["hot"] = 0.35,
@@ -205,6 +216,32 @@ local zones = {
 			["social"] = -0.35,
 			["focused"] = -0.15,
 		}
+	},
+	[146] = {--Southern Thanalan - Sagoli Desert
+		["name"] = "Southern Thanalan - Sagoli Desert",
+		["cont"] = "Thanalan",
+		["climate"] = {
+			["type"] = "desert",
+			["temp"] = "hot",
+			["humidity"] = "very-low",
+			["nighthot"] = 0.77, -- percentage
+			["nightcold"] = 1.37,
+		},
+		["effects"] = {
+			["hot"] = 0.13,
+			["cold"] = -0.19,
+			["wet"] = -1.15,
+			["uncomfortable"] = -0.35,
+			["dazed"] = 0.25,
+			["disturbed"] = 0.25,
+			["amused"] = -0.15,
+			["curious"] = 0.15,
+			["mischievous"] = 0.15,
+			["angry"] = 0.15,
+			["aetheric"] = 0.67,
+		},
+		["nighthot"] = -0.27,
+		["nightcold"] = 0.37,
 	},
 	[147] = {
 		["name"] = "Northern Thanalan",
@@ -296,12 +333,13 @@ local zones = {
 		["name"] = "Mizzenmast Inn",
 		["cont"] = "La Noscea",
 		["climate"] = {
-			["temp"] = "warm",
+			["type"] = "indoors",
+			["temp"] = "indoors-moderate",
 			["humidity"] = "med",
+			["nighthot"] = 0.67, -- percentage
+			["nightcold"] = 1.27,
 		},
 		["effects"] = {
-			["hot"] = 0.15,
-			["cold"] = -3,
 			["wet"] = -0.15,
 			["tired"] = -1.2,
 			["tense"] = -1.25,
@@ -318,18 +356,19 @@ local zones = {
 		["name"] = "Wolves' Den Pier",
 		["cont"] = "La Noscea",
 	},
-	[339] = {
+	[339] = { --MIST
 		["name"] = "Mist",
 		["cont"] = "La Noscea",
 		["climate"] = {
-			["temp"] = "warm",
+			["type"] = "coastal",
+			["temp"] = "coastal",
 			["humidity"] = "med",
+			["nighthot"] = 0.67, -- percentage
+			["nightcold"] = 1.27,
 		},
 		["effects"] = {
-			["hot"] = 0.55,
-			["cold"] = -2.34,
 			["wet"] = 0.15,
-			["tired"] = -0.2,
+			["refreshed"] = 0.23,
 			["tense"] = -0.25,
 			["uncomfortable"] = -0.5,
 			["happy"] = 0.25,
@@ -338,8 +377,21 @@ local zones = {
 			["social"] = 0.1,
 			["anxious"] = -0.1,
 		},
-		["nighthot"] = -0.25,
-		["nightcold"] = -0.65,
+	},
+	[384] = { --Private Chambers - Mist
+		["name"] = "Private Chambers - Mist",
+		["cont"] = "La Noscea",
+		["climate"] = {
+			["type"] = "indoors",
+			["temp"] = "indoors",
+			["humidity"] = "low",
+			["nighthot"] = 0.67, -- percentage
+			["nightcold"] = 1.27,
+		},
+		["effects"] = {
+			["refreshed"] = 0.23,
+			["sleepy"] = -2.7,
+		},
 	},
 	[392] = {
 		["name"] = "Sanctum of the Twelve",
@@ -373,6 +425,24 @@ local zones = {
 		},
 		["nighthot"] = -3.75,
 		["nightcold"] = 4.32,
+	},
+	[536] = { --Maelstrom Barracks
+		["name"] = "Maelstrom Barracks",
+		["cont"] = "La Noscea",
+		["climate"] = {
+			["type"] = "coastal",
+			["temp"] = "coastal",
+			["humidity"] = "med",
+			["nighthot"] = 0.67, -- percentage
+			["nightcold"] = 1.27,
+		},
+		["effects"] = {
+			["wet"] = 0.15,
+			["refreshed"] = 0.23,
+			["amused"] = 0.2,
+			["social"] = 0.3,
+			["sleepy"] = -1.7,
+		},
 	},
 	[561] = {
 		["name"] = "Palace of the Dead",
@@ -508,9 +578,16 @@ local zones = {
 			["playful"] = 0.15,
 		}
 	},
-	[958] = {
+	[958] = {--Garlemald
 		["name"] = "Garlemald",
 		["cont"] = "Ilsabard",
+		["climate"] = {
+			["type"] = "tundra",
+			["temp"] = "tundra",
+			["humidity"] = "low",
+			["nighthot"] = 0.41, -- percentage
+			["nightcold"] = 1.71,
+		},
 		["effects"] = {
 			["hot"] = -2.15,
 			["cold"] = 2.25,
@@ -551,9 +628,15 @@ local zones = {
 	[962] = {
 		["name"] = "Old Sharlayan",
 		["cont"] = "The Northern Empty",
+		["climate"] = {
+			["type"] = "coastal",
+			["temp"] = "cool",
+			["humidity"] = "moderate",
+			["nighthot"] = 0.91, -- percentage
+			["nightcold"] = 1.11,
+		},
+		["optimal"] = 9.33,
 		["effects"] = {
-			["hot"] = 0.45,
-			["cold"] = -0.25,
 			["wet"] = 0.15,
 			["focused"] = 0.45,
 			["tense"] = -0.35,
@@ -665,13 +748,18 @@ local zones = {
 		}
 	},
 	
-	[1185] = {
+	[1185] = {--Tuliyollal
 		["name"] = "Tuliyollal",
 		["cont"] = "Yok Tural",
+		["climate"] = {
+			["type"] = "coastal",
+			["temp"] = "coastal",
+			["humidity"] = "high",
+			["nighthot"] = 0.61, -- percentage
+			["nightcold"] = 1.61,
+		},
 		["effects"] = {
-			["hot"] = 0.65,
-			["cold"] = -3.75,
-			["wet"] = 0.10,
+			["wet"] = 1.17,
 			["tired"] = -0.15,
 			["confident"] = 0.15,
 			["uncomfortable"] = -0.15,
@@ -737,12 +825,17 @@ local zones = {
 			["tense"] = -0.15,
 		}
 	},
-	[1189] = {
+	[1189] = {--Mamook
 		["name"] = "The Ja Tiika Heartland",
 		["cont"] = "Yak T'el",
+		["climate"] = {
+			["type"] = "enchantedforest",
+			["temp"] = "enchantedforest",
+			["humidity"] = "normal",
+			["nighthot"] = 0.61, -- percentage
+			["nightcold"] = 1.61,
+		},
 		["effects"] = {
-			["hot"] = 1.15,
-			["cold"] = -0.85,
 			["wet"] = 0.10,
 			["bored"] = -0.15,
 			["confident"] = 0.25,
@@ -757,12 +850,17 @@ local zones = {
 			["mischievous"] = 0.35,
 		}
 	},
-	[1190] = {
+	[1190] = {--Shaaloani
 		["name"] = "Shaaloani",
 		["cont"] = "Xak Tural",
+		["climate"] = {
+			["type"] = "plains",
+			["temp"] = "plains",
+			["humidity"] = "low",
+			["nighthot"] = 0.79, -- percentage
+			["nightcold"] = 1.36,
+		},
 		["effects"] = {
-			["hot"] = 1.35,
-			["cold"] = -2.75,
 			["wet"] = -1.75,
 			["tired"] = -0.15,
 			["confident"] = 0.35,
@@ -778,16 +876,21 @@ local zones = {
 			["amused"] = 0.15,
 			["bored"] = 0.15,
 		},
-		["nighthot"] = -0.25,
-		["nightcold"] = 0.65,
+		--["nighthot"] = -0.25,
+		--["nightcold"] = 0.65,
 	},
-	[1191] = {
+	[1191] = {--Heritage Found
 		["name"] = "Heritage Found",
 		["cont"] = "Xak Tural",
+		["climate"] = {
+			["type"] = "umbralplains",
+			["temp"] = "umbralplains",
+			["humidity"] = "verylow",
+			["nighthot"] = 0.69, -- percentage
+			["nightcold"] = 1.63,
+		},
 		["effects"] = {
-			["hot"] = -0.35,
-			["cold"] = 0.45,
-			["wet"] = -1.25,
+			["wet"] = -3.25,
 			["tired"] = -0.15,
 			["confident"] = -0.15,
 			["uncomfortable"] = 0.25,
@@ -829,17 +932,46 @@ local zones = {
 	[1249] = {
 		["name"] = "Private Cottage - Mist",
 		["cont"] = "La Noscea",
+		["climate"] = {
+			["type"] = "indoors",
+			["temp"] = "cool",
+			["humidity"] = "low",
+			["nighthot"] = 0.81, -- percentage
+			["nightcold"] = 1.21,
+		},
 	},
 	[1252] = {
 		["name"] = "South Horn",
 		["cont"] = "Occult Crescent",
+		["climate"] = {
+			["type"] = "enchanted-island",
+			["temp"] = "enchanted-island",
+			["humidity"] = "moderate",
+			["nighthot"] = 0.66,
+			["nightcold"] = 1.33,
+		},
+		["effects"] = {
+			["wet"] = 0.31,
+			["focused"] = -0.25,
+			["playful"] = 0.45,
+			["curious"] = 0.75,
+			["bored"] = -0.25,
+			["mischievous"] = 0.15,
+			["confident"] = -0.15,
+			["aetheric"] = -1.37,
+		},
 	},
 	[1269] = {
 		["name"] = "Phantom Village",
 		["cont"] = "Occult Crescent",
+		["climate"] = {
+			["type"] = "coastal",
+			["temp"] = "coastal",
+			["humidity"] = "high",
+			["nighthot"] = 0.77,
+			["nightcold"] = 1.11,
+		},
 		["effects"] = {
-			["hot"] = 1.15,
-			["cold"] = -0.75,
 			["wet"] = 0.35,
 			["focused"] = 0.25,
 			["nosey"] = 0.45,
@@ -849,16 +981,20 @@ local zones = {
 			["confident"] = 0.15,
 			["aetheric"] = -1.37,
 		},
-		["nighthot"] = -1.25,
-		["nightcold"] = 0.65,
+		
 	},
 	[1278] = {
 		["name"] = "Phantom Village",
 		["cont"] = "Occult Crescent",
+		["climate"] = {
+			["type"] = "enchanted-island",
+			["temp"] = "enchanted-island",
+			["humidity"] = "moderate",
+			["nighthot"] = 0.66,
+			["nightcold"] = 1.33,
+		},
 		["effects"] = {
-			["hot"] = 1.35,
-			["cold"] = -0.65,
-			["wet"] = 0.37,
+			["wet"] = 0.31,
 			["focused"] = -0.25,
 			["playful"] = 0.45,
 			["curious"] = 0.75,

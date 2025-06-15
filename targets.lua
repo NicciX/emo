@@ -60,6 +60,11 @@ local targetActions = {
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
+	["Shower XStand"] = {
+		["routine"] = "shower",
+		["cooldown"] = 7.0,
+		["last"] = 0,		
+	},
 	["Survey Point"] = {
 		["routine"] = "phantomsurvey",
 		["cooldown"] = 17.0,

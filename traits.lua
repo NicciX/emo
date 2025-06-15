@@ -213,7 +213,7 @@ local traits = {
 			},
 			["IsSwimming"] = {
 				["angry"] = -1.0,
-				["bathing"] = 1.75,
+				["refreshed"] = 1.75,
 				["confident"] = 0.10,
 				["cold"] = 0.95,
 				["hot"] = -0.75,
@@ -330,7 +330,7 @@ local traits = {
 			},
 			["IsSwimming"] = {
 				["angry"] = -1.5,
-				["bathing"] = 1.0,
+				["refreshed"] = 1.0,
 				["confident"] = 0.20,
 				["cold"] = -0.15,
 				["hot"] = 0.05,
@@ -341,7 +341,7 @@ local traits = {
 			},
 			["IsDiving"] = {
 				["angry"] = -1.5,
-				["bathing"] = 1.0,
+				["refreshed"] = 1.0,
 				["confident"] = 0.20,
 				["cold"] = -0.15,
 				["hot"] = 0.05,
@@ -390,7 +390,7 @@ local traits = {
 			},
 			["IsSwimming"] = {
 				["angry"] = -1.5,
-				["bathing"] = 1.0,
+				["refreshed"] = 1.0,
 				["confident"] = 0.20,
 				["cold"] = -0.15,
 				["hot"] = 0.05,
@@ -401,7 +401,7 @@ local traits = {
 			},
 			["IsDiving"] = {
 				["angry"] = -1.5,
-				["bathing"] = 1.0,
+				["refreshed"] = 1.0,
 				["confident"] = 0.20,
 				["cold"] = -0.15,
 				["hot"] = 0.05,
@@ -449,8 +449,8 @@ local traits = {
 	["hothead"] = {
 		["effects"] = {
 			["general"] = {
-				["angry"] = 1.69,
-				["happy"] = -3.9
+				["angry"] = 0.39,
+				["happy"] = -0.39
 			},
 		},
 	},

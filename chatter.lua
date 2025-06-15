@@ -96,10 +96,26 @@ function ChatHandler()
 			Game.SendChat("/isort condition armoury ilv des")
 			Game.SendChat("/isort execute armoury")
 			Game.SendChat("/armoury body")
+		elseif string.startsWith(txt, "You use a") then
+			--dbgMsg("chatter: test", 1)
+			if lastEntree then
+				if string.contains(txt:lower(), lastEntree:lower()) then
+					--lastEntree = nil
+					lastEntreeTime = nil
+				end
+			end
+			if lastMeal then
+				if string.contains(txt:lower(), lastMeal:lower()) then
+					--lastMeal = nil
+					lastMealTime = nil
+				end
+			end
 		elseif txt == "bags" or txt == "inventory" then
 			Game.SendChat("/isort condition inventory ilv des")
 			Game.SendChat("/isort execute inventory")
 			Game.SendChat("/inventory")
+		elseif string.startsWith(txt, "") then
+			PlaceFlag(txt,chn)
 		elseif txt == "minion" or txt == "pet" then
 			Game.SendChat("/minionguide")
 		elseif string.find(txt, "^item ") then
@@ -390,6 +406,7 @@ local validEarnings = {
 	["cosmic containers"] = 0,
 	["lunar credits"] = 0,
 	["cosmo credits"] = 0,
+	["cosmocredits"] = 0,
 	["Big Bang ticket"] = 0,
 	["Storm Seals"] = 0,
 	["Flame Seals"] = 0,
@@ -415,6 +432,7 @@ local validEarnings = {
 	["azurite demiatma"] = 0,
 	["Azurite Demiatma"] = 0,
 	["caput mortuum demiatma"] = 0,
+	["a caput mortuum demiatma"] = 0,
 	["Caput Mortuum Demiatma"] = 0,
 	["malachite demiatma"] = 0,
 	["Malachite Demiatma"] = 0,
@@ -458,8 +476,13 @@ local validEarnings = {
 	["cronopio leather"] = 0,
 	["purple crafters scrips"] = 0,
 	["orange crafters scrips"] = 0,
+	["orange gatherers scrips"] = 0,
+	["purple gatherers scrips"] = 0,
 	["sacks of Nuts"] = 0,
 	["bicolor gemstones"] = 0,
+	["handfuls of sideritis leaves"] = 0,
+	["Thavnairian perilla leaves"] = 0,
+	
 	
 	
 }
@@ -942,13 +965,18 @@ function JujuHoodoo(txt, chn)
 		--dbgMsg("JujuHoodoo:  hoohoo :: " .. tostring(foodoo), 9)
 		if oopsoo then
 			Game.SendChat("/useitem 32861")
-			dbgMsg("JujuHoodoo:  oopsoo :: " .. tostring(oopsoo), 9)
+			dbgMsg("JujuHoodoo:  oopsoo :: " .. tostring(oopsoo), 1)
 		end
 		
 		if type(funCoo) == "table" then
 			--dbgMsg("JujuHoodoo:  funCoo :: " .. tostring(funCoo[1]), 9)
 			--dbgMsg("JujuHoodoo:  funCoo :: " .. tostring(funCoo[2]), 9)
 			if not funCoo[2] then
+				if chn then
+					Game.SendChat("/" .. string.lower(chn) .. preef .. tostring(funCoo[2]))
+				else
+					Game.SendChat("/e" .. preef .. tostring(funCoo[2]))
+				end
 				--Game.SendChat("/useitem 32860")
 				--Game.SendChat("/wait 1.5")
 				--Game.SendChat("/no")
@@ -1100,7 +1128,10 @@ function Windfall(txt, chn, toss)
 	if toss == "You obtain" or toss == "You gain" or toss == "You earn" then
 		lastWindfall = txt
 		txt = string.gsub(txt, toss, "")
+		txt = string.gsub(txt, "a ", "")
+		txt = string.gsub(txt, "an ", "")
 		txt = string.gsub(txt, " ", "")
+		
 		--local val = string.match(txt, "(%d+)")
 		--local val = string.match(txt, "(%d+,?%d*)")
 		local val = string.match(txt, "(%d+,?%d+,?%d*)")
@@ -1110,6 +1141,7 @@ function Windfall(txt, chn, toss)
 		if not val then
 			val = string.match(txt, "(%d+)")
 		end
+		
 		--dbgMsg("Windfall: val :: " .. tostring(val), 1)
 		--dbgMsg("Windfall: key :: " .. tostring(txt), 1)
 		if val then
@@ -1268,12 +1300,11 @@ function Windfall(txt, chn, toss)
 			EmoGyre("focused", x)
 		end
 		EmoGyre("aetheric", -x*7)
+		EmoGyre("responsible", 7)
 		dbgMsg("Windfall Craft: x :: " .. tostring(x), 1)
 		Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
 		dbgMsg("Windfall: |txt| :: " .. tostring(txt), 1)
-		
-	end
-	if string.find(txt, "MGP") then
+	elseif string.find(txt, "MGP") then
 		bits, bobs = string.match(txt, "(%d+,?%d*).+(MGP)")
 		dbgMsg("MatchStick: Bits & Bobs :: " .. tostring(bits) .. " & " .. tostring(bobs), 1)
 		if not bits then
@@ -1360,9 +1391,9 @@ function ProgHandler(txt, toss, chn)
 			Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
 			EmoGyre("responsible", adj)
 		end
-	elseif string.find(txt, "You clean the stable") then
-		playerProg["cleaned stable"] = playerProg["cleaned stable"] or 0
-		playerProg["cleaned stable"] = playerProg["cleaned stable"] + 1
+	elseif string.find(txt, "You refreshed the stable") then
+		playerProg["refresheded stable"] = playerProg["refresheded stable"] or 0
+		playerProg["refresheded stable"] = playerProg["refresheded stable"] + 1
 		EmoGyre("responsible", 29)
 	elseif string.find(txt, "received a player commendation") then
 		playerProg["commendation"] = playerProg["commendation"] or 0
@@ -1524,6 +1555,8 @@ function PowerWords(txt, toss, chn, sender)
 		txt = string.gsub(txt,"dress", "")
 		if txt ~= "" then
 			OutfitHandler("load " .. txt)
+		elseif txt == "best" or txt == "temp" then
+			DressBest()
 		else
 			OutfitLoad(txt)
 		end
@@ -1543,14 +1576,233 @@ function PowerWords(txt, toss, chn, sender)
 		txt = string.gsub(txt, "tour ", "")
 		StartTour(txt)
 	elseif string.startsWith(txt, "current") then
-		txt = string.gsub(txt, "tour ", "")
+		txt = string.gsub(txt, "current ", "")
 		NextCurrent(txt)
+	elseif string.startsWith(txt, "flagme") then
+		txt = string.gsub(txt, "flagme ", "")
+		FlagMe(txt)
 	elseif string.startsWith(txt, "flag") then
 		txt = string.gsub(txt, "flag ", "")
 		Flagit(txt)
 	elseif string.startsWith(txt, "ascend") then
 		txt = string.gsub(txt, "ascend ", "")
 		Ascend(txt)
+	end
+end
+
+tribe_key = {
+	["midlander"] = "Midlander",
+	["middie"] = "Midlander",
+	["highlander"] = "Highlander",
+	["thighlander"] = "Highlander",
+	["mooncat"] = "Keeper of the Moon",
+	["suncat"] = "Seeker of the Sun",
+	["moon"] = "Keeper of the Moon",
+	["sun"] = "Seeker of the Sun",
+	["keeper"] = "Keeper of the Moon",
+	["seeker"] = "Seeker of the Sun",
+	["rava"] = "Rava",
+	["veena"] = "Veena",
+	["raen"] = "Raen",
+	["rean"] = "Raen",
+	["xaela"] = "Xaela",
+}
+race_key = {
+	["midlander"] = "Hyur",
+	["middie"] = "Hyur",
+	["highlander"] = "Hyur",
+	["hlander"] = "Hyur",
+	["thighlander"] = "Hyur",
+	["hyur"] = "Hyur",
+	["mooncat"] = "Miqo'te",
+	["suncat"] = "Miqo'te",
+	["keeper"] = "Miqo'te",
+	["seeker"] = "Miqo'te",
+	["catgirl"] = "Miqo'te",
+	["cats"] = "Miqo'te",
+	["catboi"] = "Miqo'te",
+	["catboy"] = "Miqo'te",
+	["miqo"] = "Miqo'te",
+	["bunn"] = "Viera",
+	["rava"] = "Viera",
+	["veena"] = "Viera",
+	["rean"] = "Au Ra",
+	["raen"] = "Au Ra",
+	["xaela"] = "Au Ra",
+	["lizard"] = "Au Ra",
+	["aura"] = "Au Ra",
+	["elf"] = "Elezen",
+	["elezen"] = "Elezen",
+}
+-- optA = race/tribe query, optB = <key for match> (optC = check value) 
+	--ex.
+	--("midlander", "height", "100")
+	--("bunn", "name", "Jessicca Rabbit") returns any midlanders with the name 'Jessicca Rabbit'
+	--("bunn", "firstname", "Jessicca") returns any midlanders with the firstname 'Jessicca'
+	--("bunn", "lastname", "Rabbit") returns any midlanders with the lastname 'Rabbit'
+ -- 
+function Census(optA, optB, optC, rpt) 
+	if not playerTraits.sulsul then
+		dbgMsg("Census: Sorry, " .. appellation .. ", you do not meet the requirements to be a census taker.. ", 0)
+		EmoGyre("dazed", 33)
+		return
+	end
+	local race, tribe
+	local list = {}
+	if optA and not optB then
+		
+	end
+	if optA then
+		dbgMsg("Census: optA :: " .. tostring(optA),1)
+		dbgMsg("Census: optB :: " .. tostring(optB),1)
+		dbgMsg("Census: optC :: " .. tostring(optC),1)
+		local cnt = 0
+		local reply
+		local tmp
+		tribe = tribe_key[optA]
+		race = race_key[optA]
+		if CD.global.Census[race] then
+			for t,c in pairs(CD.global.Census[race]) do
+				if t == tribe or not tribe then
+					if c then
+						for k,v in pairs(c) do
+							--dbgMsg("Census: val :: " .. tostring(v[optB]),1)
+							if not optB then
+								cnt = cnt + 1
+								list[#list+1] = k .. "-" .. t
+							elseif optB and optC then
+								if type(v[optB]) == "number" then
+									if v[optB] == tonumber(optC) then
+										cnt = cnt + 1
+										list[#list+1] = k .. "-" .. t
+									end
+								elseif optB == "firstname" then
+									tmp = string.startsWith(k, optC)
+									--tmp = string.match(k, "^(%a+)")
+									dbgMsg("Census: val :: " .. tostring(k) .. " :match:> " .. tostring(tmp),1)
+									if tmp then
+										cnt = cnt + 1
+										list[#list+1] = k .. "-" .. t
+									end
+								elseif optB == "lastname" then
+									tmp = string.endsWith(k, optC)
+									--tmp = string.match(k, "(%a+)$")
+									dbgMsg("Census: val :: " .. tostring(k) .. " :match:> " .. tostring(tmp),1)
+									if tmp then
+										cnt = cnt + 1
+										list[#list+1] = k .. "-" .. t
+									end
+								elseif v[optB] == optC then
+									cnt = cnt + 1
+									list[#list+1] = k .. "-" .. t
+								end
+							end
+						end
+					end
+				end
+			end
+				--cnt = #CD.global.Census.Hyur.Midlander or 0
+				if cnt == 1 and not optB then
+					reply = "One entry was found in the records matching your query " .. appellation .. "."
+				elseif cnt > 1 and not optB then
+					reply = "There were " .. tostring(cnt) .. " entries found in the records for 'Midlander', " .. appellation .. "."
+				elseif cnt == 1 and optB then
+					reply = "I was able to find one entry matching your criteria " .. appellation .. "."
+				elseif cnt > 1 and optB then
+					reply = "There were " .. tostring(cnt) .. " records found matching the data you provided " .. appellation .. "."
+				end
+				if rpt then
+					for i,v in pairs(list) do
+						Game.SendChat("/fc " .. v)
+					end
+				end
+			--end
+		end
+		if cnt == 0 then
+			return "There were no records that matched your request " .. appellation .. "."
+		elseif reply then
+			return reply
+		end
+	end
+	local gender, name, height, boobs, home
+	if Game.Player.Target.IsPlayer or Game.Player.MouseOverTarget.IsPlayer then
+		if Game.Player.Target.Name then
+			--Game.SendChat("/glamour copy <t>")
+			name = Game.Player.Target.Name
+			race = Game.Player.Target.Race
+			tribe = Game.Player.Target.Tribe
+			if not CD.global.Census[race] then
+				CD.global.Census[race] = {}
+				CD.global.Census[race][tribe] = {}
+			end
+			if not CD.global.Census[race][tribe] then
+				--CD.global.Census[race] = {}
+				CD.global.Census[race][tribe] = {}
+			end
+			if not CD.global.Census[race][tribe][name] then
+				CD.global.Census[race][tribe][name] = {}
+				if Game.Player.Target.IsMale then
+					gender = "M"
+				else
+					gender = "F"
+				end
+				CD.global.Census[race][tribe][name].gender = gender
+				--gender = Game.Player.Target.IsMale
+				--CD.global.Census[race][tribe][name].gender = (gender == true and 1 or gender == false and 0)
+				--name = Game.Player.Target.Name
+				CD.global.Census[race][tribe][name].home = Game.Player.Target.HomeWorld
+				CD.global.Census[race][tribe][name].height = Game.Player.Target.Height
+				CD.global.Census[race][tribe][name].boobs = Game.Player.Target.BustSize
+				CD.global.Census[race][tribe][name].agent = playerName
+				--CD.global.Census[race][tribe][name].glam = CD.global.Census[race][tribe][name].glam or {}
+				--local gl = #CD.global.Census[race][tribe][name].glam + 1
+				--CD.global.Census[race][tribe][name].glam[1] = tostring(Script.Clipboard)
+				lastCensus = name .. "-" .. tribe
+				Game.SendChat("/glamour save " .. name .. "-" .. tribe .. " |  <t>")
+				dbgMsg("Census: " .. name .. " added to the records, well done " .. appellation .. ".", 0)
+			else
+				--Game.SendChat("/glamour save " .. name .. "-" .. tribe .. " |  <t>")
+				dbgMsg("Census: " .. name .. " has already been recorded in the records, " .. appellation .. ".", 0)
+			end
+		elseif Game.Player.MouseOverTarget.Name then
+			Game.SendChat("/glamour copy <mo>")
+			name = Game.Player.MouseOverTarget.Name
+			race = Game.Player.MouseOverTarget.Race
+			tribe = Game.Player.MouseOverTarget.Tribe
+			if not CD.global.Census[race] then
+				CD.global.Census[race] = {}
+				CD.global.Census[race][tribe] = {}
+			end
+			if not CD.global.Census[race][tribe] then
+				--CD.global.Census[race] = {}
+				CD.global.Census[race][tribe] = {}
+			end
+			if not CD.global.Census[race][tribe][name] then
+				CD.global.Census[race][tribe][name] = {}
+				if Game.Player.MouseOverTarget.IsMale then
+					gender = "M"
+				else
+					gender = "F"
+				end
+				CD.global.Census[race][tribe][name].gender = gender
+				--name = Game.Player.Target.Name
+				CD.global.Census[race][tribe][name].home = Game.Player.MouseOverTarget.HomeWorld
+				CD.global.Census[race][tribe][name].height = Game.Player.MouseOverTarget.Height
+				CD.global.Census[race][tribe][name].boobs = Game.Player.MouseOverTarget.BustSize
+				CD.global.Census[race][tribe][name].agent = playerName
+				--CD.global.Census[race][tribe][name].glam = CD.global.Census[race][tribe][name].glam or {}
+				--local gl = #CD.global.Census[race][tribe][name].glam + 1
+				--CD.global.Census[race][tribe][name].glam[gl] = tostring(Script.Clipboard)
+				lastCensus = name .. "-" .. tribe
+				Game.SendChat("/glamour save " .. name .. "-" .. tribe .. " |  <mo>")
+				dbgMsg("Census: " .. name .. " added to the records, well done " .. appellation .. ".", 0)
+			else
+				--local gl = #CD.global.Census[race][tribe][name].glam + 1
+				--CD.global.Census[race][tribe][name].glam[gl] = tostring(Script.Clipboard)
+				--dbgMsg("Census: " .. name .. " found, adding new glam to the records..", 0)
+				dbgMsg("Census: " .. name .. " has already been recorded in the records, " .. appellation .. ".", 0)
+			end
+		end
 	end
 end
 
@@ -1592,15 +1844,17 @@ function FlameCheck(flame, toss, txt, chn, sender)
 				Census()
 			end
 		end
-	elseif flame == "*PW*" and not safe then
+	elseif flame == "*PW*" and not safe and (sender == playerName or playerTraits.obedient) then
 		PowerWords(txt, toss, chn, sender)
+	elseif flame == "*token*" then
+		HandleSpecial(txt, toss, chn, sender)
 	elseif flame == "*shark*" then
 		SharkHandler()
 	elseif flame == "*prog*" then
 		ProgHandler(txt, toss, chn)
 	elseif flame == "*failure*" then
 		Shame(toss)
-	elseif flame == "*panic*" then
+	elseif flame == "*panic*" and sender == playerName then
 		if string.sub(txt, 1, #toss) == toss and sender == playerName then
 			dbgMsg("PanicCheck toss :: " .. tostring(toss), 1)
 			dbgMsg("PanicCheck txt :: " .. tostring(txt), 1)
@@ -1663,7 +1917,7 @@ function FlameCheck(flame, toss, txt, chn, sender)
 		end
 	elseif flame == "*duty*" then
 		ProgHandler(txt, toss, chn)
-	elseif flame == "*jujuhoodoo*" then
+	elseif flame == "*jujuhoodoo*" and sender == playerName then
 		JujuHoodoo(txt, chn)
 	elseif flame == "*profit*" then
 		Windfall(txt, chn, toss)
@@ -1671,7 +1925,7 @@ function FlameCheck(flame, toss, txt, chn, sender)
 		Report(txt)
 	elseif flame == "*food*" or flame == "*drink*" then
 		DoRandom(toss, match_type(txt, toss, sender))
-	elseif flame == "*consume*" then
+	elseif flame == "*consume*" and sender == playerName then
 		ConsumableHandler(txt, chn, toss)
 	elseif flame == "*balmung*" then
 		emoReact("scared")
@@ -1693,16 +1947,16 @@ function FlameCheck(flame, toss, txt, chn, sender)
 		Razzle()
 	elseif flame == "*dazzle*" then
 		Dazzle()
-	elseif flame == "*plogon*" then
+	elseif flame == "*plogon*" and sender == playerName then
 		if txt == "leves" then
 			CallRoutine("leves")
 			--Game.SendChat("/chilledleves")
 		else
 			Game.SendChat("/"..txt)
 		end
-	elseif flame == "*emo*" then
+	elseif flame == "*emo*" and (sender == playerName or playerTraits.mimic) then
 		emoReact(toss)
-	elseif flame == "*destination*" then
+	elseif flame == "*destination*" and (sender == playerName or playerTraits.obedient) then
 		if destinations[toss] and not safe and txt == toss then
 			if toss == "gc" then
 				local gc = Game.Player.GrandCompany
@@ -1878,7 +2132,7 @@ end
 
 return {ChatHandler, Blimey, StringsHandler, Chatty, ChattyChop, JujuHoodoo, FlameCheck, MatchStick, Windfall,
 		TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous, Expense, cookTheBooks, validEarnings,
-		startTour, NextCurrent}
+		Census, startTour, NextCurrent}
 
 --	^								^	--
 --	^	^^^ Chat Handler ^^^ 		^	--
