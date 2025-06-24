@@ -375,6 +375,13 @@ func_time = {
 		["calls"] = 0,
 		["longest"] = 0,
 	},
+	["ZoneTempFactor"] = {
+		["ST"] = 0,
+		["END"] = 0,
+		["tot"] = 0,
+		["calls"] = 0,
+		["longest"] = 0,
+	},
 	
 	
 	

@@ -102,7 +102,7 @@ aspectAffinity = {
 	},
 	[3] = { --
 		["black"] = {
-			["anxious"] = 3,
+			["disturbed"] = 3,
 		},
 		["blue"] = {
 			["cold"] = 1,
@@ -112,7 +112,7 @@ aspectAffinity = {
 			["amazed"] = 1,
 		},
 		["green"] = {
-			["diving"] = 1,
+			["refreshed"] = 1,
 		},
 		["white"] = {
 			["confident"] = 3,
@@ -124,7 +124,7 @@ aspectAffinity = {
 			["sad"] = 3,
 		},
 		["green"] = {
-			["diving"] = 3,
+			["refreshed"] = 3,
 		},
 		["white"] = {
 			["social"] = 1,
@@ -232,7 +232,7 @@ aspectAffinity = {
 	},
 	[23] = { --
 		["black"] = {
-			["anxious"] = 2,
+			["disturbed"] = 2,
 		},
 		["blue"] = {
 			["sad"] = 2,
@@ -244,7 +244,7 @@ aspectAffinity = {
 			["busy"] = 3,
 		},
 		["green"] = {
-			["diving"] = 2,
+			["refreshed"] = 2,
 		},
 		["white"] = {
 			["social"] = 2,
@@ -334,7 +334,7 @@ aspectAffinity = {
 	},
 	[47] = { --
 		["black"] = {
-			["anxious"] = 3,
+			["disturbed"] = 3,
 		},
 		["blue"] = {
 			["sad"] = 1,
@@ -903,6 +903,71 @@ function GyreCheck()
 	end
 end
 
+
+
+function ZoneTempFactor()
+	--local zn = Game.Player.MapZone
+	--local tmp, adj, r
+	local eTime = Game.EorzeanTime.Hour
+	local weather = Game.Weather.Name
+	local warm = 0
+	local adj
+	local racial = 1
+	local clmt = GetClimate()
+	if clmt then
+		if clmt.temp then
+			if playerTraits.vixen then
+				adj = reduce(math.log(validTemps[clmt.temp] + 1.39, 3.69) * 2.39, 3)
+				warm = warm + adj
+				dbgMsg("ZoneTempFactor (vixen) climate factor: " .. tostring(adj), 1)
+			else
+				warm = warm + validTemps[clmt.temp]
+				dbgMsg("ZoneTempFactor climate factor: " .. tostring(validTemps[clmt.temp]), 1)
+			end
+		end
+	end
+	--warm = warm + reduce(OutfitTempFactor(), 3)--
+	
+	local nH = 1
+	local nC = 1
+	if eTime > 17 or eTime < 6 then
+		nH = clmt.nighthot or 1
+		nC = clmt.nightcold or 1
+	end
+	if IsSwimming then
+		if playerTraits.vixen then
+			warm = warm - (6.69 - validTemps[clmt.temp] * 3.69)
+		elseif playerTraits.spriggan then
+			warm = warm - (7.77 - validTemps[clmt.temp] * 4.44)
+		else
+			warm = warm - (7.11 - validTemps[clmt.temp] * 3.45)
+		end
+	end
+	if weather_effects[weather] then
+		if weather_effects[weather].neutral.temp then
+			warm = warm * weather_effects[weather].neutral.temp
+			dbgMsg("ZoneTempFactor weather influence: " .. tostring(weather_effects[weather].neutral.temp), 1)
+		end
+	end
+	if playerSubRace == "Highlander" then
+		racial = 0.81
+	elseif playerRace == "Elezen" then
+		racial = 1.17
+	elseif playerSubRace == "Seeker of the Sun" then
+		racial = 1.33
+	end
+	
+	warm = reduce(warm * 0.47, 3)
+	--cold = (7 - warm * nH) / 9
+	cold = reduce(((6.7 * racial) - warm * nH) / (9 / nC), 3)
+	return {["warm"] = warm, ["cold"] = cold, ["nH"] = nH, ["nC"] = nC}
+end
+
+function EnvironmentHandler()
+	
+	--local hIx = 
+end
+
 function GyreLite(emo, amt)
 	if filterLog["2"] then
 		dbgMsg("ƒGyreLiteƒ", 2)
@@ -915,7 +980,10 @@ function GyreLite(emo, amt)
 		end
 	end
 	if playerTraits.spriggan then
-		if emoState[emo] == math.floor(emoState[emo]) and emoState[emo] > 77 then
+		if not emoState[emo] then
+			dbgMsg("ƒGyreLiteƒ :: invalid emotional data :: " .. tostring(emo), 1)
+			--break
+		elseif emoState[emo] == math.floor(emoState[emo]) and emoState[emo] > 77 then
 			doBijou("onibi")
 			local e = emoState[emo]
 			

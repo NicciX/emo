@@ -66,6 +66,11 @@ function ChatHandler()
 			end
 		--elseif string.find(txt, "juju")	then
 			--Game.SendChat("/useitem 40392 ")
+		elseif txt == "You have entered a sanctuary." then
+			if action == "loading" then
+				action = "idle"
+				Update()
+			end
 		elseif txt == "log" and sender == playerName then
 			CallRoutine("logout")
 		elseif txt == "reloading scripts" then
@@ -1587,6 +1592,10 @@ function PowerWords(txt, toss, chn, sender)
 	elseif string.startsWith(txt, "ascend") then
 		txt = string.gsub(txt, "ascend ", "")
 		Ascend(txt)
+	elseif string.startsWith(txt, "purchase") then
+		txt = string.gsub(txt, "purchases ", "")
+		txt = string.gsub(txt, "purchased ", "")
+		Purchased(txt, chn)
 	end
 end
 

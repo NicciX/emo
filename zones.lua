@@ -14,19 +14,19 @@ local zones = {
 			["type"] = "coastal",
 			["temp"] = "coastal",
 			["humidity"] = "med",
-			["nighthot"] = 0.67, -- percentage
+			["nighthot"] = 0.73, -- percentage
 			["nightcold"] = 1.27,
+			["stm"] = 0.35, -- Seasonal Temp Modifier
 		},
 		["effects"] = {
 			["wet"] = 0.15,
-			["tired"] = -0.2,
 			["tense"] = -0.25,
 			["uncomfortable"] = -0.5,
 			["happy"] = 0.25,
 			["flirty"] = 0.5,
 			["amused"] = 0.2,
 			["social"] = 1.0,
-			["anxious"] = -0.1,
+			["disturbed"] = -0.1,
 			["aetheric"] = 0.09,
 		}
 	},
@@ -37,19 +37,18 @@ local zones = {
 			["type"] = "coastal",
 			["temp"] = "coastal",
 			["humidity"] = "med",
-			["nighthot"] = 0.67, -- percentage
-			["nightcold"] = 1.27,
+			["nighthot"] = 0.77, -- percentage
+			["nightcold"] = 1.25,
+			["stm"] = 0.35,
 		},
 		["effects"] = {
 			["wet"] = 0.15,
-			["tired"] = -0.2,
-			["tense"] = -0.25,
 			["uncomfortable"] = -0.5,
 			["happy"] = 0.25,
 			["flirty"] = 0.5,
 			["amused"] = 0.2,
 			["social"] = 1.25,
-			["anxious"] = -0.1,
+			["disturbed"] = -0.1,
 			["aetheric"] = 0.17,
 		}
 	},
@@ -59,12 +58,12 @@ local zones = {
 		["climate"] = {
 			["temp"] = "warm",
 			["humidity"] = "low",
+			["nighthot"] = 0.91, -- percentage
+			["nightcold"] = 1.11,
+			["stm"] = 0.29,
 		},
 		["effects"] = {
-			["hot"] = 1.25,
-			["cold"] = -5,
 			["wet"] = -1.25,
-			["tired"] = 0.15,
 			["confident"] = 0.25,
 			["uncomfortable"] = -0.15,
 			["happy"] = 0.25,
@@ -75,44 +74,41 @@ local zones = {
 			["aetheric"] = -0.13,
 		}
 	},
-	[131] = {
+	[131] = { -- Ul'dah - Steps of Thal
 		["name"] = "Ul'dah - Steps of Thal",
 		["cont"] = "Thanalan",
 		["climate"] = {
 			["temp"] = "warm",
-			["humidity"] = "med",
+			["humidity"] = "low",
+			["nighthot"] = 0.91, -- percentage
+			["nightcold"] = 1.11,
+			["stm"] = 0.29,
 		},
 		["effects"] = {
-			["hot"] = 1.45,
-			["cold"] = -5.65,
 			["wet"] = -1.25,
-			["tired"] = 0.15,
 			["confident"] = 0.25,
 			["uncomfortable"] = -0.15,
 			["happy"] = 0.25,
 			["flirty"] = 0.75,
 			["playful"] = 0.5,
-			["social"] = 0.95,
-			["focused"] = 1.25,
+			["social"] = 1.35,
+			["focused"] = 0.75,
 			["aetheric"] = -0.13,
 		}
 	},
-	[132] = {--New Gridania
+	[132] = { --New Gridania
 		["name"] = "New Gridania",
 		["cont"] = "The Black Shroud",
 		["climate"] = {
 			["type"] = "sylvan",
-			["temp"] = "moderate",
+			["temp"] = "sylvan",
 			["humidity"] = "med",
-			["nighthot"] = 1.17, -- percentage
-			["nightcold"] = 1.77,
+			["nighthot"] = 0.66, -- percentage
+			["nightcold"] = 1.14,
+			["stm"] = 0.28,
 		},
 		["effects"] = {
-			["hot"] = 1.35,
-			["cold"] = -3.5,
 			["wet"] = 0.25,
-			["tired"] = -0.25,
-			["tense"] = -0.15,
 			["uncomfortable"] = -0.15,
 			["happy"] = 0.35,
 			["curious"] = 0.35,
@@ -120,26 +116,23 @@ local zones = {
 			["amused"] = 0.35,
 			["social"] = 0.75,
 			["impatient"] = -0.25,
-			["anxious"] = -0.1,
-			["aetheric"] = 1.31,
+			["disturbed"] = -0.1,
+			["aetheric"] = 1.37,
 		}
 	},
-	[133] = {--Old Gridania
+	[133] = { --Old Gridania
 		["name"] = "Old Gridania",
 		["cont"] = "The Black Shroud",
 		["climate"] = {
 			["type"] = "sylvan",
-			["temp"] = "moderate",
+			["temp"] = "sylvan",
 			["humidity"] = "med",
-			["nighthot"] = 1.17, -- percentage
-			["nightcold"] = 1.77,
+			["nighthot"] = 0.66, -- percentage
+			["nightcold"] = 1.14,
+			["stm"] = 0.28,
 		},
 		["effects"] = {
-			["hot"] = 1.25,
-			["cold"] = -3.5,
 			["wet"] = 0.25,
-			["tired"] = -0.25,
-			["tense"] = -0.15,
 			["uncomfortable"] = -0.15,
 			["happy"] = 0.35,
 			["curious"] = 0.35,
@@ -147,11 +140,11 @@ local zones = {
 			["amused"] = 0.35,
 			["social"] = 0.75,
 			["impatient"] = -0.25,
-			["anxious"] = -0.1,
+			["disturbed"] = -0.1,
 			["aetheric"] = 1.37,
 		}
 	},
-	[134] = {--Middle La Noscea
+	[134] = { --Middle La Noscea
 		["name"] = "Middle La Noscea",
 		["cont"] = "La Noscea",
 		["climate"] = {
@@ -160,12 +153,10 @@ local zones = {
 			["humidity"] = "med",
 			["nighthot"] = 0.67, -- percentage
 			["nightcold"] = 1.27,
+			["stm"] = 0.35,
 		},
 		["effects"] = {
-			["hot"] = 0.35,
-			["cold"] = -1.44,
 			["wet"] = -1.15,
-			["tired"] = 0.15,
 			["confident"] = 0.25,
 			["uncomfortable"] = -0.15,
 			["happy"] = 0.25,
@@ -175,16 +166,18 @@ local zones = {
 			["focused"] = -0.15,
 		}
 	},
-	[135] = {
+	[135] = { --Lower La Noscea
 		["name"] = "Lower La Noscea",
 		["cont"] = "La Noscea",
 		["climate"] = {
-			["temp"] = "warm",
+			["type"] = "coastal",
+			["temp"] = "coastal",
 			["humidity"] = "med",
+			["nighthot"] = 0.79, -- percentage
+			["nightcold"] = 1.31,
+			["stm"] = 0.37,
 		},
 		["effects"] = {
-			["hot"] = 0.55,
-			["cold"] = -2.5,
 			["wet"] = 0.15,
 			["tired"] = -0.2,
 			["tense"] = -0.25,
@@ -193,21 +186,66 @@ local zones = {
 			["amused"] = 0.15,
 			["playful"] = 0.2,
 			["social"] = -0.35,
-			["anxious"] = -0.1,
+			["disturbed"] = -0.1,
 		}
 	},
-	[144] = {
+	[140] = { --Western Thanalan - Horizon's Edge
+		["name"] = "Western Thanalan - Horizon's Edge",
+		["cont"] = "Thanalan",
+		["climate"] = {
+			["type"] = "desert",
+			["temp"] = "hot",
+			["humidity"] = "low",
+			["nighthot"] = 0.89, -- percentage
+			["nightcold"] = 1.27,
+			["stm"] = 0.27,
+		},
+		["effects"] = {
+			["wet"] = -1.15,
+			["uncomfortable"] = 0.15,
+			["dazed"] = 0.25,
+			["disturbed"] = 0.25,
+			["amused"] = -0.15,
+			["curious"] = 0.15,
+			["angry"] = 0.15,
+			["aetheric"] = 0.27,
+		},
+	},
+	[141] = { --Central Thanalan - Black Brush
+		["name"] = "Central Thanalan - Black Brush",
+		["cont"] = "Thanalan",
+		["climate"] = {
+			["type"] = "desert",
+			["temp"] = "hot",
+			["humidity"] = "dry",
+			["nighthot"] = 0.82, -- percentage
+			["nightcold"] = 1.22,
+			["stm"] = 0.27,
+		},
+		["effects"] = {
+			["wet"] = -0.95,
+			["uncomfortable"] = 0.15,
+			["dazed"] = 0.25,
+			["disturbed"] = 0.25,
+			["amused"] = -0.15,
+			["curious"] = 0.15,
+			["angry"] = 0.25,
+			["aetheric"] = 0.37,
+		},
+	},
+	[144] = { --The Gold Saucer
 		["name"] = "The Gold Saucer",
 		["cont"] = "Thanalan",
 		["climate"] = {
-			["temp"] = "normal",
+			["type"] = "indoors",
+			["temp"] = "indoors",
 			["humidity"] = "low",
+			["nighthot"] = 0.93, -- percentage
+			["nightcold"] = 1.17,
+			["stm"] = 0.13,
 		},
 		["effects"] = {
-			["hot"] = -1.37,
-			["cold"] = 0.77,
 			["wet"] = -1.15,
-			["tired"] = 0.15,
 			["confident"] = 0.25,
 			["uncomfortable"] = -0.15,
 			["happy"] = 0.25,
@@ -217,7 +255,7 @@ local zones = {
 			["focused"] = -0.15,
 		}
 	},
-	[146] = {--Southern Thanalan - Sagoli Desert
+	[146] = { --Southern Thanalan - Sagoli Desert
 		["name"] = "Southern Thanalan - Sagoli Desert",
 		["cont"] = "Thanalan",
 		["climate"] = {
@@ -226,10 +264,9 @@ local zones = {
 			["humidity"] = "very-low",
 			["nighthot"] = 0.77, -- percentage
 			["nightcold"] = 1.37,
+			["stm"] = 0.27,
 		},
 		["effects"] = {
-			["hot"] = 0.13,
-			["cold"] = -0.19,
 			["wet"] = -1.15,
 			["uncomfortable"] = -0.35,
 			["dazed"] = 0.25,
@@ -240,23 +277,26 @@ local zones = {
 			["angry"] = 0.15,
 			["aetheric"] = 0.67,
 		},
-		["nighthot"] = -0.27,
-		["nightcold"] = 0.37,
 	},
-	[147] = {
+	[147] = { --Northern Thanalan
 		["name"] = "Northern Thanalan",
 		["cont"] = "Thanalan",
+		["climate"] = {
+			["type"] = "desert",
+			["temp"] = "hot",
+			["humidity"] = "low",
+			["nighthot"] = 0.82, -- percentage
+			["nightcold"] = 1.21,
+			["stm"] = 0.31,
+		},
 		["effects"] = {
-			["hot"] = 0.13,
-			["cold"] = -0.19,
 			["wet"] = -1.15,
-			["tired"] = -0.15,
 			["confident"] = 0.45,
 			["uncomfortable"] = -0.35,
 			["happy"] = 0.45,
 			["social"] = 1.95,
 			["dazed"] = 0.25,
-			["flippant"] = 0.25,
+			["apathetic"] = 0.25,
 			["amused"] = -0.15,
 			["curious"] = 0.15,
 			["mischievous"] = 0.15,
@@ -267,64 +307,75 @@ local zones = {
 		["nighthot"] = -0.27,
 		["nightcold"] = 0.37,
 	},
-	[153] = {
+	[153] = { --South Shroud
 		["name"] = "South Shroud",
 		["cont"] = "The Black Shroud",
+		["climate"] = {
+			["type"] = "sylvan",
+			["temp"] = "sylvan",
+			["humidity"] = "med",
+			["nighthot"] = 0.71, -- percentage
+			["nightcold"] = 1.13,
+			["stm"] = 0.27,
+		},
 		["effects"] = {
-			["hot"] = 0.75,
-			["cold"] = -1.5,
 			["wet"] = -0.25,
-			["tired"] = -0.15,
 			["tense"] = -0.25,
 			["uncomfortable"] = -0.25,
 			["nosey"] = 0.17,
 			["curious"] = 0.17,
 			["impatient"] = -0.17,
-			["anxious"] = -0.15,
+			["disturbed"] = -0.15,
 			["playful"] = 0.15,
 			["energized"] = -0.13,
 			["aetheric"] = -0.17,
 		}
 	},
-	[154] = {
+	[154] = { --North Shroud
 		["name"] = "North Shroud",
 		["cont"] = "The Black Shroud",
+		["climate"] = {
+			["type"] = "sylvan",
+			["temp"] = "sylvan",
+			["humidity"] = "normal",
+			["nighthot"] = 0.71, -- percentage
+			["nightcold"] = 1.22,
+			["stm"] = 0.27,
+		},
 		["effects"] = {
-			["hot"] = 0.45,
-			["cold"] = -0.66,
 			["wet"] = -0.25,
-			["tired"] = -0.15,
 			["tense"] = -0.25,
 			["uncomfortable"] = -0.25,
 			["nosey"] = 0.17,
 			["curious"] = 0.17,
 			["impatient"] = -0.17,
-			["anxious"] = -0.15,
+			["disturbed"] = -0.15,
 			["playful"] = 0.15,
-			["energized"] = -0.07,
-			["aetheric"] = 0.17,
+			["energized"] = -0.13,
+			["aetheric"] = -0.17,
 		}
 	},
-	[156] = {
+	[156] = {--Revenant's Toll
 		["name"] = "Mor Dhona",
 		["cont"] = "Mor Dhona",
+		["climate"] = {
+			["type"] = "temperate",
+			["temp"] = "normal",
+			["humidity"] = "low",
+			["nighthot"] = 0.84, -- percentage
+			["nightcold"] = 1.14,
+			["stm"] = 0.39,
+		},
 		["effects"] = {
-			["hot"] = 0.23,
-			["cold"] = -0.31,
-			["wet"] = -1.15,
-			["tired"] = -0.15,
 			["confident"] = 0.45,
 			["uncomfortable"] = -0.35,
 			["happy"] = 0.45,
 			["social"] = 1.95,
 			["dazed"] = 0.25,
-			["flippant"] = 0.25,
 			["amused"] = -0.15,
 			["curious"] = 0.15,
 			["mischievous"] = 0.15,
-			["angry"] = 0.15,
-			["tense"] = 0.35,
-			["aetheric"] = 0.99,
+			["aetheric"] = 0.39,
 		},
 		["nighthot"] = -0.37,
 		["nightcold"] = 0.43,
@@ -336,19 +387,19 @@ local zones = {
 			["type"] = "indoors",
 			["temp"] = "indoors-moderate",
 			["humidity"] = "med",
-			["nighthot"] = 0.67, -- percentage
+			["nighthot"] = 0.77, -- percentage
 			["nightcold"] = 1.27,
+			["stm"] = 0.11,
 		},
 		["effects"] = {
 			["wet"] = -0.15,
-			["tired"] = -1.2,
 			["tense"] = -1.25,
 			["uncomfortable"] = -1.5,
 			["happy"] = 0.25,
 			["sleepy"] = -3.6,
 			["amused"] = 0.2,
 			["energized"] = 0.3,
-			["anxious"] = -0.1,
+			["disturbed"] = -0.1,
 			["aetheric"] = -1.77,
 		}
 	},
@@ -363,8 +414,9 @@ local zones = {
 			["type"] = "coastal",
 			["temp"] = "coastal",
 			["humidity"] = "med",
-			["nighthot"] = 0.67, -- percentage
-			["nightcold"] = 1.27,
+			["nighthot"] = 0.81, -- percentage
+			["nightcold"] = 1.17,
+			["stm"] = 0.33,
 		},
 		["effects"] = {
 			["wet"] = 0.15,
@@ -375,7 +427,23 @@ local zones = {
 			["flirty"] = 0.5,
 			["amused"] = 0.2,
 			["social"] = 0.1,
-			["anxious"] = -0.1,
+			["disturbed"] = -0.1,
+		},
+	},
+	[351] = { --Rising Stones - Mor Dhona
+		["name"] = "Rising Stones - Mor Dhona",
+		["cont"] = "Thanalan",
+		["climate"] = {
+			["type"] = "indoors",
+			["temp"] = "indoors",
+			["humidity"] = "low",
+			["nighthot"] = 0.87, -- percentage
+			["nightcold"] = 1.17,
+			["stm"] = 0.23,
+		},
+		["effects"] = {
+			["refreshed"] = 0.23,
+			["sleepy"] = -2.7,
 		},
 	},
 	[384] = { --Private Chambers - Mist
@@ -387,6 +455,7 @@ local zones = {
 			["humidity"] = "low",
 			["nighthot"] = 0.67, -- percentage
 			["nightcold"] = 1.27,
+			["stm"] = 0.13,
 		},
 		["effects"] = {
 			["refreshed"] = 0.23,
@@ -407,7 +476,7 @@ local zones = {
 			["flirty"] = 0.5,
 			["amused"] = 0.2,
 			["social"] = 0.1,
-			["anxious"] = -0.1,
+			["disturbed"] = -0.1,
 			["aetheric"] = 7.77,
 		},
 	},
@@ -426,6 +495,24 @@ local zones = {
 		["nighthot"] = -3.75,
 		["nightcold"] = 4.32,
 	},
+	
+	[478] = { --Idylshire
+		["name"] = "Idylshire",
+		["cont"] = "Dravania",
+		["climate"] = {
+			["type"] = "mountains",
+			["temp"] = "mountains",
+			["humidity"] = "normal",
+			["nighthot"] = 0.83, -- percentage
+			["nightcold"] = 1.23,
+			["stm"] = 0.23,
+		},
+		["effects"] = {
+			["refreshed"] = 0.23,
+			["sleepy"] = -2.7,
+		},
+	},
+	
 	[536] = { --Maelstrom Barracks
 		["name"] = "Maelstrom Barracks",
 		["cont"] = "La Noscea",
@@ -458,7 +545,7 @@ local zones = {
 			["curious"] = 0.25,
 			["confident"] = 0.15,
 			["impatient"] = -0.35,
-			["anxious"] = -0.15,
+			["disturbed"] = -0.15,
 			["aetheric"] = -0.55,
 		},
 	},
@@ -476,7 +563,7 @@ local zones = {
 			["curious"] = 0.25,
 			["confident"] = 0.15,
 			["impatient"] = -0.35,
-			["anxious"] = -0.15,
+			["disturbed"] = -0.15,
 			["playful"] = 0.15,
 		}
 	},
@@ -494,7 +581,7 @@ local zones = {
 			["curious"] = 0.95,
 			["confident"] = 0.20,
 			["embarrassed"] = 0.35,
-			["anxious"] = 0.15,
+			["disturbed"] = 0.15,
 			["playful"] = 0.75,
 			["puzzled"] = 0.15,
 			["surprised"] = 0.65,
@@ -558,19 +645,44 @@ local zones = {
 			["aetheric"] = -0.75,
 		}
 	},
-	[956] = {
+	[956] = {--Labyrinthos
 		["name"] = "Labyrinthos",
 		["cont"] = "The Northern Empty",
+		["climate"] = {
+			["type"] = "biosphere",
+			["temp"] = "biosphere",
+			["humidity"] = "low",
+			["nighthot"] = 0.87, -- percentage
+			["nightcold"] = 1.15,
+			["stm"] = 0.15,
+		},
+		["optimal"] = 9.33,
+		["effects"] = {
+			["wet"] = 0.15,
+			["focused"] = 0.45,
+			["tense"] = -0.35,
+			["nosey"] = 0.25,
+			["uncomfortable"] = -0.25,
+			["happy"] = 0.15,
+			["curious"] = 0.35,
+			["bored"] = -0.25,
+			["mischievous"] = 0.15,
+			["confident"] = 0.25,
+		}
 	},
-	[957] = {
+	[957] = { --Thavnair
 		["name"] = "Thavnair",
 		["cont"] = "Ilsabard",
+		["climate"] = {
+			["type"] = "tropical",
+			["temp"] = "tropical",
+			["humidity"] = "high",
+			["nighthot"] = 0.91, -- percentage
+			["nightcold"] = 1.17,
+			["stm"] = 0.23,
+		},
 		["effects"] = {
-			["hot"] = 2.55,
-			["cold"] = -2.5,
-			["wet"] = 0.35,
-			["tired"] = -0.15,
-			["tense"] = -0.25,
+			["wet"] = 0.44,
 			["uncomfortable"] = -0.25,
 			["happy"] = 0.15,
 			["curious"] = 0.15,
@@ -625,15 +737,16 @@ local zones = {
 		["nighthot"] = -4.25,
 		["nightcold"] = 3.65,
 	},
-	[962] = {
+	[962] = {--Old Sharlayan
 		["name"] = "Old Sharlayan",
 		["cont"] = "The Northern Empty",
 		["climate"] = {
 			["type"] = "coastal",
-			["temp"] = "cool",
+			["temp"] = "cold",
 			["humidity"] = "moderate",
 			["nighthot"] = 0.91, -- percentage
 			["nightcold"] = 1.11,
+			["stm"] = 0.41,
 		},
 		["optimal"] = 9.33,
 		["effects"] = {
@@ -649,14 +762,19 @@ local zones = {
 			["confident"] = 0.25,
 		}
 	},
-	[963] = {
+	[963] = {--Radz-at-Han
 		["name"] = "Radz-at-Han",
 		["cont"] = "Ilsabard",
+		["climate"] = {
+			["type"] = "tropical",
+			["temp"] = "tropical",
+			["humidity"] = "high",
+			["nighthot"] = 0.93, -- percentage
+			["nightcold"] = 1.07,
+			["stm"] = 0.23,
+		},
 		["effects"] = {
-			["hot"] = 2.75,
-			["cold"] = -2.25,
 			["wet"] = 0.55,
-			["tired"] = 0.15,
 			["social"] = 0.35,
 			["uncomfortable"] = 0.15,
 			["amused"] = 0.15,
@@ -668,6 +786,13 @@ local zones = {
 	[990] = {
 		["name"] = "Andron",
 		["cont"] = "The Northern Empty",
+		["climate"] = {
+			["type"] = "coastal",
+			["temp"] = "cool",
+			["humidity"] = "moderate",
+			["nighthot"] = 0.91, -- percentage
+			["nightcold"] = 1.11,
+		},
 		["effects"] = {
 			["hot"] = 0.45,
 			["cold"] = -0.25,
@@ -741,7 +866,7 @@ local zones = {
 			["nosey"] = 0.27,
 			["curious"] = 0.27,
 			["impatient"] = -0.27,
-			["anxious"] = 0.15,
+			["disturbed"] = 0.15,
 			["amused"] = 0.15,
 			["energized"] = -0.27,
 			["aetheric"] = 0.37,
@@ -753,13 +878,14 @@ local zones = {
 		["cont"] = "Yok Tural",
 		["climate"] = {
 			["type"] = "coastal",
-			["temp"] = "coastal",
+			["temp"] = "tropical",
 			["humidity"] = "high",
-			["nighthot"] = 0.61, -- percentage
-			["nightcold"] = 1.61,
+			["nighthot"] = 0.81, -- percentage
+			["nightcold"] = 1.21,
+			["stm"] = 0.21,
 		},
 		["effects"] = {
-			["wet"] = 1.17,
+			["wet"] = 1.77,
 			["tired"] = -0.15,
 			["confident"] = 0.15,
 			["uncomfortable"] = -0.15,
@@ -810,11 +936,16 @@ local zones = {
 	[1188] = {
 		["name"] = "Kozama'uka",
 		["cont"] = "Yok Tural",
+		["climate"] = {
+			["type"] = "tropical",
+			["temp"] = "tropical",
+			["humidity"] = "med",
+			["nighthot"] = 0.74, -- percentage
+			["nightcold"] = 1.13,
+			["stm"] = 0.21,
+		},
 		["effects"] = {
-			["hot"] = 0.95,
-			["cold"] = -0.95,
-			["wet"] = -0.35,
-			["tired"] = -0.15,
+			["wet"] = 1.44,
 			["confident"] = 0.25,
 			["uncomfortable"] = -0.15,
 			["happy"] = 0.20,
@@ -822,7 +953,6 @@ local zones = {
 			["mischievous"] = 0.15,
 			["social"] = 0.15,
 			["focused"] = 0.15,
-			["tense"] = -0.15,
 		}
 	},
 	[1189] = {--Mamook
@@ -908,15 +1038,20 @@ local zones = {
 		["nighthot"] = -0.45,
 		["nightcold"] = 0.55,
 	},
-	[1237] = {
+	[1237] = {--Moon Rabbit Base
 		["name"] = "Sinus Ardorum",
 		["cont"] = "The Sea of Stars",
+		["climate"] = {
+			["type"] = "space",
+			["temp"] = "space",
+			["humidity"] = "arid",
+			["nighthot"] = 0.77, -- percentage
+			["nightcold"] = 1.33,
+			["stm"] = 0.0,
+		},
 		["effects"] = {
-			["hot"] = 3.15,
-			["cold"] = -3.25,
-			["wet"] = -1.95,
+			["wet"] = -3.95,
 			["focused"] = 0.25,
-			["tense"] = 0.15,
 			["nosey"] = 0.45,
 			["uncomfortable"] = 0.15,
 			["happy"] = 0.15,
@@ -926,18 +1061,17 @@ local zones = {
 			["confident"] = 0.25,
 			["aetheric"] = 1.37,
 		},
-		["nighthot"] = -4.25,
-		["nightcold"] = 3.65,
 	},
 	[1249] = {
 		["name"] = "Private Cottage - Mist",
 		["cont"] = "La Noscea",
 		["climate"] = {
 			["type"] = "indoors",
-			["temp"] = "cool",
+			["temp"] = "moderate",
 			["humidity"] = "low",
-			["nighthot"] = 0.81, -- percentage
-			["nightcold"] = 1.21,
+			["nighthot"] = 0.9, -- percentage
+			["nightcold"] = 1.1,
+			["stm"] = 0.15,
 		},
 	},
 	[1252] = {
@@ -949,6 +1083,7 @@ local zones = {
 			["humidity"] = "moderate",
 			["nighthot"] = 0.66,
 			["nightcold"] = 1.33,
+			["stm"] = 0.25,
 		},
 		["effects"] = {
 			["wet"] = 0.31,
@@ -967,9 +1102,10 @@ local zones = {
 		["climate"] = {
 			["type"] = "coastal",
 			["temp"] = "coastal",
-			["humidity"] = "high",
+			["humidity"] = "moderate",
 			["nighthot"] = 0.77,
 			["nightcold"] = 1.11,
+			["stm"] = 0.25,
 		},
 		["effects"] = {
 			["wet"] = 0.35,
@@ -992,6 +1128,7 @@ local zones = {
 			["humidity"] = "moderate",
 			["nighthot"] = 0.66,
 			["nightcold"] = 1.33,
+			["stm"] = 0.25,
 		},
 		["effects"] = {
 			["wet"] = 0.31,
