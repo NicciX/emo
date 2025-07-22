@@ -1,7 +1,7 @@
 
 --Emotions logix
 --Black - Strong/Creative Emotions
-	-- Moods - focused, dazed, mischievous, nosey, disturbed, confident, flippant, responsible, social
+	-- Moods - focused, dazed, mischievous, nosey, disturbed, confident, apathetic, responsible, social
 
 
 --Red - Strong/Passionate Emotions
@@ -11,7 +11,7 @@
 	-- Moods - happy, puzzled, energized, busy, hungry, surprised
 	
 --Blue - Negative Emotions
-	-- Moods - scared, sleepy, sad, cold, wet, tired, concerned
+	-- Moods - scared, sleepy, sad, cold, wet, bored, concerned
 	
 --Green - General Emotions
 	-- Moods - neutral, tense, bored, uncomfortable, impatient
@@ -72,7 +72,7 @@ local emote = {
 		["effects"] = {
 			["amused"] = 1,
 			["social"] = 2,
-			["flippant"] = 3
+			["apathetic"] = 3
 		}
 	},
 	["allsaintscharm"] = {
@@ -138,7 +138,7 @@ local emote = {
 			["angry"] = -0.37,
 			["tense"] = -0.31,
 			["uncomfortable"] = -0.21,
-			["tired"] = -0.21,
+			["bored"] = -0.21,
 			["responsible"] = 0.41,
 			["social"] = 0.41
 		}
@@ -157,7 +157,7 @@ local emote = {
 			["angry"] = -0.37,
 			["tense"] = -0.31,
 			["uncomfortable"] = -0.21,
-			["tired"] = -0.21,
+			["bored"] = -0.21,
 			["responsible"] = 0.41,
 			["nosey"] = 0.41
 		}
@@ -175,7 +175,7 @@ local emote = {
 			["angry"] = -1,
 			["tense"] = -1,
 			["uncomfortable"] = -1,
-			["tired"] = -1,
+			["bored"] = -1,
 			["responsible"] = 1
 		}
 	},
@@ -206,7 +206,7 @@ local emote = {
 		["weight"] = 59,
 		["effects"] = {
 			["bored"] = -7,
-			["tired"] = 2,
+			["bored"] = 2,
 			["bored"] = -2,
 			["hungry"] = 1,
 			["amused"] = 11,
@@ -227,7 +227,7 @@ local emote = {
 			["amused"] = -0.25,
 			["bored"] = -0.75,
 			["social"] = -0.25,
-			["flippant"] = 0.125,
+			["apathetic"] = 0.125,
 		}
 	},
 	["beckon"] = {
@@ -245,7 +245,7 @@ local emote = {
 			["neutral"] = -2,
 			["amused"] = -1,
 			["social"] = -2,
-			["flippant"] = 2,
+			["apathetic"] = 2,
 			["energized"] = -1
 		}
 	},
@@ -442,6 +442,7 @@ local emote = {
 		["slsh"] = "bstance",
 		["type"] = "responsible",
 		["group"] = "white",
+		["cost"] = 2.2,
 		["cd"] = 77,
 		["last"] = 0,
 		["weight"] = 59,
@@ -542,7 +543,6 @@ local emote = {
 		["last"] = 0,
 		["effects"] = {
 			["hungry"] = -7,
-			["tired"] = -4,
 			["uncomfortable"] = -4,
 			["sleepy"] = -2,
 			["happy"] = 4,
@@ -688,7 +688,7 @@ local emote = {
 		["where"] = "Mogstation / All Saints' Wake (Oct 2022)",
 		["effects"] = {
 			["hungry"] = -7,
-			["tired"] = -2,
+			["bored"] = -2,
 			["uncomfortable"] = -3,
 			["social"] = 2
 		}
@@ -704,7 +704,7 @@ local emote = {
 		["where"] = "Mogstation - The Make It Rain Campaign (2020)",
 		["effects"] = {
 			["energized"] = -2,
-			["tired"] = 2,
+			["bored"] = 2,
 			["bored"] = -2,
 		}
 	},
@@ -756,7 +756,7 @@ local emote = {
 			["tense"] = -2,
 			["flirty"] = -2,
 			["playful"] = -1,
-			["tired"] = -3,
+			["bored"] = -3,
 			["sleepy"] = -5.5
 		}
 	},
@@ -774,7 +774,7 @@ local emote = {
 			["uncomfortable"] = -2.5,
 			["disturbed"] = -2.5,
 			["embarrassed"] = -2,
-			["flippant"] = 1,
+			["apathetic"] = 1,
 		}
 	},
 	["deride"] = {
@@ -862,7 +862,7 @@ local emote = {
 			["energized"] = 2,
 			["focused"] = -3,
 			["tense"] = -2,
-			["tired"] = -3,
+			["bored"] = -3,
 			["sleepy"] = -5.5
 		}
 	},
@@ -912,7 +912,7 @@ local emote = {
 		["effects"] = {
 			["hungry"] = -10,
 			["energized"] = 7,
-			["tired"] = -2,
+			["bored"] = -2,
 			["uncomfortable"] = -3,
 			["sleepy"] = -4,
 			["happy"] = 2,
@@ -929,7 +929,7 @@ local emote = {
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["flippant"] = -3,
+			["apathetic"] = -3,
 			["impatient"] = -3,
 			["confident"] = 3,
 			["social"] = 2
@@ -967,7 +967,7 @@ local emote = {
 			["tense"] = -2,
 			["uncomfortable"] = 1,
 			["social"] = 1,
-			["flippant"] = -1
+			["apathetic"] = -1
 		},
 		["defEmo"] = true
 	},
@@ -1059,7 +1059,7 @@ local emote = {
 			["tense"] = -2,
 			["uncomfortable"] = -1,
 			["social"] = -1,
-			["flippant"] = 1
+			["apathetic"] = 1
 		},
 		["defEmo"] = true,
 		["last"] = 0,
@@ -1094,7 +1094,7 @@ local emote = {
 			["angry"] = -1,
 			["tense"] = -1,
 			["uncomfortable"] = -1,
-			["tired"] = -1,
+			["bored"] = -1,
 			["responsible"] = 1
 		}
 	},
@@ -1160,7 +1160,7 @@ local emote = {
 	},
 	["grovel"] = {
 		["slsh"] = "grovel",
-		["type"] = "embarrased",
+		["type"] = "embarrassed",
 		["group"] = "red",
 		["last"] = 0,
 		["cd"] = 69,
@@ -1168,7 +1168,7 @@ local emote = {
 		["cost"] = 1.6,
 		["defEmo"] = true,
 		["effects"] = {
-			["embarrased"] = -3,
+			["embarrassed"] = -3,
 			["disturbed"] = -1.5
 		}
 	},
@@ -1291,7 +1291,7 @@ local emote = {
 		["last"] = 0,
 		["effects"] = {
 			["dazed"] = -2.5,
-			["flippant"] = -1,
+			["apathetic"] = -1,
 			["bored"] = -1,
 			["embarrassed"] = -1,
 			["social"] = 1
@@ -1327,6 +1327,22 @@ local emote = {
 		["last"] = 0,
 		["where"] = "MSQ - Acting the Part",
 	},
+	["insist"] = {
+		["slsh"] = "insist",
+		["type"] = "nosey",
+		["group"] = "green",
+		["where"] = "1,800 Skybuilders' Scrips",
+		["cost"] = 1,
+		["weight"] = 59,
+		["cd"] = 120,
+		["last"] = 0,
+		["effects"] = {
+			["apathetic"] = -3,
+			["impatient"] = -3,
+			["confident"] = 3,
+			["nosey"] = -2
+		}
+	},
 	["joy"] = {
 		["slsh"] = "joy",
 		["type"] = "happy",
@@ -1339,7 +1355,7 @@ local emote = {
 		["effects"] = {
 			["hungry"] = -0.5,
 			["energized"] = 1,
-			["tired"] = -1,
+			["bored"] = -1,
 			["uncomfortable"] = -5,
 			["social"] = -3,
 			["happy"] = -3,
@@ -1524,11 +1540,11 @@ local emote = {
 		["effects"] = {
 			["mischievous"] = -1.5,
 			["energized"] = -0.5,
-			["tired"] = -1,
+			["bored"] = -1,
 			["social"] = -3,
 			["amused"] = 1,
 			["sad"] = -2,
-			["flippant"] = -3
+			["apathetic"] = -3
 		}
 	},
 	["mime"] = {
@@ -1546,7 +1562,7 @@ local emote = {
 			["aetheric"] = -7.77,
 			["bored"] = -3.37,
 			["bored"] = -2,
-			["flippant"] = -3
+			["apathetic"] = -3
 		},
 		["where"] = "Online Store - Mogstation"
 	},
@@ -1603,7 +1619,7 @@ local emote = {
 		["effects"] = {
 			["dazed"] = -2.5,
 			["embarrassed"] = -0.5,
-			["flippant"] = 2
+			["apathetic"] = 2
 		}
 	},
 	["ohokaliy"] = {
@@ -1638,52 +1654,70 @@ local emote = {
 	},
 	["paintblack"] = {
 		["slsh"] = "paintblack",
-		["type"] = "black",
+		["type"] = "focused",
 		["group"] = "paintbrush",
-		["cost"] = 7,
+		["cost"] = 77,
 		["weight"] = 37,
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["energized"] = -15,
-			["focused"] = -15,
-			["aetheric"] = -15,
+			["focused"] = -777,
+			["dazed"] = 77,
+			["mischievous"] = 77,
+			["disturbed"] = 77,
+			["apathetic"] = 77,
+			["aetheric"] = 777,
 		}
 	},
 	["paintblue"] = {
 		["slsh"] = "paintblue",
-		["type"] = "blue",
+		["type"] = "cold",
 		["group"] = "paintbrush",
-		["cost"] = 7,
+		["cost"] = 5,
 		["weight"] = 33,
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["energized"] = -5
+			["bored"] = -25,
+			["scared"] = -25,
+			["sleepy"] = -25,
+			["sad"] = -25,
+			["cold"] = -25,
+			["grungy"] = -25,
 		}
 	},
 	["paintred"] = {
 		["slsh"] = "paintred",
-		["type"] = "red",
+		["type"] = "hot",
 		["group"] = "paintbrush",
-		["cost"] = 7,
+		["cost"] = 9,
 		["weight"] = 39,
-		["cd"] = 120,
+		["cd"] = 169,
 		["last"] = 0,
 		["effects"] = {
-			["energized"] = -5
+			["angry"] = 25,
+			["embarrassed"] = 25,
+			["curious"] = 25,
+			["hot"] = -25,
+			["flirty"] = 25,
+			["amused"] = 25,
 		}
 	},
 	["paintyellow"] = {
 		["slsh"] = "paintyellow",
-		["type"] = "yellow",
+		["type"] = "energized",
 		["group"] = "paintbrush",
-		["cost"] = 1,
+		["cost"] = 11,
 		["weight"] = 41,
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["energized"] = -5
+			["energized"] = 75,
+			["hungry"] = 75,
+			["busy"] = 75,
+			["puzzled"] = 25,
+			["amazed"] = 25,
+			["surprised"] = 25,
 		}
 	},
 	["panic"] = {
@@ -1698,11 +1732,11 @@ local emote = {
 		["effects"] = {
 			["mischievous"] = -1.5,
 			["energized"] = 2.5,
-			["tired"] = -2,
+			["bored"] = -2,
 			["social"] = -3,
 			["focused"] = -5,
 			["impatient"] = 2,
-			["flippant"] = -3
+			["apathetic"] = -3
 		}
 	},
 	["pdead"] = {
@@ -1717,7 +1751,6 @@ local emote = {
 		["effects"] = {
 			["hungry"] = 0.23,
 			["energized"] = 2.77,
-			["tired"] = -1.65,
 			["uncomfortable"] = -0.75,
 			["tense"] = -3,
 		}
@@ -1788,7 +1821,7 @@ local emote = {
 		["effects"] = {
 			["hungry"] = -10,
 			["energized"] = 7,
-			["tired"] = -2,
+			["bored"] = -2,
 			["uncomfortable"] = -3,
 			["sleepy"] = -4,
 			["happy"] = 2,
@@ -1803,8 +1836,19 @@ local emote = {
 	},
 	["poke"] = {
 		["slsh"] = "poke",
-		["type"] = "amused",
-		["defEmo"] = true
+		["type"] = "disturbed",
+		["group"] = "black",
+		["cost"] = 1,
+		["weight"] = 49,
+		["cd"] = 120,
+		["last"] = 0,
+		["defEmo"] = true,
+		["effects"] = {
+			["angry"] = -1,
+			["disturbed"] = -2,
+			["uncomfortable"] = -1,
+			["social"] = -1
+		},
 	},
 	["pose"] = {
 		["slsh"] = "pose",
@@ -1826,8 +1870,19 @@ local emote = {
 	},
 	["pray"] = {
 		["slsh"] = "pray",
-		["type"] = "amused",
-		["defEmo"] = true
+		["type"] = "responsible",
+		["group"] = "white",
+		["last"] = 0,
+		["cd"] = 77,
+		["weight"] = 31,
+		["cost"] = 1,
+		["defEmo"] = true,
+		["effects"] = {
+			["responsible"] = -1,
+			["refreshed"] = 7.7,
+			["social"] = -2,
+			["tense"] = -12,
+		},
 	},
 	["psych"] = {
 		["slsh"] = "psych",
@@ -1841,14 +1896,14 @@ local emote = {
 		["effects"] = {
 			["mischievous"] = -1.5,
 			["energized"] = 0.5,
-			["tired"] = 0.25,
+			["bored"] = 0.25,
 			["uncomfortable"] = -0.25,
 			["social"] = -1,
 			["amused"] = -1,
 			["amazed"] = -2,
 			["flirty"] = -1,
 			["happy"] = 1,
-			["flippant"] = -2,
+			["apathetic"] = -2,
 			["dazed"] = -3
 		}
 	},
@@ -1862,10 +1917,10 @@ local emote = {
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["hungry"] = 1.5,
-			["hot"] = 2,
-			["tired"] = -1,
-			["uncomfortable"] = 0.75,
+			["hungry"] = 0.33,
+			["hot"] = 0.11,
+			["bored"] = -1,
+			["uncomfortable"] = 0.25,
 			["social"] = -1,
 			["confident"] = 1
 		}
@@ -1913,7 +1968,7 @@ local emote = {
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["tired"] = -1,
+			["bored"] = -1,
 			["bored"] = -1,
 			["impatient"] = -1,
 			["social"] = -1
@@ -1946,7 +2001,7 @@ local emote = {
 		["effects"] = {
 			["hungry"] = -10,
 			["energized"] = 5,
-			["tired"] = -4,
+			["bored"] = -4,
 			["uncomfortable"] = -5,
 			["sleepy"] = -5,
 			["neutral"] = -3,
@@ -1982,7 +2037,7 @@ local emote = {
 		["last"] = 0,
 		["effects"] = {
 			["energized"] = 1.3,
-			["tired"] = -1,
+			["bored"] = -1,
 			["hot"] = 1,
 			["social"] = -2,
 			["sad"] = -2,
@@ -2009,8 +2064,17 @@ local emote = {
 	},
 	["salute"] = {
 		["slsh"] = "salute",
-		["type"] = "amused",
-		["defEmo"] = true
+		["type"] = "responsible",
+		["group"] = "white",
+		["last"] = 0,
+		["cd"] = 77,
+		["weight"] = 31,
+		["cost"] = 1,
+		["defEmo"] = true,
+		["effects"] = {
+			["responsible"] = -1,
+			["refreshed"] = 7.7
+		},
 	},
 	["scheme"] = {
 		["slsh"] = "scheme",
@@ -2099,7 +2163,7 @@ local emote = {
 		["last"] = 0,
 		["effects"] = {
 			["energized"] = -2,
-			["tired"] = -1,
+			["bored"] = -1,
 			["uncomfortable"] = -0.75,
 			["social"] = 1,
 			["neutral"] = -1,
@@ -2127,7 +2191,7 @@ local emote = {
 			["amazed"] = 0.77,
 			["flirty"] = 0.15,
 			["happy"] = 0.55,
-			["flippant"] = -0.25,
+			["apathetic"] = -0.25,
 			["dazed"] = -0.15
 		}
 	},
@@ -2154,7 +2218,7 @@ local emote = {
 	},
 	["shrug"] = {
 		["slsh"] = "shrug",
-		["type"] = "flippant",
+		["type"] = "apathetic",
 		["group"] = "black",
 		["defEmo"] = true,
 		["weight"] = 43,
@@ -2173,6 +2237,7 @@ local emote = {
 		["slsh"] = "shush",
 		["type"] = "disturbed",
 		["group"] = "black",
+		["weight"] = 49,
 		["last"] = 0,
 		["cost"] = 1.3,
 		["cd"] = 71,
@@ -2198,7 +2263,7 @@ local emote = {
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["tired"] = -2,
+			["bored"] = -2,
 			["uncomfortable"] = -5,
 			["social"] = 1,
 			["sleepy"] = 0.61,
@@ -2216,10 +2281,10 @@ local emote = {
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["hungry"] = 1.25,
+			["hungry"] = 0.25,
 			["energized"] = -4.5,
-			["hot"] = 2,
-			["tired"] = -2,
+			["hot"] = 0.17,
+			["bored"] = -2,
 			["uncomfortable"] = 0.65,
 			["social"] = -3,
 			["sad"] = -1,
@@ -2305,8 +2370,17 @@ local emote = {
 	},
 	["soothe"] = {
 		["slsh"] = "soothe",
-		["type"] = "amused",
-		["defEmo"] = true
+		["type"] = "responsible",
+		["group"] = "white",
+		["last"] = 0,
+		["cd"] = 67,
+		["weight"] = 61,
+		["cost"] = 1,
+		["defEmo"] = true,
+		["effects"] = {
+			["responsible"] = -1,
+			["aetheric"] = -1.5
+		},
 	},
 	["spectacles"] = {
 		["slsh"] = "spectacles",
@@ -2378,6 +2452,7 @@ local emote = {
 		["last"] = 0,
 		["effects"] = {
 			["hungry"] = 0.77,
+			["grungy"] = 0.69,
 			["hot"] = 0.37,
 			["uncomfortable"] = 0.31,
 			["social"] = -1,
@@ -2434,7 +2509,7 @@ local emote = {
 		["effects"] = {
 			["hungry"] = 0.1,
 			["energized"] = 1,
-			["tired"] = -1,
+			["bored"] = -1,
 			["uncomfortable"] = -2,
 			["sleepy"] = -1,
 			["neutral"] = -1,
@@ -2510,6 +2585,7 @@ local emote = {
 			["flirty"] = -0.35,
 			["cold"] = 0.21,
 			["wet"] = 0.33,
+			["grungy"] = 1.3,
 		}
 	},
 	["sweep"] = {
@@ -2560,11 +2636,11 @@ local emote = {
 		["last"] = 0,
 		["where"] = "Mogstation",
 		["effects"] = {
-			["tired"] = -3.69,
+			["bored"] = -3.69,
 			["energized"] = 17.1,
 			["sleepy"] = -7.11,
 			["social"] = -3.95,
-			["hot"] = 6.45,
+			["hot"] = 3.69,
 			["cold"] = -3.45
 		}
 	},
@@ -2895,14 +2971,14 @@ local emote = {
 		["effects"] = {
 			["mischievous"] = -1.5,
 			["responsible"] = -1.5,
-			["tired"] = -0.25,
+			["bored"] = -0.25,
 			["uncomfortable"] = -0.25,
 			["social"] = -1,
 			["amused"] = -1,
 			["amazed"] = -2,
 			["flirty"] = 1,
 			["happy"] = 1,
-			["flippant"] = -2,
+			["apathetic"] = -2,
 			["dazed"] = -1
 		}
 	},
@@ -2925,7 +3001,7 @@ local emote = {
 	},
 	["yes"] = {
 		["slsh"] = "yes",
-		["type"] = "flippant",
+		["type"] = "apathetic",
 		["group"] = "black",
 		["cost"] = 1,
 		["weight"] = 51,
@@ -2938,7 +3014,7 @@ local emote = {
 			["social"] = 0.25,
 			["amused"] = 0.17,
 			["flirty"] = 0.15,
-			["flippant"] = -0.37
+			["apathetic"] = -0.37
 		}
 	},
 	["yoldance"] = {
@@ -2961,4 +3037,20 @@ local emote = {
 	}
 }
 
-return {emote, emDex}
+local function getEmote(em)
+	return emote[em]
+end
+
+local function initEmotes()
+	for k,v in pairs(emote) do
+		if v.defEmo then
+			emotesPlayer[k] = true
+		elseif Game.Player.HasEmote(v.slsh) then
+			emotesPlayer[k] = true
+		else
+			emotesPlayer[k] = false
+		end
+	end
+end
+
+return {getEmote, initEmotes}

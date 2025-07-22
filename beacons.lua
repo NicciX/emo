@@ -1660,6 +1660,28 @@ local beacons = {
 			},
 		},
 	},
+	[979] = { -- Empyreum
+		["name"] = "Empyreum",
+		["cont"] = "Coerthas",
+		["beacon"] = {
+			["hot-baths"] = {--hot baths
+				["XPos"] = -530.839599609375,
+				["YPos"] = -561.1777954101562,
+				["ZPos"] = -18.067895889282227,
+				["radius"] = 211,
+				["toast"] = "",
+				["BCO"] = true,
+				["effects"] = {
+					["hot"] = 0.337,
+					["energized"] = 0.136,
+					["uncomfortable"] = -0.036,
+					["refreshed"] = 0.36,
+				},
+				["routine"] = "TempEmitterA",
+				["cooldown"] = 7,
+			},
+		},
+	},
 	[1185] = { -- Tuliyollal
 		["name"] = "Tuliyollal",
 		["cont"] = "Yok Tural",
@@ -2193,6 +2215,19 @@ local beacons = {
 				["effects"] = {
 					["aetheric"] = 0.05,
 					["energized"] = 0.05,
+				},
+				["routine"] = "AetherEffectA", --aetheryte
+				["cooldown"] = 9,
+			},
+			["B"] = {
+				["XPos"] = 721.4007568359375,
+				["YPos"] = 526.1768798828125,
+				["ZPos"] = -132.31103515625,
+				["radius"] = 13,
+				["toast"] = "",
+				["effects"] = {
+					["aetheric"] = 7.77,
+					["hot"] = 0.25,
 				},
 				["routine"] = "AetherEffectA", --aetheryte
 				["cooldown"] = 9,
@@ -2901,6 +2936,22 @@ local beacons = {
 		["name"] = "Sinus Ardorum",
 		["cont"] = "Moon",
 		["beacon"] = {
+			["temp-emitter"] = {--hot baths
+				["XPos"] = -7.10913610458374,
+				["YPos"] = -8.8740234375,
+				["ZPos"] = -3.337860107421875E-06,
+				["radius"] = 139,
+				["toast"] = "",
+				["BCO"] = true,
+				["effects"] = {
+					["hot"] = 0.1337,
+					["energized"] = 0.136,
+					["uncomfortable"] = -0.036,
+					["refreshed"] = 0.77,
+				},
+				["routine"] = "TempEmitterB",
+				["cooldown"] = 7,
+			},
 			["base"] = {
 				["XPos"] = -7.10913610458374,
 				["YPos"] = -8.8740234375,
@@ -2915,8 +2966,8 @@ local beacons = {
 				--["confluence"] = true,
 				["toast"] = "This is the moon rabbit base.",
 				["effects"] = {
-					["hot"] = 0.017,
-					["energized"] = 1.55,
+					["happy"] = -0.017,
+					--["energized"] = 1.55,
 				},
 				["routine"] = "moonrabbitbase",
 				["cooldown"] = 13,
@@ -3593,8 +3644,23 @@ local beacons = {
 				["routine"] = "cofferhelper", --cofferhelper
 				["cooldown"] = 77,
 			},
+			["cofferW"] = {
+				["XPos"] = 143.71267700195312,
+				["YPos"] = -574.2562255859375,
+				["ZPos"] = 16.32187843322754,
+				["radius"] = 3,
+				["test"] = true,
+				["effects"] = {
+					["aetheric"] = 0.44,
+					["energized"] = 0.33,
+					["puzzled"] = 4,
+					["curious"] = 1.1,
+				},
+				["routine"] = "cofferhelper", --cofferhelper
+				["cooldown"] = 77,
+			},
 		},
 	},
 }
 
-return beacons, beaconTypes
+return beacons

@@ -4,6 +4,20 @@
 --- function profiler table
 
 func_time = {
+	["OutfitTempFactor"] = {
+		["ST"] = 0,
+		["END"] = 0,
+		["tot"] = 0,
+		["calls"] = 0,
+		["longest"] = 0,
+	},
+	["EnvironmentHandler"] = {
+		["ST"] = 0,
+		["END"] = 0,
+		["tot"] = 0,
+		["calls"] = 0,
+		["longest"] = 0,
+	},
 	["decayPass"] = {
 		["ST"] = 0,
 		["END"] = 0,
@@ -400,6 +414,7 @@ filterLog = {
 	["9"] = nil, -- Chat
 	["10"] = nil, -- misc.
 	["13"] = nil, -- Gyre
+	["77"] = nil, -- Systems Tracking
 }
 
 function efficiency()
@@ -487,7 +502,7 @@ function trim_log()
 	lastTrim = os.time()
 end
 
-function dbgMsg(msg, lvl)
+function dbgMsg(msg, lvl, trk)
 	local ts = os.time()
 	if #msg > 250 then
 		return
@@ -514,12 +529,50 @@ function dbgMsg(msg, lvl)
 		dbgLastcall = 0
 	end
 	if os.time() - dbgLastcall > 0.777 then
-		if lvl > -1 and lvl < 2 then
+		if trk and DBG >= 77 then
+			local gig = ""
+			local vft
+			if type(trk) == "table" then
+				for k,v in pairs(trk) do
+					vft = validFuncTrack[v]
+					if giggles[vft] and sysTrack[v] then
+						gig = gig .. giggles[vft]
+					end
+					if sysTrack[v] and DBG >= 76 + lvl then
+						if string.contains(msg, "꒱") and giggles[vft] then
+							msg = string.gsub(msg, "꒱", giggles[vft])
+							Game.SendChat("/e " .. FemBot .. tostring(msg))
+							s = timestring .. FemBot .. tostring(msg) .. "\n"
+						else
+							Game.SendChat("/e " .. FemBot .. gig .. tostring(msg))
+							s = timestring .. FemBot .. gig .. tostring(msg) .. "\n"
+						end
+						break
+					end
+					lvl = lvl + 1
+				end
+			elseif sysTrack[validFuncTrack[trk]] and DBG >= 76 + lvl then
+				vft = validFuncTrack[trk]
+				if string.contains(msg, "꒱") and giggles[vft] then
+					msg = string.gsub(msg, "꒱", giggles[vft])
+					Game.SendChat("/e " .. FemBot .. tostring(msg))
+					s = timestring .. FemBot .. tostring(msg) .. "\n"
+				elseif giggles[vft] then
+					gig = gig .. giggles[vft]
+					Game.SendChat("/e " .. FemBot .. gig .. tostring(msg))
+					s = timestring .. FemBot .. gig .. tostring(msg) .. "\n"
+				else
+					Game.SendChat("/e " .. FemBot .. tostring(msg))
+					s = timestring .. EmoBot .. tostring(msg) .. "\n"
+				end
+			end
+		elseif lvl > -1 and lvl < 2 then
 			if DBG >= tonumber(lvl) then
 				Game.SendChat("/e " .. EmoBot .. tostring(msg))
-				--s = timestring .. "EmoBot " .. tostring(msg) .. "\n"
+				s = timestring .. EmoBot .. tostring(msg) .. "\n"
 				--dbg_log = dbg_log .. s
 			end
+		
 		elseif lvl == DBG then
 			if tonumber(lvl) == DBG then
 				Game.SendChat("/e " .. EmoBot .. tostring(msg))
@@ -532,8 +585,10 @@ function dbgMsg(msg, lvl)
 		end
 	end
 	if filterLog then
-		if filterLog[tostring(lvl)] then
-			s = timestring .. "EmoBot " .. tostring(msg) .. "\r"
+		if filterLog[tostring(lvl)] and s then
+			--s = timestring .. "EmoBot " .. tostring(msg) .. "\r"
+			dbg_log = dbg_log .. s
+		elseif DBG > 76 and s and filterLog["76"] then
 			dbg_log = dbg_log .. s
 		end
 		if #dbg_log > 377777 then
@@ -1150,9 +1205,10 @@ function dumpInfo(args)
 		dbgMsg("Current Zone: [".. Game.Player.MapZone .. "].", 0)
 		dbgMsg("tempComfortFactor: " .. tostring(tempComfortFactor) .. ".", 0)
 		
-		if zones[map] then
-			dbgMsg("Current Zone Name: [".. tostring(zones[map].name) .. "].", 0)
-			dbgMsg("Current Zone Area: [".. tostring(zones[map].cont) .. "].", 0)
+		local zone = zoneData(map)
+		if zone then
+			dbgMsg("Current Zone Name: [".. tostring(zone.name) .. "].", 0)
+			dbgMsg("Current Zone Area: [".. tostring(zone.cont) .. "].", 0)
 		end
 		
 		if lastBeaconCD and lastBeaconTime > 0 then
@@ -1280,9 +1336,15 @@ function dumpInfo(args)
 				else
 					dbgMsg("Facewear Not Set~ (⌐■_■)", 0) --♪π∞
 				end
-				CD[playerName].outfits[currentOutfit]["temp"] = tostring(reduce(OutfitTempFactor(), 3))
+				DressedCheck()
+				OutfitTempFactor()
+				--local otf, wet = table.unpack(OutfitTempFactor())
+				--otf = tostring(reduce(otf, 3))
+				CD[playerName].outfits[currentOutfit]["temp"] = OTF
 				if CD[playerName].outfits[currentOutfit]["temp"] then
-					dbgMsg("✓Current Outfit Environment: " .. tostring(CD[playerName].outfits[currentOutfit]["temp"]) .. ".", 0)
+					dbgMsg("✓Outfit Temp Factor: " .. tostring(reduce(OTF, 3)) .. ".", 0)
+					dbgMsg("✓Outfit Grungy: " .. tostring(reduce(OGF, 3)) .. ".", 0)
+					dbgMsg("✓Outfit Wetness: " .. tostring(reduce(OWF, 3)) .. ".", 0)
 				else
 					dbgMsg("Outfit Environment Not Set~", 0)
 				end

@@ -192,7 +192,7 @@ aspectAffinity = {
 	[17] = { --
 		["black"] = {
 			["focused"] = 2,
-			["flippant"] = 3,
+			["apathetic"] = 3,
 		},
 		["blue"] = {
 			["bored"] = 1,
@@ -216,7 +216,7 @@ aspectAffinity = {
 	},
 	[19] = { --
 		["black"] = {
-			["flippant"] = 1,
+			["apathetic"] = 1,
 		},
 		["red"] = {
 			["flirty"] = 2,
@@ -401,9 +401,9 @@ moods = {
 	--- Elementals: Earth - Ice ---
 	-- Black Moods --
 	["focused"] = {"read", "tomestone", "reference", "ritualprayer", "flamedance", "examineself", "kneel", "earwiggle", "think"},
-	["dazed"] = {"stagger", "vexed", "shocked", "panic", "no", "overreact", "cutchhead", "sulk", "shrug", "aback", "deny", "disappointed", "huh"},
+	["dazed"] = {"stagger", "vexed", "shocked", "panic", "no", "overreact", "clutchhead", "sulk", "shrug", "aback", "deny", "disappointed", "huh"},
 	["mischievous"] = {"magictrick", "malevolence", "allsaintscharm", "mime", "scheme", "toast", "visage", "frighten", "mogdance", "ladance", "paintblack", "earwiggle", "pose", "sabotender", "snap"},
-	["disturbed"] = {"panic", "deny", "shocked", "reference", "overreact", "shush", "grovel", "no"},
+	["disturbed"] = {"panic", "deny", "shocked", "disappointed", "laugh", "ritualprayer", "overreact", "shush", "grovel", "no"},
 	["apathetic"] = {"airquotes", "disappointed", "huh", "yes", "shrug", "elucidate", "facepalm"},
 	["aetheric"] = {"deride", "clap", "snap", "flamedance", "malevolence", "mime", "throw"},
 	
@@ -424,7 +424,7 @@ moods = {
 	["curious"] = {"lookout", "examineself", "greet", "read", "think", "reference", "photograph", "lean"},
 	["hot"] = {"ladance", "sweat", "paintred", "bigfan"},
 	["flirty"] = {"heart", "dote", "charmed", "blush", "shush", "ladance", "photograph", "blowkiss", "tea",
-					"tdance", "songbird", "paintred", "pose", "sabotender", "petals"},
+					"tdance", "songbird", "paintred", "pose", "twirl", "sabotender", "petals"},
 	["amused"] = {"chuckle", "clap", "allsaintscharm", "visage", "showleft", "blowbubbles",
 					"toast", "flamedance", "hum", "dance", "mime", "happy", "earwiggle", "lophop", "pose", "apple", 
 					"visage", "tomestone", "sabotender", "bdance", "spectacles", "vreveal"},
@@ -433,7 +433,7 @@ moods = {
 	-- Yellow Moods --
 	["hungry"] = {"bread", "apple", "egg", "pizza", "cookie", "choco", "riceball", "tea", "toast"}, --Moved From Yellow
 	["puzzled"] = {"think", "read", "panic", "shocked", "shrug", "mime"},
-	["energized"] = {"lophop", "backflip", "cheer", "shakedrink", "blowbubbles", "twirl", "magictrick", "fist", "cheeron", "cheerjump", "sdance", "paintyellow", "squats", "pushups", "situps", "yoldance", "sabotender"},
+	["energized"] = {"lophop", "backflip", "cheer", "insist", "shakedrink", "blowbubbles", "twirl", "magictrick", "fist", "cheeron", "cheerjump", "sdance", "paintyellow", "squats", "pushups", "situps", "yoldance", "sabotender"},
 	["busy"] = {"read", "reference", "think", "tomestone", "gcsalute"},
 	["amazed"] = {"awe", "joy", "psych", "surprised", "wow", "mogdance", "blowbubbles", "showright", "photograph"},
 	["surprised"] = {"aback", "shocked", "panic", "overreact", "surprised", "lookout"},
@@ -443,7 +443,7 @@ moods = {
 	-- Green Moods --
 	["tense"] = {"sweat", "upset", "wringhands", "bigfan", "overreact", "facepalm", "sulk", "no"},
 	["uncomfortable"] = {"upset", "clutchhead", "deny", "paintblue", "paintyellow", "sit"},
-	["impatient"] = {"beckon", "panic", "snap", "slump", "sweep", "elucidate", "sweat", "clutchhead", "wringhands", "disappointed"},
+	["impatient"] = {"beckon", "panic", "snap", "slump", "sweep", "insist", "elucidate", "sweat", "clutchhead", "wringhands", "disappointed"},
 	["refreshed"] = {"splash", "waterfloat", "cheer", "photograph", "waterflip", "hum", "toast", "spectacles", "petals", "pose", "tea", "visage", "twirl", "psych", },
 	["wet"] = {"shiver", "slump", "angry", "bigfan", "upset"},
 	["nosey"] = {"lookout", "converse", "photograph", "read", "shush", "lean", "spectacles", "tea", "insist", "attend", "hum"},
@@ -451,13 +451,13 @@ moods = {
 	--- Elementals; Lightning - Wind ---
 	-- White Moods --
 	["happy"] = {"happy", "cheer", "clap", "chuckle", "dance", "twirl", "earwiggle", "hug", "songbird", "fistpump", "highfive", "joy","paintyellow"},
-	["playful"] = {"magictrick", "lophop", "blowbubbles", "heart", "mime", "sdance", "tdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
-	["confident"] = {"cheer", "paintblack", "photograph", "toast", "think", "lean", "visage", "heart", "scheme", "gratuity", "tea", "spectacles", "snap", "pose", "petals", "vpose"}, --Moved From Black
+	["playful"] = {"magictrick", "lophop", "blowbubbles", "heart", "mime", "sdance", "twirl", "tdance", "pose", "gratuity", "hum", "sabotender", "petals", "vpose"},
+	["confident"] = {"cheer", "paintblack", "photograph", "toast", "insist", "think", "lean", "visage", "heart", "scheme", "gratuity", "tea", "spectacles", "snap", "pose", "petals", "vpose"}, --Moved From Black
 	["social"] = {"converse", "beesknees", "tea", "clap", "sweep", "songbird", "flamedance", "welcome", 
 					"greet", "hum", "bombdance", "getfantasy", "shakedrink", "hug", "dote", "petals", "sabotender", "ohokaliy",
 					"vpose", "tomestone", "photograph", "sdance", "blowbubbles", "toast", "visage", "fist", "bigfan", "reference", "paintblack", "spectacles"},
 	["neutral"] = {"airquotes", "apple", "hum", "atease", "beckon", "riceball", "hum", "lean"},
-	["responsible"] = {"bstance", "gcsalute","beckon", "bow", "ebow", "welcome", "greet", "rally", "kneel", "sweep", "goodbye", "yes", "ohokaliy"}, --Moved From Black
+	["responsible"] = {"bstance", "gcsalute","beckon", "bow", "ebow", "welcome", "soothe", "greet", "rally", "kneel", "sweep", "goodbye", "yes", "ohokaliy"}, --Moved From Black
 }
 
 Gyre = {	---	 -1-  -2- -3- -4- -5- -6-
@@ -583,6 +583,42 @@ gyreMethods = {
 		[12] = {"blue", 3, "blue", 4},
 		[13] = {"blue", 2, "blue", 3},
 		[14] = {"blue", 1, "blue", 2},
+	},
+	["white-black"] = {
+		[1] = {"white", 1, "black", 1},
+		[2] = {"white", 2, "white", 1},
+		[3] = {"white", 3, "white", 2},
+		[4] = {"white", 4, "white", 3},
+		[5] = {"white", 5, "white", 4},
+		[6] = {"white", 6, "white", 5},
+		[7] = {"green", 6, "white", 6},
+		[8] = {"yellow", 6, "green", 6},
+		[9] = {"red", 6, "yellow", 6},
+		[10] = {"blue", 6, "red", 6},
+		[11] = {"black", 6, "blue", 6},
+		[12] = {"black", 5, "black", 6},
+		[13] = {"black", 4, "black", 5},
+		[14] = {"black", 3, "blue", 4},
+		[15] = {"black", 2, "blue", 3},
+		[16] = {"black", 1, "blue", 2},
+	},
+	["black-white"] = {
+		[1] = {"black", 1, "white", 1},
+		[2] = {"black", 2, "black", 1},
+		[3] = {"black", 3, "black", 2},
+		[4] = {"black", 4, "black", 3},
+		[5] = {"black", 5, "black", 4},
+		[6] = {"black", 6, "black", 5},
+		[7] = {"blue", 6, "black", 6},
+		[8] = {"red", 6, "blue", 6},
+		[9] = {"yellow", 6, "red", 6},
+		[10] = {"green", 6, "yellow", 6},
+		[11] = {"white", 6, "green", 6},
+		[12] = {"white", 5, "white", 6},
+		[13] = {"white", 4, "white", 5},
+		[14] = {"white", 3, "white", 4},
+		[15] = {"white", 2, "white", 3},
+		[16] = {"white", 1, "white", 2},
 	},
 	["blue-green"] = {
 		[1] = {"blue", 1, "green", 1},
@@ -797,6 +833,9 @@ function aspectPass(pm, asp, amt, emo)
 						emoState[k] = 0
 					end
 					emoState[k] = reduce(emoState[k], 4)
+					if emoState[k] < 0 then
+						emoState[k] = 0
+					end
 					dbgMsg("aspectPass.: n: " .. k .. " -> " .. tostring(n), 13)
 					dbgMsg("aspectPass.: boostA: " .. k .. " -> " .. tostring(boostA), 13)
 				end
@@ -926,7 +965,7 @@ function ZoneTempFactor()
 			end
 		end
 	end
-	--warm = warm + reduce(OutfitTempFactor(), 3)--
+	--warm = warm + reduce(OWF(), 3)--
 	
 	local nH = 1
 	local nC = 1
@@ -964,8 +1003,307 @@ function ZoneTempFactor()
 end
 
 function EnvironmentHandler()
+	func_time["EnvironmentHandler"].ST = os.time()
+	local eTime = Game.EorzeanTime.Hour
+	local weather = Game.Weather.Name
 	
-	--local hIx = 
+	local adj, wa, ts
+	local nH = 1
+	local nC = 1
+	local ice = 0
+	local coldAdj = 1
+	local wtI = 1
+	local clmt = GetClimate()
+	if not clmt then
+		dbgMsg("꒱.EnvHdlr.꒱ missing map data for (" ..  tostring(Game.Player.MapZone) .. ").", 1)
+		return
+	end
+	if not clmt.stm then
+		dbgMsg("꒱.EnvHdlr.꒱ missing climate data for (" ..  tostring(Game.Player.MapZone) .. ").", 1)
+		return
+	end
+	local humidity = 1
+	local cold = 0
+	local warm = seasonalAdjust * clmt.stm
+	local CF = 0
+	
+	local gA = 0
+	
+	if OWF > 0 and OTF > 0 then
+		--OWF(OWF, OTF) -- Feedback to normalize outfit wetness
+	else
+		--OWF()
+	end
+	--local otf, wet = table.unpack(OWF())
+	DressedCheck()
+	OutfitTempFactor()
+	local otf, wet = OTF, OWF
+	
+	--wet = reduce(wet, 4)
+	
+	--otf = reduce(otf,4)
+	
+	if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ Base Climate Override ∫ " .. tostring(reduce(BCO, 4)), 5, {"EnvironmentHandler", "environment", "weather", "outfits"})
+		dbgMsg("꒱.EnvHdlr.꒱ Base Humidity Override ∫ " .. tostring(reduce(BHO, 4)), 5, {"EnvironmentHandler", "environment", "weather", "outfits"})
+		dbgMsg("꒱.EnvHdlr.꒱ seasonal factor ∫ " .. tostring(reduce(warm, 4)), 4, {"EnvironmentHandler", "environment", "weather", "outfits"})
+	end
+	--BCO = 0
+	
+	if clmt then
+		if clmt.temp then
+			CF = validTemps[clmt.temp]
+		end
+		if type(clmt.humidity) == "number" then
+			humidity = clmt.humidity + BHO
+		elseif clmt.humidity then
+			if humidMult[clmt.humidity] then
+				humidity = humidMult[clmt.humidity] + BHO
+			end
+		end
+	end
+	
+	CF = CF + BCO
+	--BCO = 0
+	--BHO = 0
+	
+	if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ humidity ∫ " .. tostring(humidity), 3, {"EnvironmentHandler", "environment", "weather", "outfits"})
+		dbgMsg("꒱.EnvHdlr.꒱ base climate factor ∫ " .. tostring(reduce(CF, 4)), 3, {"EnvironmentHandler", "environment", "weather", "outfits"})
+	end
+	
+	if playerRace == "Miqo'te" then
+		warm = reduce(warm - 0.21, 4)
+		if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ (Miqo'te) climate adj π " .. tostring(warm), 5, {"EnvironmentHandler", "environment", "weather", "zone", "traits"})
+		end
+	elseif playerSubRace == "Highlander" then
+		warm = reduce(warm + 0.27, 4)
+		if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ (Highlander) climate adj π " .. tostring(warm), 5, {"EnvironmentHandler", "environment", "weather", "zone", "traits"})
+		end
+	end
+	if playerTraits.vixen then
+		CF = reduce(CF * 0.69) --reduce(math.log(validTemps[clmt.temp] + 1.39, 3.69) * 2.39, 3)
+		--warm = warm + CF
+		if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ (vi♥en) climate factor ∫ " .. tostring(CF), 5, {"EnvironmentHandler", "traits", "environment"})
+		end
+	elseif playerTraits.spriggan then -- 🦉
+		CF = reduce(CF + -0.17 + Gyre.red[3] * 0.017, 4)
+		--warm = warm + CF
+		if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ (spri••an) climate factor ∫ " .. tostring(CF), 5, {"EnvironmentHandler", "traits", "environment"})
+		end
+	else
+		--warm = warm + CF
+		if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ climate factor ∫ " .. tostring(CF), 2, {"EnvironmentHandler", "environment", "weather", "zone"})
+		end
+	end
+	
+	warm = reduce(warm + CF, 4)
+	
+	if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ Warm + CF π " .. tostring(warm), 4, {"EnvironmentHandler", "environment", "weather", "zone"})
+	end
+	
+	if eTime > 17 or eTime < 6 then
+		nH = clmt.nighthot or 1
+		nC = clmt.nightcold or 1
+		if nC == 0 then
+			nC = 0.1
+		end
+		if nH == 0 then
+			nH = -0.1
+		end
+		warm = reduce(warm * nH, 4)
+		if sysTrack.environment or sysTrack.weather or sysTrack.zones or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ Temp Adj for Nighttime ‰ " .. tostring(nH), 4, {"EnvironmentHandler", "environment", "weather", "zone"})
+		end
+	end
+	
+	if IsSwimming then
+		if playerTraits.vixen then
+			wa = ((0.69 + CF) * -0.39)
+			--warm = warm - (6.69 - CF * 3.69)
+		elseif playerTraits.spriggan then
+			wa = (0.77 - CF * 1.44)
+			--warm = warm - (7.77 - CF * 4.44)
+		else
+			wa = (0.77 - CF * 1.11)
+			--warm = warm - (0.77 - CF * 1.11)
+		end
+		wa = reduce(wa, 4)
+		
+		if clmt.waterQuality then
+			gA = reduce(emoState.grungy * clmt.waterQuality - emoState.grungy, 4)
+			EmoGyre("grungy", gA)
+		end
+		--warm = reduce(warm, 4)
+		if sysTrack.environment or sysTrack.weather or sysTrack.zones or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ Swimming adj grungy π " .. tostring(gA), 2, {"EnvironmentHandler", "environment", "weather", "zone"})
+			dbgMsg("꒱.EnvHdlr.꒱ Adj for Swimming π " .. tostring(wa), 2, {"EnvironmentHandler", "environment", "weather", "zone"})
+		end
+	else
+		wa = 0
+		if clmt.grungy then
+			EmoGyre("grungy", clmt.grungy)
+		end
+		--wa = (GetWet() / (sA + CF + 0.61)) * 0.037
+	end
+	
+	if wa == 0 and humidity then
+		if sysTrack.environment or sysTrack.weather or sysTrack.zones or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ Adj for humidity ‰ " .. tostring(reduce((1 - humidity) * warm, 4)), 4, {"EnvironmentHandler", "environment", "weather", "zone"})
+		end
+		warm = warm * humidity
+	end
+	
+	warm = reduce(warm - wa, 4)
+	
+	
+	
+	if weather_effects[weather] then
+		if weather_effects[weather].neutral.temp then
+			wtI = weather_effects[weather].neutral.temp
+			warm = reduce(warm * wtI, 4)
+			if sysTrack.environment or sysTrack.weather or sysTrack.zones or sysTrack.EnvironmentHandler then
+				dbgMsg("꒱.EnvHdlr.꒱ weather influence ‰ " .. tostring(wtI), 4, {"EnvironmentHandler", "weather", "environment", "zone"})
+			end
+		end
+	else
+		dbgMsg("꒱.EnvHdlr.꒱ weather check :: " .. tostring(weather_effects[weather]), 1)
+	end
+	
+	if sysTrack.environment or sysTrack.weather or sysTrack.zones or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ outfit wet factor ∫ " .. tostring(wet), 2, {"EnvironmentHandler", "weather", "environment", "zone"})
+	end
+	
+	cold = reduce(((7.7 * coldAdj) - warm) / (9 / nC) + wet / 17, 3)
+	if sysTrack.environment or sysTrack.weather or sysTrack.zones or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ base hot ∫ " .. tostring(warm), 4, {"EnvironmentHandler", "weather", "environment", "zone"})
+		dbgMsg("꒱.EnvHdlr.꒱ base cold ∫ " .. tostring(cold), 4, {"EnvironmentHandler", "environment", "weather", "zone"})
+	end
+		
+	----
+	
+	if playerTraits.spriggan then
+		warm = warm - 0.177
+		r = math.random(1,88)
+		if r >= 77 then
+			adj = reduce(Gyre.black[4] * 0.01, 4)
+			warm = warm * adj
+			if sysTrack.environment or sysTrack.traits or sysTrack.EnvironmentHandler then
+				dbgMsg("꒱.EnvHdlr.꒱ spriggan temp adjust ∫ " .. tostring(adj), 3, {"EnvironmentHandler", "traits", "environment"})
+			end
+			tmp = warm
+			warm = cold
+			cold = tmp + adj
+		elseif r <= 17 + diff(emoState.hot, emoState.cold) then
+			adj = reduce(Gyre.white[4] * 0.017, 4)
+			if emoState.aetheric > adj * 777 then
+				Relax("hot","cold",adj)
+				EmoGyre("aetheric", adj * -77.7)
+				if sysTrack.environment or sysTrack.traits or sysTrack.EnvironmentHandler then
+					dbgMsg("꒱.EnvHdlr.꒱ spriggan temp relax ∫ " .. tostring(adj), 3, {"EnvironmentHandler", "traits", "environment"})
+				end
+				Moodle("-Aether", "apply", "self", "buffs", "default")
+			elseif diff(emoState.hot, emoState.cold) > 17 then
+				DoRandom("snap", "compelled by the temperature")
+				EmoGyre("aetheric", 7.77)
+			end
+		end
+	elseif playerTraits.vixen then
+		if Game.Player.Equipped.Head.GlamName == "Tamamo Headband" then
+			if sysTrack.environment or sysTrack.traits or sysTrack.EnvironmentHandler then
+				dbgMsg("꒱.EnvHdlr.꒱ vixen cool from ears ∫ " .. tostring(reduce(cold + 0.69, 3)), 4, {"EnvironmentHandler", "traits", "environment"} )
+			end
+			cold = cold + 0.069
+			--warm = warm - 0.13
+		end
+	elseif playerTraits.aetheric then
+		cold = cold + 0.27
+		warm = warm + 0.39
+	else
+		cold = cold + 0.21
+		warm = warm - 0.19
+	end
+	
+	warm = warm + otf
+	
+	cold = reduce(cold, 4)
+	warm = reduce(warm * 0.97, 4)
+	EmoGyre("hot", warm)
+	EmoGyre("cold", cold)
+
+	if sysTrack.environment or sysTrack.weather or sysTrack.outfits or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ hot  set π " .. tostring(warm), 2, {"EnvironmentHandler", "environment", "outfits", "weather"})
+		dbgMsg("꒱.EnvHdlr.꒱ cold set π " .. tostring(cold), 2, {"EnvironmentHandler", "environment", "outfits", "weather"})
+		dbgMsg("꒱.EnvHdlr.꒱ outfit temp factor ∫ " .. tostring(otf), 1, {"EnvironmentHandler", "outfits", "environment", "weather"})
+	end
+	
+	if playerTraits.vixen then
+		optOtx = cold * 0.91 - emoState.hot * 0.047 + emoState.cold * 0.031 - (warm - otf)
+		ts = reduce(cold * 0.69 - CF, 3)
+		optOtx = optOtx + (ts - optOtx) / 3
+		if sysTrack.environment or sysTrack.traits or sysTrack.outfits or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ base temp ∫ " .. tostring(ts), 3, {"EnvironmentHandler", "outfits", "environment", "traits"})
+		end
+	else
+		optOtx = cold * 0.91 - emoState.hot * 0.047 + emoState.cold * 0.031 - (warm - otf)
+		ts = reduce(cold * 0.91 - (warm - otf), 3)
+		optOtx = optOtx + (ts - optOtx) / 3
+		if sysTrack.environment or sysTrack.weather or sysTrack.outfits or sysTrack.EnvironmentHandler then
+			dbgMsg("꒱.EnvHdlr.꒱ base temp ∫ " .. tostring(ts), 3, {"EnvironmentHandler", "outfits", "environment"})
+		end
+	end
+	optOutfitTemp = reduce(optOtx + (optOutfitTemp - optOtx) / 6, 3)
+	if sysTrack.environment or sysTrack.outfits or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ optOutfitTemp ∫ " .. tostring(optOutfitTemp), 1, {"EnvironmentHandler", "outfits", "environment"})
+	end
+	--dbgMsg("doEnvironment  Overall Temp Shift: " .. tostring(ts), 4)
+	
+	if Game.Player.Equipped.Feet.ItemName == "" then
+		if CD[playerName].traits["aetheric"] then
+			EmoGyre("aetheric", -1.69)
+		elseif CD[playerName].traits["spriggan"] then
+			EmoGyre("aetheric", 0.777)
+		else
+			EmoGyre("aetheric", 0.139)
+		end
+		if emoState["aetheric"] < 0 then
+			emoState["aetheric"] = 0
+		end
+	end
+
+	tempComfortFactor = reduce(emoState.hot + emoState.cold, 2)
+	
+	if sysTrack.environment or sysTrack.outfits or sysTrack.EnvironmentHandler then
+		dbgMsg("꒱.EnvHdlr.꒱ tempComfortFactor ∫ " .. tostring(tempComfortFactor), 4, {"EnvironmentHandler", "outfits", "environment"})
+	end
+	
+	if (os.time() - lastDressCheck) > 111 - tempComfortFactor * 0.37 and not IsBusy then
+		if not blockAutonomousActions and not safe and not pause then
+			r = math.random(11,44)
+			if playerTraits.vixen and tempComfortFactor > 69 then
+				dbgMsg("Should I choose a more appropriate outfit?  " .. tostring(r), 1)
+			elseif tempComfortFactor > 39 then
+				dbgMsg("Should I choose a more appropriate outfit?  " .. tostring(r), 1)
+			end
+			if playerTraits.vixen and tempComfortFactor > r + 39 then
+				DressBest()
+			elseif tempComfortFactor > r + 13 then
+				DressBest()
+			end
+			DressedCheck()
+			OutfitTempFactor()
+		elseif blockAutonomousActions or safe or pause then
+			dbgMsg("EnvHdlr Autonomous Outfit Change blocked by security settings..", 1)
+		end
+	end
+	func_time["EnvironmentHandler"].END = os.time()
+	func_track("EnvironmentHandler")
 end
 
 function GyreLite(emo, amt)
@@ -988,11 +1326,12 @@ function GyreLite(emo, amt)
 			local e = emoState[emo]
 			
 			if math.random(1,99) > 77 then
-				emoState[emo] = reduce(math.random() * 3.1 * emoState[emo], 4)
+				emoState[emo] = reduce(math.random() * 3.1 * e, 4)
 				dbgMsg("Gyre Powerful internal forces increase " .. emo .. " (" .. tostring(e) .. ") ‰ (" .. tostring(emoState[emo]) .. ").", 1)
 			else
+				emoState[emo] = reduce(math.random() * e * 0.77, 4)
 				dbgMsg("Gyre Powerful internal forces reduce " .. emo .. " (" .. tostring(e) .. ") ‰ (" .. tostring(emoState[emo]) .. ").", 1)
-				emoState[emo] = reduce(math.random() * emoState[emo], 4)
+				
 			end
 		end
 	end
@@ -1003,6 +1342,9 @@ function GyreLite(emo, amt)
 		emoState[emo] = 0
 	end
 	emoState[emo] = reduce(emoState[emo], 4)
+	if emoState[emo] < 0 then
+		emoState[emo] = 0
+	end
 	func_time["GyreLite"].END = os.time()
 	func_track("GyreLite")
 end
@@ -1186,9 +1528,33 @@ function EmoGyre(emo, amt)
 		dbgMsg("EmoGyre.: Red prime -> " .. tostring(sftA), 13)
 		dbgMsg("EmoGyre.: Yellow prime -> " .. tostring(sftB), 13)
 		updateAffinity(sftA, sftB, "red", "yellow", amt, emo)
-		dbgMsg("EmoGyre.: Red: amt: -> " .. tostring(amt), 13)		
+		dbgMsg("EmoGyre.: Red: amt: -> " .. tostring(amt), 13)
+	elseif asp == "black" then
+		if sn == 1 then
+			runGyreMethod("black-white")
+		else			
+			runGyreMethod("white-black")
+		end
+		sftA, sftB = Gyre["black"][1], Gyre["white"][1]
+		dbgMsg("EmoGyre.: " .. emo .. " IN -> " .. tostring(amt), 13)
+		dbgMsg("EmoGyre.: Black prime -> " .. tostring(sftA), 13)
+		dbgMsg("EmoGyre.: White prime -> " .. tostring(sftB), 13)
+		updateAffinity(sftA, sftB, "black", "white", amt, emo)
+		dbgMsg("EmoGyre.: Black: amt: -> " .. tostring(amt), 13)
+	elseif asp == "white" then
+		if sn == 1 then
+			runGyreMethod("white-black")
+		else			
+			runGyreMethod("black-white")
+		end
+		sftA, sftB = Gyre["white"][1], Gyre["black"][1]
+		dbgMsg("EmoGyre.: " .. emo .. " IN -> " .. tostring(amt), 13)
+		dbgMsg("EmoGyre.: White prime -> " .. tostring(sftA), 13)
+		dbgMsg("EmoGyre.: Black prime -> " .. tostring(sftB), 13)
+		updateAffinity(sftA, sftB, "white", "black", amt, emo)
+		dbgMsg("EmoGyre.: White: amt: -> " .. tostring(amt), 13)
 	end
-	if emoState[emo] then -- paintbrushes and potentially other non emotes my get in otherwise
+	if emoState[emo] then -- paintbrushes and potentially other non emotes may get in otherwise
 		if emoState[emo] < 0 then
 			emoState[emo] = 0
 		end
@@ -1556,4 +1922,4 @@ function UpdateStorageData() --deprecate
 	func_track("tokenHandler")
 end
 
-return {emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn, Gyre, GyreConduit, aspectTable, EmoGyre, aspectAffinity, moods, dbgGyre, runGyreMethod, gyreMethods, updateAffinity, aspectPass, GyreLite, GyreCheck}
+return {emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn, Gyre, GyreConduit, aspectTable, EmoGyre, aspectAffinity, moods, dbgGyre, runGyreMethod, gyreMethods, updateAffinity, aspectPass, GyreLite, GyreCheck, EnvironmentHandler}

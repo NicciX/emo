@@ -13,6 +13,43 @@
 function AddTrait(tag)
 	dbgMsg(".AddTrait.", 2)
 	tag = string.lower(tag)
+	if tag == "aetheric" then
+		if playerTraits.vixen then
+			dbgMsg("[" .. tag .. "] is incompatible with the vixen trait.", 0)
+		elseif playerTraits.spriggan then
+			dbgMsg("[" .. tag .. "] is incompatible with the spriggan trait.", 0)
+		elseif playerTraits.muggle then
+			dbgMsg("[" .. tag .. "] is incompatible with the muggle trait.", 0)
+		end
+		tag = "invalid"
+	elseif tag == "vixen" then
+		if playerTraits.aetheric then
+			dbgMsg("[" .. tag .. "] is incompatible with the aetheric trait.", 0)
+		elseif playerTraits.spriggan then
+			dbgMsg("[" .. tag .. "] is incompatible with the spriggan trait.", 0)
+		elseif playerTraits.muggle then
+			dbgMsg("[" .. tag .. "] is incompatible with the muggle trait.", 0)
+		end
+		tag = "invalid"
+	elseif tag == "spriggan" then
+		if playerTraits.vixen then
+			dbgMsg("[" .. tag .. "] is incompatible with the vixen trait.", 0)
+		elseif playerTraits.aetheric then
+			dbgMsg("[" .. tag .. "] is incompatible with the aetheric trait.", 0)
+		elseif playerTraits.muggle then
+			dbgMsg("[" .. tag .. "] is incompatible with the muggle trait.", 0)
+		end
+		tag = "invalid"
+	elseif tag == "muggle" then
+		if playerTraits.vixen then
+			dbgMsg("[" .. tag .. "] is incompatible with the vixen trait.", 0)
+		elseif playerTraits.aetheric then
+			dbgMsg("[" .. tag .. "] is incompatible with the aetheric trait.", 0)
+		elseif playerTraits.spriggan then
+			dbgMsg("[" .. tag .. "] is incompatible with the spriggan trait.", 0)
+		end
+		tag = "invalid"
+	end
 	if traits[tag] then
 		playerTraits[tag] = true
 		CDUpdater()
@@ -298,11 +335,9 @@ local traits = {
 				["playful"] = 0.025,
 				["mischievous"] = 0.035,
 				["scared"] = -0.035,
-				["tired"] = 0.1,
 				["energized"] = 0.1,
 				["focused"] = 0.15,
 				["dazed"] = -0.005,
-				["tense"] = -0.05,
 				["hungry"] = 0.005,
 				["amused"] = 0.015,
 				["social"] = 0.015,
@@ -315,7 +350,6 @@ local traits = {
 				["playful"] = 0.005,
 				["hot"] = 0.05,
 				["cold"] = -0.05,
-				["tired"] = -0.005,
 				["energized"] = 0.10,
 				["aetheric"] = -0.09,
 			},
@@ -328,7 +362,6 @@ local traits = {
 				["confident"] = 0.20,
 				["cold"] = -0.15,
 				["hot"] = 0.05,
-				["tired"] = -0.1,
 				["energized"] = -0.15,
 				["wet"] = -0.05,
 				["aetheric"] = -0.36,
@@ -339,7 +372,6 @@ local traits = {
 				["confident"] = 0.20,
 				["cold"] = -0.15,
 				["hot"] = 0.05,
-				["tired"] = -0.1,
 				["energized"] = -0.15,
 				["wet"] = -0.05,
 				["aetheric"] = -0.39,

@@ -214,6 +214,79 @@ local routines = {
 	
 	},
 
+	["washbasin"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if tardis(true) < 1 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 1.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function() 
+				GotoRelativePosition(tarvec(), -87, 0.625, Game.Player.Target.RotationDegrees)
+			end,
+			["w"] = 3.11,
+		},
+		[3] = {
+			["do"] = "jmp",
+			["jmp"] = 1,
+			["w"] = 1.11,
+		},
+		[4] = {
+			["do"] = "facetarget",
+			["w"] = 1.11,
+		},
+		[5] = {
+			["do"] = "pinteract",
+			["w"] = 1.11,
+		},
+		[6] = {
+			["do"] = "wringhands motion",
+			["w"] = 5.11,
+		},
+		[7] = {
+			["run"] = true,
+			["func"] = function() 
+				EmoGyre("grungy", -333)
+				EmoGyre("refreshed", 113)
+			end,
+			["w"] = 3.11,
+		},
+		[8] = {
+			["test"] = true,
+			["func"] = function()
+				if emoState.grungy > 100 and (os.time() - routineStart) < 60 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 6,
+			["w"] = 1.000,
+		},
+		[9] = {
+			["do"] = "target Washbasin",
+			["w"] = 1.11,
+		},
+		[10] = {
+			["do"] = "pinteract",
+			["w"] = 1.11,
+		},
+		[11] = {
+			["do"] = "clap motion",
+			["w"] = 1.11,
+		},
+	},
+
 	["shower"] = {
 		[1] = {
 			["test"] = true,
@@ -303,7 +376,7 @@ local routines = {
 		[6] = {
 			["do"] = "jmp",
 			["jmp"] = 4,
-			["w"] = 3.11,
+			["w"] = 1.11,
 		},
 		[7] = {
 			["run"] = true,
@@ -1590,17 +1663,17 @@ local routines = {
 	["CenterStage"] = {
 		[1] = {
 			["run"] = true,
-			--["func"] = function()
-				--if Game.Player.MapZone == 144 and currentBeaconDistance < 13.3 and lastBeacon == "Yojimbo"  then
-					--MoveToBeacon("Yojimbo")
-				--else
-					--Game.SendChat("/e cBD = " .. tostring(currentBeaconDistance))
-					--Game.SendChat("/e lastBeacon = " .. tostring(lastBeacon))
-					--Game.SendChat("/e Map = " .. tostring(Game.Player.MapZone))
-					--DoRandom("cheer")
-				--end
+			["func"] = function()
+				if Game.Player.MapZone == 144 and currentBeaconDistance < 13.3 and lastBeacon == "Yojimbo" then
+					MoveToBeacon("Yojimbo")
+				else
+					Game.SendChat("/e cBD = " .. tostring(currentBeaconDistance))
+					Game.SendChat("/e lastBeacon = " .. tostring(lastBeacon))
+					Game.SendChat("/e Map = " .. tostring(Game.Player.MapZone))
+					DoRandom("cheer")
+				end
 				--Game.SendChat("/e rgsA = " .. tostring(rgsA))
-			--end,
+			end,
 			["w"] = 5.000,
 			--["do"] = "e rgsA = "
 			--["rgsA"] = true
@@ -1815,6 +1888,13 @@ local routines = {
 		},
 	},
 	
+	["interact"] = {
+		[1] = {
+			["do"] = "pinteract",
+			["w"] = 1.000,
+		},
+	},
+	
 	["rezcheck"] = {
 		[1] = {
 			["test"] = true,
@@ -1846,6 +1926,25 @@ local routines = {
 		[5] = {
 			["do"] = "ac 'Raise'",
 			["w"] = 0.17,
+		},
+	},
+	
+	["TempEmitterA"] = {
+		[1] = {
+			["tempEmitter"] = true,
+			["intensity"] = 13.77,
+			["humid"] = 1.337,
+			["focus"] = 0.137,
+			["w"] = 0.250,
+		},
+	},
+	["TempEmitterB"] = {
+		[1] = {
+			["tempEmitter"] = true,
+			["intensity"] = 1.69,
+			["humid"] = -0.037,
+			["focus"] = 0.069,
+			["w"] = 0.250,
 		},
 	},
 	
@@ -2373,4 +2472,8 @@ local routines = {
 	},
 }
 
-return routines
+local function loadRoutine(rout)
+	return routines[rout]
+end
+
+return loadRoutine

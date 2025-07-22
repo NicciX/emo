@@ -10,7 +10,9 @@ function ChatHandler()
 	if stackIdx < 1 then
 		return
 	end
-	dbgMsg("!ChatHandler :: stackIdx :: " .. tostring(stackIdx) .. " :: sender :: " .. tostring(chatStack[stackIdx].chn), 1)
+	if validFuncTrack["chat"] then
+		dbgMsg("!ChatHandler :: stackIdx :: " .. tostring(stackIdx) .. " :: sender :: " .. tostring(chatStack[stackIdx].chn), 1, "chat")
+	end
 	--dbgMsg("!ChatHandler :: stackMsg :: " .. tostring(chatStack[stackIdx].msg), 1)
 	local n
 	local txt = chatStack[stackIdx].msg --Game.Chat.Msg
@@ -66,11 +68,15 @@ function ChatHandler()
 			end
 		--elseif string.find(txt, "juju")	then
 			--Game.SendChat("/useitem 40392 ")
+		elseif string.contains(txt, "entities matching") then
+			dbgMsg(".•.Entities Found.•.", 1)
 		elseif txt == "You have entered a sanctuary." then
 			if action == "loading" then
 				action = "idle"
 				Update()
 			end
+		--elseif string.contains(txt, "FINAL FANTASY XIV") then
+			--loginStatus = true
 		elseif txt == "log" and sender == playerName then
 			CallRoutine("logout")
 		elseif txt == "reloading scripts" then
@@ -487,18 +493,16 @@ local validEarnings = {
 	["bicolor gemstones"] = 0,
 	["handfuls of sideritis leaves"] = 0,
 	["Thavnairian perilla leaves"] = 0,
-	
-	
-	
 }
 
 destinations = {
 	["saucer"] = "The Gold Saucer",
 	["limsa"] = "Limsa Lominsa",
 	["home"] = "Estate Hall (Free Company)",
+	["house"] = "Estate Hall (Private)",
 	["shar"] = "Old Sharlayan",
 	["tuli"] = "Tuliyollal",
-	["s9"] = "Solution Nine",
+	["snine"] = "Solution Nine",
 	["radz"] = "Radz-at-Han",
 	["gridania"] = "Gridania",
 	["ulda"] = "Ul'dah",
@@ -514,6 +518,13 @@ destinations = {
 	["bestways"] = "Bestways Burrow",
 	["shaal"] = "Hhusatahwi",
 	["shesh"] = "Sheshenewezi Springs",
+	["eulmore"] = "Eulmore",
+	["tailfeather"] = "Tailfeather",
+	["fanow"] = "Fanow",
+	["lahee"] = "Fanow",
+	["fringes"] = "Castrum Oriens",
+	["pstones"] = "The Peering Stones",
+	["virdjala"] = "The Peering Stones",
 	--["moon"] = "Mare"
 }
 
@@ -1123,7 +1134,9 @@ end
 
 function Windfall(txt, chn, toss)
 	dbgMsg(".Windfall.", 2)
-	dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+	if sysTrack["windfall"] then
+		dbgMsg("Windfall: txt :: " .. tostring(txt), 2, "windfall")
+	end
 	--dbgMsg("Windfall: toss :: " .. tostring(toss), 1)
 	if not validSysChan[chn] then
 		dbgMsg("Windfall: invalid (chn) :: " .. tostring(chn), 1)
@@ -1172,16 +1185,18 @@ function Windfall(txt, chn, toss)
 		--txt = string.gsub(txt, " ", "")
 		
 		if validEarnings[txt] then
-			dbgMsg("Windfall: valid ✓", 1)
+			if sysTrack["windfall"] then
+				dbgMsg("Windfall: valid ✓", 1, "windfall")
+			end
 			CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] or 0
 			CD[playerName]["earnings"][txt] = CD[playerName]["earnings"][txt] + val
 		end
 		
 		if not Occupied and not safe then
 			if val < 10000 and val > 1000 then
-				DoRandom("surprised", " from recent windfall.")
+				DoRandom("surprised", "pleased by recent windfall.")
 			elseif val > 10000 then
-				DoRandom("cheer", " from recent windfall.")
+				DoRandom("cheer", "astonished by recent windfall.")
 			elseif val > 100000 then
 				UseItem(8214)
 			end
@@ -1189,9 +1204,11 @@ function Windfall(txt, chn, toss)
 		
 		windfallTime = os.time()
 		
-		dbgMsg("Windfall: key :: " .. tostring(txt), 1) 
-		dbgMsg("Windfall: val :: " .. tostring(val), 1) --Chloe had it backwards
-		return
+		if sysTrack["windfall"] then
+			dbgMsg("Windfall: key :: " .. tostring(txt), 1, "windfall") 
+			dbgMsg("Windfall: val :: " .. tostring(val), 1, "windfall") --Chloe had it backwards
+			return
+		end
 	elseif string.find(txt, "You sell") and (string.find(txt, " gil.") or string.find(txt, " gil.")) then
 		lastSale = txt
 		local cnt = string.match(txt, "^You sell (%d+) ")
@@ -1222,13 +1239,19 @@ function Windfall(txt, chn, toss)
 		sale = tonumber(sale)
 		salesTotal = salesTotal + sale
 		
-		
-		dbgMsg("Windfall: cnt :: " .. tostring(cnt), 1)
-		dbgMsg("Windfall: sale :: " .. tostring(sale), 1)
+		if sysTrack["windfall"] or sysTrack["gil"] then
+			dbgMsg("Windfall: cnt :: " .. tostring(cnt), 1, {"windfall", "gil"})
+			dbgMsg("Windfall: sale :: " .. tostring(sale), 1, {"windfall", "gil"})
+		end
 		txt = string.gsub(txt, "(for  gil.)", "")
 		txt = string.gsub(txt, "(.+ of )", "")
 		--txt = string.gsub(txt, "you put up for sale in the (%a+) markets ", "")
-		dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+		
+		if sysTrack["windfall"] or sysTrack["gil"] then
+			dbgMsg("Windfall: txt :: " .. tostring(txt), 1, {"windfall", "gil"})
+		end
+		
+		
 		CD[playerName].sales = CD[playerName].sales or {}
 		CD[playerName].sales[txt] = CD[playerName].sales[txt] or 0
 		CD[playerName].sales[txt] = CD[playerName].sales[txt] + sale
@@ -1262,11 +1285,14 @@ function Windfall(txt, chn, toss)
 		sale = tonumber(sale)
 		salesTotal = salesTotal + sale
 		
-		
-		dbgMsg("Windfall: cnt :: " .. tostring(cnt), 1)
-		dbgMsg("Windfall: sale :: " .. tostring(sale), 1)
+		if sysTrack["windfall"] or sysTrack["gil"] then
+			dbgMsg("Windfall: cnt :: " .. tostring(cnt), 1, {"windfall", "gil"})
+			dbgMsg("Windfall: sale :: " .. tostring(sale), 1)
+		end
 		txt = string.gsub(txt, "you put up for sale in the (%a+) markets ", "")
-		dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
+		if sysTrack["windfall"] or sysTrack["gil"] then
+			dbgMsg("Windfall: txt :: " .. tostring(txt), 1, {"windfall", "gil"})
+		end
 		
 		if sale > 7777 then
 			Report(lastSale)
@@ -1306,9 +1332,13 @@ function Windfall(txt, chn, toss)
 		end
 		EmoGyre("aetheric", -x*7)
 		EmoGyre("responsible", 7)
-		dbgMsg("Windfall Craft: x :: " .. tostring(x), 1)
+		if sysTrack["windfall"] then
+			dbgMsg("Windfall Craft: x :: " .. tostring(x), 1, "windfall")
+		end
 		Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
-		dbgMsg("Windfall: |txt| :: " .. tostring(txt), 1)
+		if sysTrack["windfall"] then
+			dbgMsg("Windfall: |txt| :: " .. tostring(txt), 1, "windfall")
+		end
 	elseif string.find(txt, "MGP") then
 		bits, bobs = string.match(txt, "(%d+,?%d*).+(MGP)")
 		dbgMsg("MatchStick: Bits & Bobs :: " .. tostring(bits) .. " & " .. tostring(bobs), 1)
@@ -1556,6 +1586,30 @@ function PowerWords(txt, toss, chn, sender)
 			txt = string.gsub(txt, toss .. " ", "")
 			Game.SendChat("/glamour apply " .. txt .. " | <me>")
 		end
+	elseif string.sub(txt, 1,6) == "switch" then
+		txt = string.gsub(txt,"switch", "")
+		txt = string.gsub(txt," ", "")
+		--dbgMsg("‡PowerWords‡ Switching to" .. txt, 1)
+		if CD.global[txt] then
+			CDUpdater()
+			dbgMsg("‡PowerWords‡ Switching to " .. CD.global[txt], 1)
+			local name = CD.global[txt]
+			local world = Script.Storage[name].world
+			Game.SendChat("/autoretainer relog " .. CD.global[txt] .. "@" .. world)
+		end
+	elseif string.sub(txt, 1,7) == "logging" then
+		txt = string.gsub(txt,"logging", "")
+		txt = string.gsub(txt," ", "")
+		if txt == "on" then
+			filterLog["76"] = true
+			dbgMsg("‡PowerWords‡ logging enabled :: log size π " .. tostring(#dbg_log) , 1)
+		elseif txt == "off" then
+			filterLog["76"] = nil
+			dbgMsg("‡PowerWords‡ logging disabled :: log size π " .. tostring(#dbg_log) , 1)
+		else
+			filterLog["76"] = not filterLog["76"]
+			dbgMsg("‡PowerWords‡ logging toggled :: logging ∫ " .. tostring(filterLog["76"]) , 1)
+		end
 	elseif string.sub(txt,1,5) == "dress" then
 		txt = string.gsub(txt,"dress", "")
 		if txt ~= "" then
@@ -1565,6 +1619,8 @@ function PowerWords(txt, toss, chn, sender)
 		else
 			OutfitLoad(txt)
 		end
+		DressedCheck()
+		OutfitTempFactor()
 	elseif string.sub(txt,1,8) == "maintain" then
 		CD[playerName].maintain = not CD[playerName].maintain
 		maintain = CD[playerName].maintain
@@ -1575,6 +1631,17 @@ function PowerWords(txt, toss, chn, sender)
 		end
 	elseif string.sub(txt,1,7) == "undress" then
 		CallRoutine("undress")
+		DressedCheck()
+		OutfitTempFactor()
+	elseif string.sub(txt,1,4) == "mark" then
+		txt = string.gsub(txt, "mark ", "")
+		if string.sub(txt,1,2) == "me" then
+			Game.SendChat("/wmark a <me>")
+		elseif string.sub(txt, 1,3) == "tar" then
+			Game.SendChat("/wmark a <t>")
+		elseif string.sub(txt, 1, 5) == "clear" then
+			Game.SendChat("/wmark clear")
+		end
 	elseif txt == "return" then
 		Game.SendChat("/return")
 	elseif string.startsWith(txt, "tour") then

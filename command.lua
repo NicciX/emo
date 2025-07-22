@@ -1,7 +1,7 @@
 -- Emobot
 --- by Nicci M.
 
-emoVer = "0.7.43" --current version
+emoVer = "0.7.67" --current version
 
 blockNegativeEffects = true --was changed from enableNegativeEffects 0.7.13
 blockAutonomousActions = nil --was changed from enableAutonomousActions 0.7.13
@@ -31,6 +31,9 @@ pause = true
 maintain = nil -- set to true to enable autonomous food and elixir use
 gYRo = 0 -- set to -1 to disable Gyre Override
 --
+NaN = 0/0 -- NaNNer
+
+loginStatus = nil
 
 chatStack = {}
 stackIdx = 0
@@ -54,6 +57,7 @@ general = true --used by traits
 
 --EmoBot = "EmoBot"
 EmoBot = "EB "
+FemBot = "§FB§ "
 
 Aether = 0
 lastGyreEffect = 0
@@ -86,9 +90,11 @@ DBG = 1
 
 ftMonth = "1"
 ftDay = "1"
+seasonalAdjust = 1
 domiEmo = "neutral"
 domiMood = "blue"
 lastEmote = "cheer"
+moteLast = {}
 emotionsRange = 0
 emotionsTotal = 1
 rgsA = 0
@@ -99,6 +105,7 @@ DisT = 0
 local Lp
 local moodles = {}
 local Tracking = {}
+sysTrack = {}
 local jitterTracking = true
 local lastTrackVal = {}
 lastBeaconMap = "0"
@@ -118,6 +125,12 @@ lastCombatCheck = 0
 lastNapCheck = 0
 lastDressCheck = 0
 optOutfitTemp = 0
+OWF = 0 --Outfit Wet Factor
+OTF = 0 --Outfit Temp Factor
+OGF = 0 --Outfit Grunge Factor
+BCO = 0 --BaseClimateOverride
+BHO = 0 --BaseHumidityOverride
+STRIP = "♠♠♠♠♠-ω♥∩-♦♦♦♦♦"
 
 --time related vars
 tZone = 5*3600 -- Timezone adjust -- CST
@@ -136,7 +149,7 @@ lastEntreeTime = 0
 lastMealTime = 0
 lastEntree = ""
 lastMeal = ""
-
+bubbleBuff = 0
 idles = 0
 collisions = 0
 castingX = 0
@@ -164,6 +177,8 @@ endedDuty = 0
 routineIdx = 0
 currentRoutine = nil
 routineToken = nil
+routine = nil
+routineStart = 0
 lastChatMsg = ""
 moodyTime = os.time()
 sprigganClaps = 0 -- 7 claps triggers the Gyre
@@ -184,6 +199,7 @@ end]]--
 
 -- Player Data
 playerName = "unknown" --Game.Player.Name
+lastPlayer = "unknown"
 playerRace = "unknown"
 playerSubRace = "unknown"
 gender = "unknown"
@@ -197,9 +213,9 @@ AFK = false
 
 --		vvv Required Libs vvv 	---
 
-zones, placeMaps = table.unpack(require "zones")
-emote, emTab = table.unpack(require "emotes")
-routines = require "routines"
+zoneData = require "zones"
+getEmote, initEmotes = table.unpack(require "emotes")
+loadRoutine = require "routines"
 beacons = require "beacons"
 beaconTypes = require "btypes"
 traits, AddTrait, RemoveTrait, ListTraits, TraitCheck = table.unpack(require "traits")
@@ -211,18 +227,21 @@ yaaar = require "pirate"
 
 --quirks, buff, ApplyBuff, SetQuirkVar, GetQuirkVar, PopQuirk, QuirkHandler, QuirkSet, Compulsions
 
+validTemps, smartOutfitSelect, outfitTempEffects, validTypes, validStyles,
+validSlotId, gearSlotName, OutfitSave, OutfitLoad, GetClimate, SetClimate,
+TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit,
+glams, IsUnderwear, OutfitTempFactor, OutfitEnvironmental, DressBest, DressedCheck, climates,
+UpdateGlamItem, humidMult, weather_effects = table.unpack(require "outfitter")
+
 emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn,
 Gyre, GyreConduit, aspectTable, EmoGyre, aspectAffinity, moods, dbgGyre, runGyreMethod, 
-gyreMethods, updateAffinity, aspectPass, GyreLite, GyreCheck = table.unpack(require "handlers")
+gyreMethods, updateAffinity, aspectPass, GyreLite, GyreCheck, EnvironmentHandler = table.unpack(require "handlers")
 
 --emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn, 
 --Gyre, aspectTable, EmoGyre, GyreConduit, aspectAffinity, moods, dbgGyre, runGyreMethod, gyreMethods,
 --updateAffinity, aspectPass = table.unpack(require "handlers")
 
-validTemps, smartOutfitSelect, outfitTempEffects, validTypes, validStyles,
-validSlotId, gearSlotName, OutfitSave, OutfitLoad, GetClimate, SetClimate,
-TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit,
-glams, IsUnderwear, OutfitTempFactor, DressBest, DressedCheck, climates = table.unpack(require "outfitter")
+
 
 buff = require "buffs"
 
@@ -241,6 +260,57 @@ func_time, dumpInfo, SetDBG, dbgMsg, trim_log, func_track, efficiency, filterLog
 
 ---		vvv Data Tables/JSON vvv 	---
 ---									---
+validFuncTrack = {
+	["environment"] = "environment",
+	["env"] = "environment",
+	["environ"] = "environment",
+	["enviroment"] = "environment",
+	["outfit"] = "outfits",
+	["outfits"] = "outfits",
+	["traits"] = "traits",
+	["movement"] = "motion",
+	["moving"] = "motion",
+	["speed"] = "motion",
+	["motion"] = "motion",
+	["zone"] = "zone",
+	["zones"] = "zone",
+	["map"] = "zone",
+	["emotions"] = "emotion",
+	["emotion"] = "emotion",
+	["emo"] = "emotion",
+	["dorandom"] = "emotes",
+	["emotes"] = "emotes",
+	["random"] = "emotes",
+	["chat"] = "chat",
+	["tokens"] = "buffs",
+	["beacons"] = "beacons",
+	["routines"] = "routines",
+	["gyre"] = "gyre",
+	["decay"] = "decayPass",
+	["decayPass"] = "decayPass",
+	["ev"] = "EnvironmentHandler",
+	["EnvironmentHandler"] = "EnvironmentHandler",
+	["MovingEffects"] = "MovingEffects",
+	["OutfitEnvironmental"] = "OutfitEnvironmental",
+	["oe"] = "OutfitEnvironmental",
+	["OutfitTempFactor"] = "OutfitTempFactor",
+}
+
+giggles = {
+	["environment"] = "☂",
+	["outfits"] = "☀",
+	["emotion"] = "",
+	["emotes"] = "",
+	["zone"] = "",
+	["traits"] = "♀",
+	["chat"] = "☆", -- °*
+	["tokens"] = "®",
+	["beacons"] = "‡",
+	["routines"] = "",
+	["gyre"] = "∞",
+	["buffs"] = "✓",
+	["motion"] = "",
+}
 									
 validSysChan = {
 	["2105"] = "Prog",
@@ -325,6 +395,7 @@ listenChn = {
 	["Yell"] = "Yell",
 	["Shout"] = "Shout",
 	["Party"] = "Party",
+	["Debug"] = "Debug",
 	["ls2"] = true,
 	["l2"] = true,
 	["Ls2"] = true,
@@ -494,6 +565,7 @@ local moodleGuid = {
 		["Caffeinated"] = "3b962bd3-701d-4141-8819-f866ff2e1573",
 		["XAetherSprigganX"] = "4e33b04d-d70f-4261-9cf5-64d094d95e0f",
 		["Aetheric Dissipation"] = "6a86b326-1998-4582-8b8f-4e570563f8a1",
+		["Grungy"] = "5607709c-a786-45d9-904f-32a304f840fc",
 	}
 }
 
@@ -590,7 +662,7 @@ entrees = {
 		["itemId"] = 44179,
 		["allowHQ"] = true,
 	},
-	["Sweet Muffin"] = {
+	["Sweetmuffin"] = {
 		["itemId"] = 44085,
 		["allowHQ"] = true,
 	},
@@ -603,6 +675,7 @@ entrees = {
 	},
 	["Wild Banana Blend"] = {
 		["itemId"] = 44102,
+		["allowHQ"] = true,
 	},
 }
 
@@ -610,7 +683,9 @@ meals = {
 	["Mate Cookie"] = {
 		["itemId"] = 46003,
 		["allowHQ"] = true,
-		["dps"] = 44, -- weight value
+		["dps"] = 66, -- weight value
+		["ranged"] = 66,
+		["melee"] = 66,
 		--["buff"] = "cookie",
 	},
 	["Pineapple Orange Jelly"] = {
@@ -631,6 +706,7 @@ meals = {
 		["itemId"] = 44178,
 		["allowHQ"] = true,
 		["dps"] = 31,
+		["ranged"] = 31,
 		["melee"] = 31,
 	},
 	["Rroneek Steak"] = {
@@ -678,315 +754,6 @@ elixirs = {
 	["Cunning Craftsman's Tisane"] = {
 		["itemId"] = 44169,
 		["allowHQ"] = true,
-	},
-}
-
-local weather_effects = {
-	["Clouds"] = {
-		["neutral"] = {
-			["effects"] = {
-				["happy"] = -0.25,
-				["sad"] = -0.55,
-				["confident"] = -0.75,
-				["energized"] = -0.75,
-				["sleepy"] = 0.25,
-				["bored"] = 0.25,
-				["wet"] = 0.17,
-			},
-			["temp"] = 0.81,
-		},
-		["drybones"] = {
-			["effects"] = {
-				["happy"] = -1,
-				["sad"] = 1,
-				["confident"] = -1,
-				["energized"] = -1,
-				["sleepy"] = 1,
-			},
-		},
-	},
-	["Rain"] = {
-		["neutral"] = {
-			["effects"] = {
-				["happy"] = -3,
-				["sad"] = -2,
-				["confident"] = -5,
-				["focused"] = -1,
-				["cold"] = 0.47,
-				["hot"] = -0.33,
-				["energized"] = -2,
-				["sleepy"] = 2,
-				["bored"] = 2,
-				["wet"] = 4.11,
-				["aetheric"] = -7.37,
-				["grungy"] = -1.33,
-				["refreshed"] = 6.39,
-			},
-			["temp"] = 0.66,
-		},
-	},
-	["Clear Skies"] = {
-		["neutral"] = {
-			["effects"] = {
-				["happy"] = 2,
-				["sad"] = -3,
-				["focused"] = 1,
-				["cold"] = -0.67,
-				["energized"] = 1,
-				["sleepy"] = -0.2,
-				["bored"] = -1,
-				["scared"] = -1,
-				["wet"] = -1.39,
-			},
-			["temp"] = 1.0,
-		},
-		
-	},
-	["Fair Skies"] = {
-		["neutral"] = {
-			["effects"] = {
-				["happy"] = 1,
-				["sad"] = -2,
-				["cold"] = -0.37,
-				["focused"] = 1,
-				["confident"] = 1,
-				["energized"] = 1,
-				["sleepy"] = -0.2,
-				["bored"] = -1,
-				["scared"] = -1,
-				["wet"] = -1.39,
-			},
-			["temp"] = 1.0,
-		},
-		
-	},
-	["Fog"] = {
-		["neutral"] = {
-			["effects"] = {
-				["disturbed"] = 0.75,
-				["sad"] = 0.25,
-				["focused"] = -1,
-				["confident"] = -2,
-				["energized"] = -1,
-				["sleepy"] = 1,
-				["curious"] = 0.75,
-				["scared"] = 0.75,
-				["cold"] = 0.44,
-				["wet"] = 2.34,
-				["aetheric"] = 0.19,
-			},
-			["temp"] = 0.71,
-		},
-	},
-	["Wind"] = {
-		["neutral"] = {
-			["effects"] = {
-				["focused"] = -1,
-				["confident"] = -3,
-				["energized"] = 1,
-				["uncomfortable"] = 1,
-				["curious"] = 1,
-				["scared"] = 1,
-				["cold"] = 0.37,
-				["wet"] = -0.44,
-				["aetheric"] = 0.45,
-			},
-			["temp"] = 0.79,
-		},
-		
-	},
-	["Gales"] = {
-		["neutral"] = {
-			["effects"] = {
-				["disturbed"] = 2,
-				["focused"] = -1,
-				["confident"] = -3,
-				["energized"] = -1,
-				["uncomfortable"] = 1,
-				["refreshed"] = 3,
-				["scared"] = 1,
-				["cold"] = 1,
-				["wet"] = -1.33,
-				["aetheric"] = 0.75,
-			},
-			["temp"] = 0.69,
-		},
-	},
-	["Dust Storms"] = {
-		["neutral"] = {
-			["effects"] = {
-				["disturbed"] = 2,
-				["focused"] = -1,
-				["confident"] = -4,
-				["energized"] = -1,
-				["grungy"] = 3.9,
-				["curious"] = 1,
-				["scared"] = 1,
-				["hot"] = 2,
-				["wet"] = -3.9,
-				["aetheric"] = -0.33,
-			},
-			["temp"] = 1.11,
-		},
-		
-	},
-	["Heat Waves"] = {
-		["neutral"] = {
-			["effects"] = {
-				["hot"] = 7.5,
-				["focused"] = -2,
-				["sleepy"] = 1,
-				["energized"] = -2,
-				["refreshed"] = -3,
-				["uncomfortable"] = 2,
-				["wet"] = 1,
-				["concerned"] = 1,
-			},
-			["temp"] = 1.77,
-		},
-		
-	},
-	["Blizzards"] = {
-		["neutral"] = {
-			["effects"] = {
-				["cold"] = 1.69,
-				["focused"] = -1,
-				["sleepy"] = 1,
-				["energized"] = -3,
-				["uncomfortable"] = 3,
-				["wet"] = 1,
-				["concerned"] = 1,
-				["disturbed"] = 2,
-				["happy"] = -1,
-				["hot"] = -1.69,
-			},
-			["temp"] = 0.51,
-		},
-	},
-	["Snow"] = {
-		["neutral"] = {
-			["effects"] = {
-				["cold"] = 1.66,
-				["focused"] = -1,
-				["sleepy"] = -0.2,
-				["energized"] = -1,
-				["refreshed"] = 2.6,
-				["wet"] = 0.39,
-				["happy"] = 1,
-				["confident"] = 1,
-				["sad"] = -1,
-				["hot"] = -0.79,
-			},
-				["temp"] = 0.41,
-		},
-	},
-	["Gloom"] = {
-		["neutral"] = {
-			["effects"] = {
-				["dazed"] = 1,
-				["focused"] = -1,
-				["sleepy"] = 2,
-				["energized"] = -1,
-				["refreshed"] = -1,
-				["angry"] = 1,
-				["concerned"] = 1,
-				["disturbed"] = 2,
-				["social"] = -1,
-				["aetheric"] = 0.17,
-			},
-			["temp"] = 0.37,
-		},
-	},
-	["Moon Dust"] = {
-		["neutral"] = {
-			["effects"] = {
-				["dazed"] = 1,
-				["focused"] = -1,
-				["sleepy"] = 2,
-				["energized"] = -1,
-				["angry"] = 2,
-				["grungy"] = 3,
-				["social"] = -1,
-				["aetheric"] = 0.17,
-			},
-			["temp"] = 0.31,
-		},
-	},
-	["Tension"] = {
-		["neutral"] = {
-			["effects"] = {
-				["dazed"] = 1,
-				["focused"] = -1,
-				["sleepy"] = 2,
-				["energized"] = 1,
-				["angry"] = 1,
-				["disturbed"] = 2,
-				["social"] = -1,
-				["aetheric"] = 0.23,
-			},
-		},
-		["temp"] = 1.3,
-	},
-	["Thunder"] = {
-		["neutral"] = {
-			["effects"] = {
-				["dazed"] = 1,
-				["focused"] = -1,
-				["scared"] = 2,
-				["energized"] = 0.25,
-				["scared"] = 1,
-				["wet"] = 2.1,
-				["disturbed"] = 2.5,
-				["social"] = -1,
-				["aetheric"] = 0.51,
-			},
-		},
-		["temp"] = 0.77,
-	},
-	["Umbral Static"] = {
-		["neutral"] = {
-			["effects"] = {
-				["curious"] = 1,
-				["flirty"] = 2,
-				["scared"] = 2,
-				["energized"] = 1.65,
-				["tense"] = 1.5,
-				["angry"] = 2,
-				["aetheric"] = 1.39,
-			},
-			["temp"] = 1.39,
-		},
-	},
-	["Umbral Wind"] = {
-		["neutral"] = {
-			["effects"] = {
-				["curious"] = 1,
-				["playful"] = 1,
-				["scared"] = 1.5,
-				["energized"] = 0.95,
-				["tense"] = 1,
-				["disturbed"] = 3.5,
-				["angry"] = 2,
-				["aetheric"] = 1.69,
-			},
-			["temp"] = 1.77,
-		},
-	},
-	["Astromagnetic Storms"] = {
-		["neutral"] = {
-			["effects"] = {
-				["curious"] = 1.6,
-				["sad"] = 1,
-				["scared"] = 1.5,
-				["energized"] = 2.95,
-				["tense"] = 2,
-				["disturbed"] = 3.5,
-				["angry"] = 2,
-				["hungry"] = -2,
-				["aetheric"] = 2.31,
-			},
-			["temp"] = 2.11,
-		},
 	},
 }
 	
@@ -1050,7 +817,6 @@ local EmotionGroup = {
 			["sad"] = -15,
 			["cold"] = -15,
 			["wet"] = -15,
-			["tired"] = -20,
 			["bored"] = -20,
 			["tense"] = -15,
 			["uncomfortable"] = -20,
@@ -1154,14 +920,14 @@ local mT = {
 	"dazed",
 	"mischievous",
 	"disturbed",
-	"flippant",
+	"apathetic",
 	"aetheric",
 	"bored",
 	"scared",
 	"sleepy",
 	"sad",
 	"cold",
-	"wet",
+	"grungy",
 	"angry",
 	"embarrassed",
 	"curious",
@@ -1178,7 +944,7 @@ local mT = {
 	"uncomfortable",
 	"impatient",
 	"refreshed",
-	"diving",
+	"wet",
 	"nosey",
 	"happy",
 	"playful",
@@ -1205,12 +971,12 @@ local decayRate = {
 		["apathetic"] = 0.31,
 		["aetheric"] = -0.37,
 	
-		["bored"] = 0.75,
+		["bored"] = 0.36,
 		["scared"] = 0.35,
-		["sleepy"] = 3.7,
+		["sleepy"] = 1.69,
 		["sad"] = 0.15,
 		["cold"] = 0.35,
-		["grungy"] = -0.39,
+		["grungy"] = -1.3,
 	
 		["angry"] = 0.35,
 		["embarrassed"] = 0.325,
@@ -1229,16 +995,16 @@ local decayRate = {
 		["tense"] = 1,
 		["uncomfortable"] = 0.5,
 		["impatient"] = 0.25,
-		["refreshed"] = 0.75,
+		["refreshed"] = 0.33,
 		["wet"] = 2.77,
 		["nosey"] = 0.35,
 		
-		["happy"] = -3.21,
+		["happy"] = 23,
 		["playful"] = 0.35,
 		["confident"] = 1.75,
 		["social"] = 0.25,
 		["neutral"] = -0.05,
-		["responsible"] = 0.77,
+		["responsible"] = 3.33,
 }
 
 --									--
@@ -1334,11 +1100,23 @@ end
 
 function IsPrime(n)
 	if n/2 == math.floor(n/2) then
-		return false
+		if n > 2 then
+			return false
+		else
+			return true
+		end
 	elseif n/3 == math.floor(n/3) then
-		return false
+		if n > 3 then
+			return false
+		else
+			return true
+		end
 	elseif n/5 == math.floor(n/5) then
-		return false
+		if n > 5 then
+			return false
+		else
+			return true
+		end
 	end
 	local fc = factors(n)
 	if #fc == 1 then
@@ -1389,15 +1167,20 @@ function table_to_string(tbl, del)
 	local str = ""
 	local c = 1
 	for k,v in pairs(tbl) do
-		if type(v) == "table" then
+		if type(k) == "string" then
+			str = str .. tostring(k) .. tostring(del)
+		elseif type(v) == "table" then
 			str = str .. tostring(k) .. tostring(del)
 		else
-			str = str .. tostring(v)
+			str = str .. tostring(v) .. tostring(del)
 		end
-		if c < #tbl then
-			str = str .. tostring(del)
-		end
+		--if c < #tbl then
+		--str = str .. tostring(del)
+		--end
 		c = c + 1
+	end
+	if string.sub(str, #str, #str) == "," then
+		str = string.sub(str,1, #str-1)
 	end
 	return str
 end
@@ -1733,6 +1516,14 @@ function b64_dec(data)
     end))
 end
 
+function factorial(n)
+	local p = 1
+	for x = 1, n-1 do
+		p = p * x
+	end
+	return p
+end
+
 function capit(str)
 	return str:lower():gsub("^%l", string.upper)
 end
@@ -1759,6 +1550,18 @@ end
 function IsAFK()
 	if AFK == true then
 		return true
+	end
+end
+
+function getOrbOff(x,y,dg,rd) -- getOrbitalOffset
+	local x2 = x + math.cos(dg * 0.017453) * rd
+	local y2 = y + math.sin(dg * 0.017453) * rd
+	return {x2,y2}
+end
+
+function tarvec()
+	if Game.Player.Target.PosX then
+		return {Game.Player.Target.PosX, Game.Player.Target.PosY, Game.Player.Target.PosZ, Game.Player.Target.RotationDegrees}
 	end
 end
 
@@ -1815,7 +1618,9 @@ function SeasonalAdjust(m,d,stm,ofs)
 end
 
 function ZoneTempFactor()
-	dbgMsg(".ZoneTempFactor.", 2)
+	if DBG == 2 then
+		dbgMsg(".ZoneTempFactor.", 2)
+	end
 	func_time["ZoneTempFactor"].ST = os.time()
 	--local zn = Game.Player.MapZone
 	--local tmp, adj, r
@@ -1829,26 +1634,41 @@ function ZoneTempFactor()
 	local sA = SeasonalAdjust(ftMonth, ftDay, clmt.stm)
 	local warm = sA
 	local CF = 0
-	dbgMsg("ZoneTempFactor seasonal factor: " .. tostring(reduce(warm, 4)), 4)
+	if sysTrack.environment or sysTrack.weather or sysTrack.zone then
+		dbgMsg("꒱.ZTF.꒱ seasonal factor: " .. tostring(reduce(warm, 4)), 3, {"environment", "weather", "zone"})
+	end
+	
 	if clmt then
 		if clmt.temp then
 			CF = validTemps[clmt.temp]
 			if playerRace == "Miqo'te" then
 				warm = reduce(warm - 0.21, 4)
-				dbgMsg("ZoneTempFactor (Miqo'te) climate adj: " .. tostring(warm), 4)
+				if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits then
+					dbgMsg("꒱.ZTF.꒱ (Miqo'te) climate adj: " .. tostring(warm), 2, {"environment", "weather", "zone", "traits"})
+				end
 			elseif playerSubRace == "Highlander" then
 				warm = reduce(warm + 0.27, 4)
-				dbgMsg("ZoneTempFactor (Highlander) climate adj: " .. tostring(warm), 4)
+				if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits then
+					dbgMsg("꒱.ZTF.꒱ (Highlander) climate adj: " .. tostring(warm), 2, {"environment", "weather", "zone", "traits"})
+				end
 			end
 			if playerTraits.vixen then
 				CF = reduce(CF * 0.69) --reduce(math.log(validTemps[clmt.temp] + 1.39, 3.69) * 2.39, 3)
 				warm = warm + CF
-				dbgMsg("ZoneTempFactor (vixen) climate factor: " .. tostring(CF), 4)
-			elseif playerTraits.spriggan then
-				warm = warm + CF * 0.77
+				if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits then
+					dbgMsg("꒱.ZTF.꒱ (vi♥en) climate factor: " .. tostring(CF), 2, {"environment", "weather", "zone", "traits"})
+				end
+			elseif playerTraits.spriggan then -- 🦉
+				CF = reduce((CF + 0.11) * (0.77 + Gyre.red[3] * 0.07), 4)
+				warm = warm + CF
+				if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits then
+					dbgMsg("꒱.ZTF.꒱ (spri••an) climate factor: " .. tostring(CF), 2, {"environment", "weather", "zone", "traits"})
+				end
 			else
 				warm = warm + CF
-				dbgMsg("ZoneTempFactor climate factor: " .. tostring(CF), 4)
+				if sysTrack.environment or sysTrack.weather or sysTrack.zone or sysTrack.traits then
+					dbgMsg("꒱.ZTF.꒱ climate factor: " .. tostring(CF), 2, {"environment", "weather", "zone", "traits"})
+				end
 			end
 		end
 	end
@@ -1880,7 +1700,7 @@ function ZoneTempFactor()
 		if weather_effects[weather].neutral.temp then
 			wtI = weather_effects[weather].neutral.temp
 			warm = warm * wtI
-			dbgMsg("ZoneTempFactor weather influence: " .. tostring(weather_effects[weather].neutral.temp), 4)
+			dbgMsg("꒱.ZTF.꒱ weather influence: " .. tostring(weather_effects[weather].neutral.temp), 2, {"environment", "weather", "zone"})
 		end
 	end
 	
@@ -1893,7 +1713,8 @@ function ZoneTempFactor()
 		racial = 1.33
 	end
 	]]--
-	
+	--OutfitEnvPass()
+	CD[playerName].outfits[currentOutfit].wetAmt = CD[playerName].outfits[currentOutfit].wetAmt or 0
 	local wa = 0.11
 	if sA + CF > 0.7 then
 		--dbgMsg("ZoneTempFactor warm: " .. tostring(warm), 4)
@@ -1937,7 +1758,9 @@ function ZoneTempFactor()
 end
 
 function doEnvironment()
-	dbgMsg(".doEnvironment.", 2)
+	if DBG == 2 then
+		dbgMsg(".doEnvironment.", 2)
+	end
 	func_time["doEnvironment"].ST = os.time()
 	if not Sys.Weather then
 		func_time["doEnvironment"].END = os.time()
@@ -1945,44 +1768,81 @@ function doEnvironment()
 		return
 	end
 	--local emos = Script.Storage.emotions[playerName]
-	local zn = Game.Player.MapZone
+	local map = Game.Player.MapZone
 	local tmp, adj, r
 	local eTime = Game.EorzeanTime.Hour
 	local weather = Game.Weather.Name
 	--Weather
-	dbgMsg("Weather Check", 5)
+	
+	if sysTrack.environment then
+		dbgMsg("꒱Weather Check꒱", 5, "environment")
+	end
+	
 	if weather_effects then
 		if weather_effects[weather] then
 			for k,v in pairs(weather_effects[weather]) do
-				dbgMsg("doEnvironment : traits :: " .. tostring(k), 5)
-				dbgMsg("doEnvironment : PD.traits :: " .. tostring(CD[playerName].traits[k]), 5)
+				if sysTrack.environment or sysTrack["traits"] then
+					dbgMsg("꒱.doEnv.꒱ : traits :: " .. tostring(k), 5, {"environment", "traits"})
+					dbgMsg("꒱.doEnv.꒱ : PD.traits :: " .. tostring(CD[playerName].traits[k]), 5, {"environment", "traits"})
+				end
 				if type(v) == "table" and CD[playerName].traits[k] then
 					if v.effects then
-						dbgMsg("doEnvironment : v.effects :: " .. tostring(v), 5)
+						if sysTrack.environment then
+							dbgMsg("꒱.doEnv.꒱ : v.effects :: " .. tostring(v), 3, "environment")
+						end
 						for x, y in pairs(v.effects) do
-							dbgMsg("doEnvironment : x,y (pairs) :: " .. tostring(x) .. " | " .. tostring(y), 5)
+							if sysTrack.environment then
+								dbgMsg("꒱.doEnv.꒱ : x,y (pairs) :: " .. tostring(x) .. " | " .. tostring(y), 5, "environment")
+							end
 							if x == "aetheric" or x == "energetic" then
 								EmoGyre(x, y)
-							elseif x == "wet" and y > 1.3 then
-								if Game.Player.UsingParasol then
-									dbgMsg("Weather Effects :: wet emotion reduced by parasol :: (" ..tostring(y * 0.37).. ").", 4)
-									EmoGyre(x, y * 0.37)
-								else
+							elseif x == "wet" and y > 1.1 then
+								if Game.Player.UsingParasol == true and (weather == "Rain" or weather == "Thunder" or weather == "Snow") then 
+									-- Auto Parasol should be enabled for this to work 
+									--(the reasoning is, that if you're outdoors, and it's raining,
+									--and you have auto-parasol enabled, then you will pull it out.)
+									if sysTrack.environment then
+										dbgMsg("꒱Weather Effects꒱ Precipition increasing wet :: (" ..tostring(y).. ").", 3, "environment")
+									end
 									EmoGyre(x, y)
+								else
+									if sysTrack.environment then
+										dbgMsg("꒱Weather Effects꒱ Indoors • increased humidity from precipitation ∫ " .. tostring(reduce(y * 0.07,3)), 2, "environment")
+									end
+									EmoGyre(x, y * 0.07) -- increased humidity indoors from precipitation outside.
 								end
-							elseif x == "wet" and y <= 1.3 then
-								tmp = reduce(0.37 * math.sin(math.rad(updCnt + eTime)), 5)
+							elseif x == "wet" and y <= 1.1 and y > 0 then
+								tmp = reduce(0.44 * (math.sin(math.rad(updCnt + eTime)) + 0.5), 5)
+								if sysTrack.environment then
+									dbgMsg("꒱Weather Effects꒱ increased humidity. " .. tostring(reduce(y + tmp,3)), 1, "environment")
+								end
+								y = y + tmp
+								EmoGyre(x, y * 1.11)
+								if sysTrack.environment then
+									dbgMsg("꒱.doEnv.꒱ humidity • wet ∫ " .. tostring(tmp) .. ".", 2, "environment")
+								end
+							elseif x == "wet" and y < 0 then
+								tmp = reduce(0.37 * (math.sin(math.rad(updCnt + eTime)) + 0.5), 5)
+								if sysTrack.environment then
+									dbgMsg("꒱Weather Effects꒱ • decreased humidity ‰" .. tostring(reduce(y + tmp,3)), 1, "environment")
+								end
 								y = y + tmp
 								EmoGyre(x, y)
-								dbgMsg("doEnvironment : humidity :: wet: " .. tostring(tmp) .. ".", 5)
+								if sysTrack.environment then
+									dbgMsg("꒱.doEnv.꒱ humidity • wet ‰" .. tostring(tmp) .. ".", 2, "environment")
+								end
 							else
-								dbgMsg("doEnvironment : trace :: a: " .. tostring(emoState[x]), 5)
-								dbgMsg("doEnvironment : trace :: y: " .. tostring(y), 5)
+								if sysTrack.environment then
+									dbgMsg("꒱.doEnv.꒱ trace κ (x) " .. tostring(emoState[x]), 5, "environment")
+									dbgMsg("꒱.doEnv.꒱ trace β (y) " .. tostring(y), 5, "environment")
+								end
 								EmoGyre(x, y)
-								dbgMsg("doEnvironment : trace :: A", 5)
+								--dbgMsg("doEnvironment : trace :: A", 5)
 							end
-							dbgMsg("doEnvironment : trace :: B", 5)
-							dbgMsg("[" .. x .. "] increased by " .. tostring(tmp) .. " (" .. emoState[x] .. ") from ♦" .. k .. "♦ trait and ♠" .. weather .. "♠.", 5)
+							if sysTrack.environment or sysTrack["traits"] then
+								--dbgMsg("doEnvironment : trace :: B", 5)
+								dbgMsg("[" .. x .. "] increased by " .. tostring(tmp) .. " (" .. emoState[x] .. ") from ♦" .. k .. "♦ trait and ♠" .. weather .. "♠.", 7, {"environment", "traits"})
+							end
 						end
 					end
 				end
@@ -1992,192 +1852,30 @@ function doEnvironment()
 	
 	dbgMsg("Weather Effects", 4)
 	--Zone effects
-	if zones[zn] then
-		if zones[zn]["effects"] then
-			for k,v in pairs(zones[zn]["effects"]) do
-				dbgMsg("[" .. k .. "].", 6)
+	local zone = zoneData(map)
+	if zone then
+		if zone.effects then
+			for k,v in pairs(zone.effects) do
+				if sysTrack.environment or sysTrack["zone"] then
+					dbgMsg("[" .. k .. "].", 6, {"environment", "zone"})
+				end
 				tmp = v
 				if not emoState[k] then
-					dbgMsg("Weather Effects :: [" .. tostring(k) .. "] is not a valid emotion, removing from emotion table..", 1)
+					--if sysTrack.environment then
+					dbgMsg("꒱Weather Effects꒱  [" .. tostring(k) .. "] is not a valid emotion, removing from emotion table..", 1)
+					--end
 					emoState[k] = nil
 				else
 					EmoGyre(k, tmp)
-					dbgMsg("[" .. k .. "] increased by " .. tostring(tmp) .. " (" .. emoState[k] .. ") from zone effects.", 6)
+					if sysTrack.environment or sysTrack["zone"] then
+						dbgMsg("[" .. k .. "] increased by " .. tostring(tmp) .. " (" .. emoState[k] .. ") from zone effects.", 6, {"environment", "zone"})
+					end
 				end
 			end
 		end
 	end
 	
-	local enable = true
-	dbgMsg("Outfit Effects", 16)
-	--Outfit Effects
-	dbgMsg("doEnvironment : currentOutfit :: " .. tostring(currentOutfit), 16)
-	if currentOutfit and Sys.Outfits and enable then
-		CD[playerName]["outfits"] = CD[playerName]["outfits"] or {}
-		CD[playerName]["outfits"][currentOutfit] = CD[playerName]["outfits"][currentOutfit] or {}
-
-		if DBG == 16 then
-			dbgMsg("doEnvironment : Outfit Set : Hat :: " .. tostring(CD[playerName].outfits[currentOutfit].headGlam), 8)
-			dbgMsg("doEnvironment : Outfit Set : Top :: " .. tostring(CD[playerName].outfits[currentOutfit].bodyGlam), 8)
-			if CD[playerName].outfits[currentOutfit].braGlam then
-				dbgMsg("doEnvironment : Outfit Set : Bra :: " .. tostring(CD[playerName].outfits[currentOutfit].braGlam), 8)
-			elseif CD[playerName].outfits[currentOutfit].braName then
-				dbgMsg("doEnvironment : Outfit Set : Bra :: " .. tostring(CD[playerName].outfits[currentOutfit].braName), 8)
-			else
-				dbgMsg("doEnvironment : Outfit Set : Bra ::        (•Y•)", 16)
-			end
-			dbgMsg("doEnvironment : Outfit Set : Gloves :: " .. tostring(CD[playerName].outfits[currentOutfit].handsGlam), 8)
-			dbgMsg("doEnvironment : Outfit Set : Bottoms :: " .. tostring(CD[playerName].outfits[currentOutfit].legsGlam), 8)
-			if CD[playerName].outfits[currentOutfit].pantiesGlam then
-				dbgMsg("doEnvironment : Outfit Set : Panties :: " .. tostring(CD[playerName].outfits[currentOutfit].pantiesGlam), 8)
-			elseif CD[playerName].outfits[currentOutfit].pantiesName then
-				dbgMsg("doEnvironment : Outfit Set : Panties :: " .. tostring(CD[playerName].outfits[currentOutfit].pantiesName), 8)
-			else
-				dbgMsg("doEnvironment : Outfit Set : Panties ::     (^♥^)", 16)
-			end
-			dbgMsg("doEnvironment : Outfit Set : shoes :: " .. tostring(CD[playerName].outfits[currentOutfit].feetGlam), 8)
-		
-			if IsUnderwear("top") == true then
-				dbgMsg("doEnvironment :          `ω´", 16)
-			elseif IsUnderwear("top") == false then
-				if CD[playerName].outfits[currentOutfit].braGlam then
-					dbgMsg("doEnvironment :         \\v/          `ω´", 16)
-				else
-					dbgMsg("doEnvironment :         \\v/          (•Y•)", 16)
-				end
-				
-			elseif IsUnderwear("top") == nil then -- naked!
-				dbgMsg("doEnvironment :         (•Y•)", 16) -- flounce for flancy - Sandy Skittles
-			end
-			
-			if IsUnderwear("pants") == true then
-				dbgMsg("doEnvironment :         ¯▽¯", 16)
-			elseif IsUnderwear("pants") == false then
-				if CD[playerName].outfits[currentOutfit].pantiesGlam then
-					dbgMsg("doEnvironment :        ̆♡̆         ¯▽¯", 16)
-				else
-					dbgMsg("doEnvironment :        ̆♡̆         (^♥^)", 16)
-				end
-				--dbgMsg("doEnvironment :        ̆♡̆    ", 8)
-			elseif IsUnderwear("pants") == nil then -- naked!
-				dbgMsg("doEnvironment :        (^♥^)", 8)
-			end
-		end
-
-		local ztf = ZoneTempFactor()
-		--local heat
-		local warm = ztf.warm
-		local cold = ztf.cold
-		local nH = ztf.nH
-		local nC = ztf.nC
-		local wA = ztf.wA
-		local sF = ztf.sF
-		local CF = ztf.CF
-		local ts
-		local otf = reduce(OutfitTempFactor(), 3)
-
-		--heat = warm
-		warm = warm + otf
-		
-		if playerTraits.spriggan then
-			warm = warm - 0.177
-			r = math.random(1,88)
-			if r >= 77 then
-				adj = reduce(Gyre.black[4] * 0.01, 4)
-				warm = warm * adj
-				dbgMsg("doEnvironment spriggan temp adjust: " .. tostring(adj), 4)
-				tmp = warm
-				warm = cold
-				cold = tmp + adj
-			elseif r <= 7 + diff(emoState.hot, emoState.cold) then
-				adj = reduce(Gyre.white[4] * 0.017, 4)
-				if emoState.aetheric > adj * 777 then
-					Relax("hot","cold",adj)
-					EmoGyre("aetheric", adj * 777)
-					dbgMsg("doEnvironment spriggan temp relax: " .. tostring(adj), 4)
-					Moodle("-Aether", "apply", "self", "buffs", "default")
-				else
-					DoRandom("snap", "as compelled by the temperature")
-				end
-			end
-		elseif playerTraits.vixen then
-			if Game.Player.Equipped.Head.GlamName == "Tamamo Headband" then
-				dbgMsg("doEnvironment vixen cool from ears: " .. tostring(reduce(cold + 1.69, 3)), 4)
-				cold = cold + 0.69
-				--warm = warm - 0.39
-			end
-		elseif playerTraits.aetheric then
-			cold = cold + 0.27
-			warm = warm - 0.09
-		end
-		
-		if wA > 0 then
-			EmoGyre("wet", wA * -0.177)
-		end
-		
-		dbgMsg("doEnvironment  wet adjustment: " .. tostring(reduce(wA,3)), 4)
-		
-		cold = reduce(cold, 4)
-		warm = reduce(warm * nH * 1.27, 4)
-		EmoGyre("hot", warm)
-		EmoGyre("cold", cold)
-
-		dbgMsg("doEnvironment  hot set: " .. tostring(warm), 4)
-		dbgMsg("doEnvironment cold set: " .. tostring(cold), 4)
-		dbgMsg("doEnvironment outfit temp factor :: " .. tostring(otf), 4)
-		
-		if playerTraits.vixen then
-			optOtx = cold * 0.91 - emoState.hot * 0.047 + emoState.cold * 0.031 - (warm - otf)
-			ts = reduce(cold * 0.69 - CF, 3)
-			optOtx = optOtx + (ts - optOtx) / 3
-			dbgMsg("doEnvironment  base temp: " .. tostring(ts), 4)
-		else
-			optOtx = cold * 0.91 - emoState.hot * 0.047 + emoState.cold * 0.031 - (warm - otf)
-			ts = reduce(cold * 0.91 - (warm - otf), 3)
-			optOtx = optOtx + (ts - optOtx) / 3
-			dbgMsg("doEnvironment  base temp: " .. tostring(ts), 4)
-		end
-		optOutfitTemp = reduce(optOtx + (optOutfitTemp - optOtx) / 6, 3)
-		
-		dbgMsg("doEnvironment  optOutfitTemp: " .. tostring(optOutfitTemp), 1)
-		
-		--dbgMsg("doEnvironment  Overall Temp Shift: " .. tostring(ts), 4)
-		
-		if Game.Player.Equipped.Feet.ItemName == "" then
-			if CD[playerName].traits["aetheric"] then
-				EmoGyre("aetheric", -1.69)
-			elseif CD[playerName].traits["spriggan"] then
-				EmoGyre("aetheric", 0.777)
-			else
-				EmoGyre("aetheric", 0.139)
-			end
-			if emoState["aetheric"] < 0 then
-				emoState["aetheric"] = 0
-			end
-		end
-	
-		tempComfortFactor = math.floor(emoState.hot + emoState.cold)
-		
-		if (os.time() - lastDressCheck) > 111 - tempComfortFactor * 0.37 and not IsBusy then
-			if not blockAutonomousActions and not safe and not pause then
-				r = math.random(11,44)
-				if playerTraits.vixen and tempComfortFactor > 69 then
-					dbgMsg("doEnvironment Should I choose a more appropriate outfit?  " .. tostring(r), 1)
-				elseif tempComfortFactor > 39 then
-					dbgMsg("doEnvironment Should I choose a more appropriate outfit?  " .. tostring(r), 1)
-				end
-				if playerTraits.vixen and tempComfortFactor > r + 39 then
-					DressBest()
-				elseif tempComfortFactor > r + 13 then
-					DressBest()
-				end
-			elseif blockAutonomousActions or safe or pause then
-				dbgMsg("doEnvironment Autonomous Outfit Change blocked by security settings..", 1)
-			end
-		end
-	end
-	
-	dbgMsg("End Environment Checks", 2)
+	EnvironmentHandler()
 
 	func_time["doEnvironment"].END = os.time()
 	func_track("doEnvironment")
@@ -2207,7 +1905,17 @@ function decayPass()
 	
 	--dbgMsg(".|decayPass|. --- adj :: " .. tostring(adj), 1)
 	local tE = 0
-	local x, y, jitter
+	local x, y, z, jitter
+	
+	DressedCheck()
+	OutfitTempFactor()
+	
+	local otf, wet, grungy = OTF, OWF, OGF
+	local weather = Game.Weather.Name
+	local hot, humid
+	
+	local gMag = 0 -- grunge magnitude
+	
 	for k,v in pairs(decayRate) do
 		--dbgMsg(".|decayPass|. :: " .. k .. " :: " .. tostring(v*adj*-3.7), 1)
 		if k == "aetheric" or k == "energized" then
@@ -2254,65 +1962,145 @@ function decayPass()
 		end
 	end
 	
+	
+	if weather_effects[weather] then
+		hot = weather_effects[weather].neutral.temp or 0.5
+		humid = weather_effects[weather].neutral.humidity or 0
+	else
+		hot = 0.5
+		humid = 0.11
+	end
+	
 	--Outfit Dampness
 	jitter = (math.random() - 0.5) * 0.0017
-	x = 0.977 - (0.04 - (jitter + (OutfitTempFactor() + emoState.hot * 0.17) * 0.0177)) * 0.37
+	
+	x = reduce(hot / (7.77 + humid) * 0.13, 4)
+	z = reduce(x * 3.69 - (1.77 - otf) * 0.116, 4)
+	
+	--x = 0.977 - (0.04 - (jitter + (otf + emoState.hot * 0.13) * 0.0177)) * 0.37
+	--z = reduce(1 - x, 4)
+	if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+		--• wet ‰
+		dbgMsg("꒱|d∫Pass|꒱  humidity ‰ " .. tostring(z), 2, {"decayPass", "outfits","environment"})
+		--dbgMsg("꒱|d∫Pass|꒱ • pre-pass grungy π " .. tostring(reduce(grungy,4)), 2, {"outfits","environment"})
+		--dbgMsg("꒱|d∫Pass|꒱ • pre-pass wet π " .. tostring(reduce(wet,4)), 2, {"outfits","environment"})
+	end
+	
 	--x = 1
-	y = CD[playerName].outfits[currentOutfit].wetAmt or 0
-	if emoState.wet > 2.7 then
-		y = reduce(y + emoState.wet * 0.027, 3)
-		if y > 77 then
-			y = 77
-		end
+	y = wet or 0
+	if emoState.wet > 7.7 then
+		y = emoState.wet * 0.0137
+		x = x - y
 	else
-		if x > 1 then
-			y = reduce(y * (x * 0.977 + emoState.wet * 0.027), 3)
+		if x < 1 then
+			--otf, wet = table.unpack(OutfitTempFactor(emoState.wet * 0.017))
+			y = z * 0.091 - wet * 0.00777 * (2.7 - otf)
 		else
-			y = reduce(y * (x + emoState.wet * 0.027), 3)
+			y = z * 0.019 - wet * 0.0013 * (2.9 - otf)
+		end
+	end
+
+	if emoState.wet > 3.3 then
+		gMag = math.log(emoState.wet) * -0.0169
+	end
+	
+	if emoState.grungy > 9.9 then
+		gMag = gMag + math.log(emoState.grungy, 9) * 0.00037
+	end
+	
+	if gMag ~= 0 then
+		gMag = gMag + (y * -0.17)
+	end
+	
+	OutfitEnvironmental(y * 0.77, gMag)
+	OutfitTempFactor()
+	
+	if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+		dbgMsg("꒱|d∫Pass|꒱ • pre-pass grungy π " .. tostring(reduce(grungy,4)), 2, {"decayPass", "outfits","environment"})
+		dbgMsg("꒱|d∫Pass|꒱ • grunge amt ∫ " .. tostring(reduce(gMag,4)), 2, {"decayPass", "outfits","environment"})
+		dbgMsg("꒱|d∫Pass|꒱ • OGF π " .. tostring(reduce(OGF,4)), 2, {"decayPass", "outfits","environment"})
+	end
+	
+	if OGF == grungy and OGF > 0 and gMag ~= 0 then
+		if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+			dbgMsg("꒱|d∫Pass|꒱ • Outfit grungy |Max| ", 2, {"decayPass", "outfits","environment"})
+		end
+		if math.random() * 7 < OGF then
+			Moodle("Grungy", "apply", "self", "buffs", "default")
 		end
 	end
 	
-	if CD[playerName].outfits[currentOutfit].lastWorn then
-		if (os.time() - CD[playerName].outfits[currentOutfit].lastWorn) > 420 then
-			dbgMsg(".|decayPass|. :: outfit <lastworn> wet amt :: " .. tostring(y), 1)
-			y = y * (1 - (os.time() - CD[playerName].outfits[currentOutfit].lastWorn) / 7777)
-			dbgMsg(".|decayPass|. :: outfit <update> wet amt :: " .. tostring(y), 1)
+	if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then	
+		dbgMsg("꒱|d∫Pass|꒱ • pre-pass wet π " .. tostring(reduce(wet,4)), 2, {"decayPass", "outfits","environment"})
+		dbgMsg("꒱|d∫Pass|꒱ • wet amt ∫ " .. tostring(reduce(y * 0.77,4)), 2, {"decayPass", "outfits","environment"})
+		dbgMsg("꒱|d∫Pass|꒱ • OWF π " .. tostring(reduce(OWF,4)), 2, {"decayPass", "outfits","environment"})
+	end
+	
+	if OWF == wet and OWF > 0 and y ~= 0 then
+		if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+			dbgMsg("꒱|d∫Pass|꒱ • Outfit wet |Max| ", 2, {"decayPass", "outfits","environment"})
 		end
+		--Max wet effects
+	end		
+	
+	if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+		dbgMsg("꒱|d∫Pass|꒱ • overall drying rate ∫ " .. tostring(reduce(z, 3)), 4, {"decayPass", "outfits","environment"})
+		dbgMsg("꒱|d∫Pass|꒱ • emoState.wet π " .. tostring(reduce(emoState.wet,4)), 4, {"decayPass", "outfits","environment"})
 	end
 	
-	if y < 0 then
-		y = 0
-	end
-	CD[playerName].outfits[currentOutfit].wetAmt = y
-	
-	CD[playerName].outfits[currentOutfit].lastWorn = os.time()
-	--CD[playerName].outfits[currentOutfit].wetAmt = CD[playerName].outfits[currentOutfit].wetAmt or 0
-	--if CD[playerName].outfits[currentOutfit].wetAmt then
-		--CD[playerName].outfits[currentOutfit].wetAmt = reduce(CD[playerName].outfits[currentOutfit].wetAmt * (x + 0.017), 4)
-		--CD[playerName].outfits[currentOutfit].wetAmt = CD[playerName].outfits[currentOutfit].wetAmt - (1-x)
-		--if CD[playerName].outfits[currentOutfit].wetAmt < 0 then
-			--CD[playerName].outfits[currentOutfit].wetAmt = 0
-		--end
-		dbgMsg(".|decayPass|. :: outfit wet amt :: " .. tostring(reduce(y,2)), 1)
-	--end
-	dbgMsg(".|decayPass|. :: overall drying rate :: " .. tostring(reduce((1 - x) * 100, 2))  .. "%", 1)
+	wet = wet + y
 	
 	if x > 1 then
-		emoState.wet = reduce(emoState.wet * x * 0.911, 4)
+		emoState.wet = reduce(emoState.wet * x * 0.911 + wet * 0.17, 4)
+	elseif x < 0 then
+		emoState.wet = reduce(emoState.wet * (1 + x * 0.93) - wet * 0.37, 4)
 	else
-		emoState.wet = reduce(emoState.wet * x, 4)
+		emoState.wet = reduce(emoState.wet * 0.97 + y * 0.45)
+	end
+	if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+		dbgMsg("꒱|d∫Pass|꒱ • emoState.wet π " .. tostring(reduce(emoState.wet,4)), 3, {"decayPass", "outfits","environment"})
 	end
 	
-	if emoState.wet > 77 then
-		emoState.wet = 71
+	if emoState.wet > 33 then
+		if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+			dbgMsg(".|d∫Pass|. :: " .. Game.Player.Firstname .. " is soaked!", 1, {"decayPass", "outfits","environment"})
+		end
+		EmoGyre("grungy", math.log(emoState.wet) * -23)
+		emoState.wet = 31
+	elseif emoState.wet > 3.3 then
+		EmoGyre("grungy", math.log(emoState.wet) * -1.3)
+	elseif emoState.wet < 0 then
+		emoState.wet = 0
 	end
-	if emoState.cold > 111 then
-		emoState.cold = 99
+	
+	EmoGyre("grungy", OGF * 0.44)
+	
+	--EmoGyre("grungy", math.log(emoState.wet) * -3.69)
+	if emoState.cold > 77 then
+		if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+			dbgMsg(".|d∫Pass|. :: " .. Game.Player.Firstname .. " is frozen!", 1, {"decayPass", "outfits","environment"})
+		end
+		emoState.cold = 66
 		emoReact("cold")
+	elseif emoState.cold > 33 then
+		if math.random(77) > 33 then
+			emoReact("cold")
+		end
+	elseif emoState.cold < 0 then
+		emoState.cold = 0
 	end
-	if emoState.hot > 111 then
-		emoState.hot = 99
+	if emoState.hot > 77 then
+		if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
+			dbgMsg(".|d∫Pass|. :: " .. Game.Player.Firstname .. " is on fire!", 1, {"decayPass", "outfits","environment"})
+		end
+		emoState.hot = 66
 		emoReact("hot")
+	elseif emoState.hot > 33 then
+		if math.random(77) > 33 then
+			emoReact("hot")
+		end
+	elseif emoState.hot < 0 then
+		emoState.hot = 0
 	end
 
 	dbgMsg("gilBuff Test: " .. gilBuff .. ".", 10)
@@ -2352,8 +2140,8 @@ function RoutineUpdate()
 	routineIdx = routineIdx + 1
 	dbgMsg("routineIdx : " .. tostring(routineIdx), 2)
 	--dbgMsg("Routine Aetheric : " .. tostring(routines[currentRoutine][routineIdx].aetheric), 1)
-	local rout = routines[currentRoutine]
-	if not rout then
+	--local routine = loadRoutine(currentRoutine)
+	if not routine then
 		dbgMsg(tostring(currentRoutine) .. " is not a valid routine name.", 1)
 		action = "idle"
 		currentRoutine = nil
@@ -2364,7 +2152,7 @@ function RoutineUpdate()
 		func_track("RoutineUpdate")
 		return
 	end
-	rout = rout[routineIdx]
+	rout = routine[routineIdx]
 	dbgMsg("rout Type : " .. type(rout), 2)
 	if not rout then
 		dbgMsg("Routine Finished! : " .. tostring(currentRoutine), 1)
@@ -2372,7 +2160,7 @@ function RoutineUpdate()
 		currentRoutine = nil
 		routineIdx = 0
 	else
-		local rout = routines[currentRoutine][routineIdx]
+		--local rout = routine[currentRoutine][routineIdx]
 		if rout.test then
 			local er, ret = pcall(rout.func)
 			--dbgMsg("Confirm : " .. tostring(confirm), 3)
@@ -2437,7 +2225,7 @@ function RoutineUpdate()
 				emotionsRange = emotionsRange or 0
 				--if emotionsRange > 0 then
 					--ad = ad + 0.5 * (emoState["aetheric"] / emotionsRange)
-					--dbgMsg("emotionsRange: " .. tostring(ad), 3)
+					
 				--end
 				--CD[playerName].traits.aetheric
 				if CD[playerName].traits.aetheric then
@@ -2463,6 +2251,27 @@ function RoutineUpdate()
 				if emoState["cold"] < 0 then
 					emoState["cold"] = 0
 				end
+			end
+		elseif rout.tempEmitter then
+			if currentBeaconDistance then
+				local cBD = currentBeaconDistance
+				local focus = rout.focus or 0.177
+				if cBD / currentBeaconRadius < focus then
+					cBD = currentBeaconRadius * focus
+				end
+				local ad = 1
+				local int
+				if rout.intensity then
+					ad = rout.intensity
+				end
+				
+				emotionsRange = emotionsRange or 0
+				BCO = 1 / cBD^2 * ad * 133
+				--BCO = (3.69 * ad) / cBD^0.37
+				if rout.humid then
+					BHO = (3.69 * rout.humid) / cBD^0.67
+				end
+				dbgMsg("RoutineUpdate: BCO: " .. tostring(reduce(BCO, 6)), 2, {"environment", "weather", "outfits"})
 			end
 		else
 			Game.SendChat("/" .. rout["do"])
@@ -2491,9 +2300,13 @@ function CallRoutine(tag, token)
 			action = "idle"
 			dbgMsg("Stopping Current Routine : " .. tostring(currentRoutine), 0)
 			Update()
-		elseif routines[tag] then
+			return
+		end
+		routine = loadRoutine(tag)
+		if routine then
 			dbgMsg("Starting Routine : " .. tostring(tag), 0)
 			currentRoutine = tag
+			routineStart = os.time()
 			routineToken = token
 			routineIdx = 0
 			currentRoutineWait = 1
@@ -2697,7 +2510,7 @@ function BeaconCheck()
 				--dbgMsg("Beacon CheckA", 1)
 				lastBeaconDistance = distTarget(x,y,z,v.XPos,v.YPos,v.ZPos)
 				--dbgMsg("lastBeaconDistance: " .. lastBeaconDistance .. ".", 1)
-				--dbgMsg("Beacon CheckA", 4)
+				--dbgMsg("Beacon CheckA", 1)
 				if lastBeaconDistance < s then
 				  if not v.found then
 						if v.mark then
@@ -2717,7 +2530,7 @@ function BeaconCheck()
 				end
 				--dbgMsg("BeaconCheck : Track A  :: ", 1)
 				if lastBeaconDistance < v.radius then
-					dbgMsg("Beacon CheckB", 4)
+					dbgMsg("Beacon CheckB", 1)
 					currentBeaconDistance = lastBeaconDistance
 					currentBeaconRadius = v.radius
 					--if v.type then
@@ -2763,7 +2576,7 @@ function BeaconCheck()
 							dbgMsg("Beacon Check: Invalid Data :: " .. k, 1)
 						end
 					end
-					dbgMsg("BeaconCheck : Track B  :: ", 3)
+					--dbgMsg("BeaconCheck : Track B  :: ", 1)
 					if test and v.effects then
 						for a,b in pairs(v.effects) do
 							if a == "aetheric" then
@@ -2813,13 +2626,19 @@ function BeaconCheck()
 								end
 							end
 							if v.routine and (tm - lastPorted) > 23 and not currentRoutine and test then
-								dbgMsg("Starting Beacon Routine : " .. tostring(v.routine), 4)
-								currentRoutine = v.routine
-								routineIdx = 0
-								currentRoutineWait = 1
-								action = "routine"
-								--dbgMsg("action : " .. tostring(action), 2)
-								Update()
+								routine = loadRoutine(v.routine)
+								if routine then
+									dbgMsg("Starting Beacon Routine : " .. tostring(v.routine), 1)
+									currentRoutine = v.routine
+									routineIdx = 0
+									currentRoutineWait = 1
+									
+									action = "routine"
+									--dbgMsg("action : " .. tostring(action), 2)
+									Update()
+								else
+									dbgMsg("Invalid Beacon Routine : " .. tostring(v.routine), 1)
+								end
 							end
 						end
 					end
@@ -2914,6 +2733,26 @@ end
 function MoveToTarget()
 	local x,y,z = Game.Player.Target.PosX, Game.Player.Target.PosY, Game.Player.Target.PosZ
 	Game.SendChat("/vnavmesh moveto " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y))
+end
+
+--juju GotoRelativePosition(tarvec(), 3, 1.125, Game.Player.Target.RotationDegrees)
+
+function GotoRelativePosition(vec, dg, rd, rt)
+	if type(vec) ~= "table" then
+		return "invalid target vector"
+	end
+	if rt then
+		dg = dg + rt
+	end
+	local x,y,z = table.unpack(vec)
+	local x2,y2 = table.unpack(getOrbOff(x,y,dg,rd))
+	dbgMsg(".GotoRelativePosition. :: x2" .. tostring(x2), 1)
+	if x2 and y2 then
+		Game.SendChat("/vnavmesh moveto " .. tostring(x2) .. " " .. tostring(z) .. " " .. tostring(y2))
+	else
+		return "unable to find relative position"
+	end
+	return "plotting route..."
 end
 
 function MoveToBeacon(tag)
@@ -3219,20 +3058,21 @@ end
 function MoodFromEmote(emt)
 	dbgMsg(".MoodFromEmote.", 2)
 	func_time["MoodFromEmote"].ST = os.time()
-	if not emote[emt] then
+	local emote = getEmote(emt)
+	if not emote then
 		dbgMsg("Missing data for " .. emt .. " in emote table.", 2)
 		return
 	end
 	
-	if emote[emt].effects then
-		for k,v in pairs(emote[emt]["effects"]) do
+	if emote.effects then
+		for k,v in pairs(emote.effects) do
 			dbgMsg("♀emote effects♀ :: [" .. k .. "] •†" .. tostring(v) .. "†•", 3)
 			EmoGyre(k, v)
 		end
 	end
 	
-	local emType = emote[emt].type
-	local emCost = emote[emt].cost or 1
+	local emType = emote.type
+	local emCost = emote.cost or 1
 	emCost = emCost * (emotionsTotal / emotionsRange) * 0.67
 	EmoGyre(emType, emCost * -1.3)
 	EmoGyre("energized", emCost * -1.7)
@@ -3247,18 +3087,18 @@ function MoodFromEmote(emt)
 		emoState["energized"] = 0
 	end
 	
-	if emote[emt].buff then
-		ApplyBuff(emote[emt].buff)
+	if emote.buff then
+		ApplyBuff(emote.buff)
 	end
 		
 	--::groups::
 	dbgMsg("::groups::", 2)
 	--update EmotionGroup
-	local group = emote[emt]["group"]
+	local group = emote.group
 	
 	if group then
 		if group == "paintbrush" then
-			local ky = emote[emt]["type"]
+			local ky = emote.type
 			if domiMood == ky then
 				if EmotionGroup[ky] then
 					dbgMsg("Slap That Brush! " .. string.upper(ky), 1)
@@ -3557,6 +3397,38 @@ function EmoCheck()
 	func_track("EmoCheck")
 end
 
+function TrackList()
+	dbgMsg("§Systems tracked§ :: DBG :: " .. tostring(DBG) .. ".", 0)
+	for k,v in pairs(sysTrack) do
+		dbgMsg("§ :: " .. tostring(k) .. ".", 0)
+	end
+end
+
+function TrackSystem(args)
+	if args == "clear" then
+		sysTrack = {}
+		CD[playerName].sysTrack = {}
+		dbgMsg("§No longer tracking any systems§", 0)
+		return
+	end
+	if args == "what" then
+		--local st = table_to_string(
+	end
+	local gig = giggles[validFuncTrack[args]] or ""
+	if validFuncTrack[args] then
+		args = validFuncTrack[args]
+		sysTrack[args] = not sysTrack[args]
+		if sysTrack[args] then
+			dbgMsg("§Now tracking§ " .. gig .. tostring(args) .. gig .. ".", 0)
+		else
+			dbgMsg("§No longer tracking§ " .. gig .. tostring(args) .. gig .. ".", 0)
+		end
+	else
+		dbgMsg("§" .. tostring(args) .. "§ is not a valid tracking method.", 0)
+	end
+	CD[playerName].sysTrack[args] = sysTrack[args]
+end
+
 function TrackEmotion(args)
 	dbgMsg(".TrackEmotion.", 2)
 	if args == "none" or args == "clear" then
@@ -3631,7 +3503,10 @@ end
 function DoRandom(ovr, src)
 	dbgMsg(".DoRandom.", 2)
 	func_time["DoRandom"].ST = os.time()
-	dbgMsg("DoRandom(): args :: " .. tostring(ovr) .. ".", 3)
+	if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+		dbgMsg("DoRandom(): args :: " .. tostring(ovr) .. ".", 3, {"emotions", "emotes", "dorandom"})
+	end
+	local emote
 	--Game.SendChat("/e rndTime: " .. tostring(rndTime))
 	if rndTime and not ovr then
 		if rndTime + rndWait > os.time() then
@@ -3665,12 +3540,12 @@ function DoRandom(ovr, src)
 	local a = 0
 	local asp = "sad"
 	if playerTraits.aetheric then
-		a = emoState.aetheric / 37
+		a = (emoState.aetheric + emoState.bored) / 37
 		if a > 37 then
 			a = 37
 		end
 	else
-		a = emoState.energized / 31
+		a = (emoState.energized + emoState.bored) / 57
 		if a > 31 then
 			a = 31
 		end
@@ -3685,7 +3560,10 @@ function DoRandom(ovr, src)
 	end
 	
 	if type(ovr) == "string" then
-		dbgMsg("Direct call to DoRandom().", 3)
+		if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+			dbgMsg("Direct call to DoRandom().", 3, {"emotions", "emotes", "dorandom"})
+		end
+		
 		doEmo = ovr
 		if confirm == "waiting" and ovr == "yes" then
 			confirm = true
@@ -3696,32 +3574,47 @@ function DoRandom(ovr, src)
 		if IsSitting and lastEmote == "doze" and emoState.sleepy > 33 then
 			doEmo = nil
 			rndWait = 45
-			dbgMsg("Busy - †Sleeping† - Do Not Disturb().", 1)
+			if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+				dbgMsg("Busy - †Sleeping† - Do Not Disturb().", 1, {"emotions", "emotes", "dorandom"})
+			end
 		elseif lastEmote == "pdead" and emoState.sleepy > 17 and IsEmoting then
 			doEmo = nil
 			rndWait = 90
-			dbgMsg("Busy - †Sleeping† - Do Not Disturb().", 1)
+			if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+				dbgMsg("Busy - †Sleeping† - Do Not Disturb().", 1, {"emotions", "emotes", "dorandom"})
+			end
 		elseif IsBusy and IsCrafting then
 			doEmo = nil
 			rndWait = 90
-			dbgMsg("Busy - †Crafting† - Do Not Disturb().", 1)
+			if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+				dbgMsg("Busy - †Crafting† - Do Not Disturb().", 1, {"emotions", "emotes", "dorandom"})
+			end
 		elseif IsBusy and IsGathering then
 			doEmo = nil
 			rndWait = 90
-			dbgMsg("Busy - †Gathering† - Do Not Disturb().", 1)
+			if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+				dbgMsg("Busy - †Gathering† - Do Not Disturb().", 1, {"emotions", "emotes", "dorandom"})
+			end
 		elseif IsBusy and AtBell then
 			doEmo = nil
 			rndWait = 90
-			dbgMsg("Busy - †AtBell† - Do Not Disturb().", 1)
+			if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+				dbgMsg("Busy - †AtBell† - Do Not Disturb().", 1, {"emotions", "emotes", "dorandom"})
+			end
 		elseif IsBusy and not IsEmoting then
 			doEmo = nil
 			rndWait = 60
-			dbgMsg("Busy - †Goofing Off† - Do Not Disturb().", 1)
+			if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+				dbgMsg("Busy - †Goofing Off† - Do Not Disturb().", 1, {"emotions", "emotes", "dorandom"})
+			end
 		else
 			doEmo = getWeightedEmote()
 			if doEmo then
-				local typ = emote[doEmo].type
-				dbgMsg("DoRandom: asp = " .. tostring(typ) .. " (" .. tostring(emoState[typ]) .. ")", 1)
+				emote = getEmote(doEmo)
+				local typ = emote.type
+				if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then	
+					dbgMsg("DoRandom: asp = " .. tostring(typ) .. " (" .. tostring(emoState[typ]) .. ")", 2, {"emotions", "emotes", "dorandom"})
+				end
 			else
 				--
 			end
@@ -3730,8 +3623,9 @@ function DoRandom(ovr, src)
 	end
 		
 	if doEmo then
-		if not emote[doEmo] then
-			dbgMsg("emote [" .. doEmo .. "] not found in emote table.", 2)
+		emote = getEmote(doEmo)
+		if not emote then
+			dbgMsg("emote [" .. doEmo .. "] not found in emote table.", 1)
 		elseif not emotesPlayer[doEmo] then
 			dbgMsg("you do not have: " .. doEmo .. ".", 1)
 			emotesPlayer[doEmo] = false
@@ -3749,7 +3643,9 @@ function DoRandom(ovr, src)
 			end
 			if doEmo == "snap" and playerTraits.spriggan then
 				sprigganSnaps = sprigganSnaps + 1
-				dbgMsg("♠sprigganSnaps♠ π " .. tostring(sprigganSnaps), 1)
+				if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom or sysTrack.traits then
+					dbgMsg("♠sprigganSnaps♠ π " .. tostring(sprigganSnaps), 1, {"emotions", "emotes", "dorandom", "traits"})
+				end
 				if sprigganSnaps / 7 == math.floor(sprigganSnaps / 7) and gYRo > -1 then
 					Sys.Gyre = true
 					gYRo = 3
@@ -3757,7 +3653,9 @@ function DoRandom(ovr, src)
 				end
 			elseif doEmo == "clap" and playerTraits.vixen then
 				vixenClaps = vixenClaps + 1
-				dbgMsg("♥∨ixenClaps♥ ♀ " .. tostring(vixenClaps), 1)
+				if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom or sysTrack.traits then
+					dbgMsg("♥∨ixenClaps♥ ♀ " .. tostring(vixenClaps), 1, {"emotions", "emotes", "dorandom", "traits"})
+				end
 				if vixenClaps / 9 == math.floor(vixenClaps / 9) and gYRo > -1 then
 					Sys.Gyre = true
 					gYRo = 6
@@ -3769,10 +3667,12 @@ function DoRandom(ovr, src)
 				if moodyTime then
 					moodyTime = moodyTime - 169
 				end
-				dbgMsg("Moody:: " .. tostring(math.floor(emote[doEmo].cost + 1)), 1)
-				MoodyDo(emote[doEmo].group, math.floor(emote[doEmo].cost + 1))
+				if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom or sysTrack.traits then
+					dbgMsg("Moody:: " .. tostring(math.floor(emote.cost + 1)), 1, {"emotions", "emotes", "dorandom", "traits"})
+				end
+				MoodyDo(emote.group, math.floor(emote.cost + 1))
 			end
-			emote[doEmo].last = os.time()
+			moteLast[doEmo] = os.time()
 			MoodFromEmote(doEmo)
 		end
 	else
@@ -3782,21 +3682,101 @@ function DoRandom(ovr, src)
 
 	rndTime = os.time()
 	if lastEmote then
-		if emote[lastEmote] then
-			emote[lastEmote].last = rndTime
+		emote = getEmote(lastEmote)
+		if emote then
+			moteLast[lastEmote] = rndTime
+			--emote.last = rndTime
 		else
-			dbgMsg("☃DoRandom☃ :: lastEmote = " .. tostring(lastEmote), 1)
+			if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+				dbgMsg("☃DoRandom☃ :: lastEmote = " .. tostring(lastEmote), 1, {"emotions", "emotes", "dorandom"})
+			end
 		end
 	else
-		dbgMsg("☃DoRandom☃ :: lastEmote = " .. tostring(lastEmote), 1)
+		if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+			dbgMsg("☃DoRandom☃ :: lastEmote = " .. tostring(lastEmote), 1, {"emotions", "emotes", "dorandom"})
+		end
 	end
 	--dbgMsg("DoRandom :: rndWait :: .. " .. tostring(rndWait) .. ".", 1)
-	dbgMsg("DoRandom :: next emote pass in .. " .. tostring(formatTime(rndWait)) .. ".", 1)
+	if sysTrack.emotion or sysTrack.emotes or sysTrack.dorandom then
+		dbgMsg("DoRandom :: next emote pass in .. " .. tostring(formatTime(rndWait)) .. ".", 1, {"emotions", "emotes", "dorandom"})
+	end
 	
 	Script.QueueDelay(SQD)
 	Script.QueueAction(Update)
 	func_time["DoRandom"].END = os.time()
 	func_track("DoRandom")
+end
+
+function RandomFavorite()
+	local motes = tcopy(CD[playerName].emoteTracker)
+	local p
+	local x = 0
+	local y = 0
+	local t = 0
+	local r
+	local em = ""
+	local mode = "high"
+	for k,v in pairs(motes) do
+		t = t + v
+		y = y + 1
+		--if v > x then
+			--x = v
+		--end
+	end
+	if sysTrack.emotion or sysTrack.emotes then
+		dbgMsg("꒱RndFav꒱ : : total motes performed :: " .. tostring(t), 1, {"emotions", "emotes"})
+	end
+	if lastMoteBreak then
+		if IsPrime(lastMoteBreak) then
+			mode = "low"
+		end
+	end
+	--dbgMsg("꒱RndFav꒱ : : motes performed (t)" .. tostring(t), 1)
+	t = math.floor(t / y)
+	if sysTrack.emotion or sysTrack.emotes then
+		dbgMsg("꒱RndFav꒱ : : mode " .. tostring(mode), 1, {"emotions", "emotes"})
+		dbgMsg("꒱RndFav꒱ : : total motes π " .. tostring(y), 1, {"emotions", "emotes"})
+		dbgMsg("꒱RndFav꒱ : : motes avg π " .. tostring(t), 1, {"emotions", "emotes"})
+	end
+	--dbgMsg("꒱RndFav꒱ : : total motes π " .. tostring(y), 1)
+	--dbgMsg("꒱RndFav꒱ : : motes avg π " .. tostring(t), 1)
+	
+	for k,v in pairs(motes) do
+		x = x + 1
+		r = math.random(t * 33)
+		if (r < v and mode == "high") or (r > v and mode == "low") then
+			em = k
+			if sysTrack.emotion or sysTrack.emotes then
+				dbgMsg("꒱RndFav꒱ : : random π" .. tostring(r), 1, {"emotions", "emotes"})
+				dbgMsg("꒱RndFav꒱ : : breakCheck π" .. tostring(x), 1, {"emotions", "emotes"})
+			end
+			--dbgMsg("꒱RndFav꒱ : : random π" .. tostring(r), 1)
+			--dbgMsg("꒱RndFav꒱ : : breakCheck π" .. tostring(x), 1)
+			break
+		end
+	end
+	lastMoteBreak = x
+	if sysTrack.emotion or sysTrack.emotes then
+		dbgMsg("꒱RndFav꒱ : : breakCheck π" .. tostring(x), 1, {"emotions", "emotes"})
+		dbgMsg("꒱RndFav꒱ : : emote chosen :: " .. em, 1, {"emotions", "emotes"})
+	end
+	if em ~= "" then
+		p = CD[playerName].emoteTracker[em]
+		if sysTrack.emotion or sysTrack.emotes then
+			dbgMsg("꒱RndFav꒱ : : Count for :: " .. em .. " π " .. tostring(p), 1, {"emotions", "emotes"})
+		end
+		motes[em] = nil
+		CD[playerName].emoteTracker = tcopy(motes)
+		--p = math.floor(p - (r / x) * 0.13)
+		CD[playerName].emoteTracker[em] = p
+		--if sysTrack.emotion or sysTrack.emotes then
+			--dbgMsg("꒱RndFav꒱ : : Adjust for :: " .. em .. " π " .. tostring(p), 1, {"emotions", "emotes"})
+		--end
+	else
+		em = "sad"
+	end
+	--dbgMsg(".Random Favorite : : breakCheck (x)" .. tostring(x), 1)
+	return em
 end
 
 function getWeightedEmote()
@@ -3813,15 +3793,28 @@ function getWeightedEmote()
 			local has
 			local wc
 			local cd
-			local n = math.random(1, emotionsTotal) * 1.37
+			local emote
+			local n = math.random(1, (emotionsTotal + emoState.bored)) * 1.37
 			
 			domiMood = domiMood or "white"
 
-			if n > emotionsRange then
+			if n > emotionsRange * 1.37 then
 				md = aspectList[domiMood]
+				if sysTrack.emotion then
+					dbgMsg("GWE: ✓ random dominant :: " .. tostring(md), 1, "emotions")
+				end
+			elseif n > emotionsRange / 3.77 then
+				em = RandomFavorite()
+				if sysTrack.emotion then
+					dbgMsg("GWE: ✓ random favorite :: " .. tostring(em), 1, "emotions")
+				end
+				return em or "sad"
 			else
 				r = math.random(1,6)
 				md = aspectList[aspectKeys[r]]
+				if sysTrack.emotion then
+					dbgMsg("GWE: ✓ random aspect :: " .. tostring(md), 1, "emotions")
+				end
 			end
 			repeat
 				wc = true
@@ -3830,68 +3823,93 @@ function getWeightedEmote()
 				r = math.random(1, #em)
 				em = em[r]
 				if not em then
-					dbgMsg("GWE: em :: " .. tostring(em), 1)
-				end
-				dbgMsg("GWE: ✓em :: " .. tostring(em), 1)
-				if emote[em].test then
-					wc = emote[em].test
-					if not wc then
-						dbgMsg("GWE: " .. tostring(em) " is restricted to ‡" .. emote[em].restrict .. "‡.", 1)
+					if sysTrack.emotion then
+						dbgMsg("GWE: em :: " .. tostring(em), 2, "emotions")
 					end
 				end
-				if not emote[em].type then
-					dbgMsg("GWE: missing 'type' param for :: " .. tostring(em), 1)
-					wc = nil
-				elseif not emoState[emote[em].type] then
-					dbgMsg("GWE: invalid type: ‡" .. tostring(emote[em].type) .. "‡ for †" .. tostring(em) .. "†.", 1)
-					wc = nil
+				if sysTrack.emotion then
+					if sysTrack.emotion then
+						dbgMsg("GWE: ✓em :: " .. tostring(em), 2, "emotions")
+					end
 				end
-				if not emote[em]["last"] then
-					dbgMsg("GWE: missing 'last' param for :: " .. tostring(em), 1)
-					emote[em].last = 0
-				end
-				if not emote[em].cd then
-					dbgMsg("GWE: missing 'cd' param for :: " .. tostring(em) .. ", setting to 60.", 1)
-					emote[em].cd = 60
-				end
-				if not emote[em].cost then
-					dbgMsg("GWE: missing 'cost' param for :: " .. tostring(em) .. ", setting to 3.", 1)
-					emote[em].cost = 3
-				end
-				--dbgMsg("GWE: emote.cost : " .. tostring(emote[em].cost), 1)
-				--dbgMsg("GWE: emoState : " .. tostring(emoState[emote[em].type]), 1)
-				--dbgMsg("GWE: emote : " .. tostring(em), 1)
-					if wc then
-						cd = emote[em].cd - (os.time() - emote[em].last)
-						adj = emote[em]["cost"] * (emotionsTotal / emotionsRange) * 0.67
-						if not emotesPlayer[em] then
-							dbgMsg("GWE: you haven't learned :: †" .. em .. "† yet.", 1)
-							wc = nil
-						elseif emote[em].group == "paintbrush" then
-							dbgMsg("GWE: Special Group: paintbrush :: †" .. em .. "†.", 1)
-							wc = true
-						elseif emoState[emote[em].type] < adj then
-							dbgMsg("GWE: emoState :: ‡" .. em .. "‡ (" .. tostring(emoState[emote[em].type]) .. ") :: lower than cost (" .. tostring(adj) .. ") " .. tostring(emote[em].type), 1)
-							wc = nil
-						elseif cd > 0 then
-							dbgMsg("GWE: †" .. em .. "† :: is on cooldown.", 1)
-							wc = nil
-						elseif emote[em].weight then
-							r = math.random(67)
-							if r > emote[em].weight then
-								dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote[em].weight) .. ") <- " .. tostring(r), 1)
-								wc = nil
-							else
-								dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote[em].weight) .. ") -> " .. tostring(r), 1)
+				emote = getEmote(em)
+				if emote then
+					if emote.test then
+						wc = emote.test
+						if not wc then
+							if sysTrack.emotion then
+								dbgMsg("GWE: " .. tostring(em) " is restricted to ‡" .. emote.restrict .. "‡.", 2, "emotions")
 							end
-						else
-							dbgMsg("GWE: missing 'weight' param for :: " .. tostring(em), 1)
 						end
 					end
+					if not emote.type then
+						dbgMsg("GWE: missing 'type' param for :: " .. tostring(em), 1)
+						wc = nil
+					elseif not emoState[emote.type] then
+						dbgMsg("GWE: invalid type: ‡" .. tostring(emote.type) .. "‡ for †" .. tostring(em) .. "†.", 1)
+						wc = nil
+					end
+					if not moteLast[em] then
+						--dbgMsg("GWE: missing 'last' param for :: " .. tostring(em), 1)
+						moteLast[em] = 0
+					end
+					if not emote.cd then
+						dbgMsg("GWE: missing 'cd' param for :: " .. tostring(em) .. ", setting to 60.", 1)
+						emote.cd = 60
+					end
+					if not emote.cost then
+						dbgMsg("GWE: missing 'cost' param for :: " .. tostring(em) .. ", setting to 3.", 1)
+						emote.cost = 3
+					end
+				else
+					dbgMsg("GWE: missing or invalid data for [" .. tostring(em) .. "].", 1)
+					wc = nil
+				end
+				if wc then
+					cd = emote.cd - (os.time() - moteLast[em])
+					adj = emote.cost * (emotionsTotal / emotionsRange) * 0.67
+					if not emotesPlayer[em] then
+						if sysTrack.emotion then
+							dbgMsg("GWE: you haven't learned :: †" .. em .. "† yet.", 1, "emotions")
+						end
+						wc = nil
+					elseif emote.group == "paintbrush" then
+						if sysTrack.emotion then
+							dbgMsg("GWE: Special Group: paintbrush :: †" .. em .. "†.", 1, "emotions")
+						end
+						wc = true
+					elseif emoState[emote.type] < adj then
+						if sysTrack.emotion then
+							dbgMsg("GWE: emoState :: ‡" .. em .. "‡ (" .. tostring(emoState[emote.type]) .. ") :: lower than cost (" .. tostring(adj) .. ") " .. tostring(emote[em].type), 2, "emotions")
+						end
+						wc = nil
+					elseif cd > 0 then
+						if sysTrack.emotion then
+							dbgMsg("GWE: †" .. em .. "† :: is on cooldown.", 2, "emotions")
+						end
+						wc = nil
+					elseif emote.weight then
+						r = math.random(67)
+						if r > emote.weight then
+							if sysTrack.emotion then
+								dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote.weight) .. ") <- " .. tostring(r), 2, "emotions")
+							end
+							wc = nil
+						else
+							if sysTrack.emotion then
+								dbgMsg("GWE: weight check :: ‡" .. em .. "‡  (" .. tostring(emote.weight) .. ") -> " .. tostring(r), 2, "emotions")
+							end
+						end
+					else
+						dbgMsg("GWE: missing 'weight' param for :: " .. tostring(em), 1)
+					end
+				end
 				
 				has = wc
 				
-				dbgMsg("GWE: pass check :: †" .. em .. "†   (" .. tostring(wc) .. ")", 1)
+				if sysTrack.emotion then
+					dbgMsg("GWE: pass check :: †" .. em .. "†   (" .. tostring(wc) .. ")", 2, "emotions")
+				end
 				x = x + 1
 				if x == 4 and not has then
 					em = nil
@@ -3902,7 +3920,10 @@ function getWeightedEmote()
 		end
 		func_time["getWeightedEmote"].END = os.time()
 		func_track("getWeightedEmote")
-		dbgMsg("GWE: selected :: " .. tostring(em), 1)
+		
+		if sysTrack.emotion then
+			dbgMsg("GWE: selected :: " .. tostring(em), 2, "emotions")
+		end
 		return em
 	end
 	
@@ -3912,7 +3933,9 @@ function getWeightedEmote()
 	end
 	
 	local slct, roll, pm, n
-	dbgMsg("GWE: emoChance :: " .. tostring(emoChance), 3)
+	if sysTrack.emotion then
+		dbgMsg("GWE: emoChance :: " .. tostring(emoChance), 3, "emotions")
+	end
 	for k, v in pairs(currentConduit) do
 		roll = math.random(1, emoChance)
 		if k == domiEmo then
@@ -3929,20 +3952,27 @@ function getWeightedEmote()
 	end
 	
 	if slct then
-		dbgMsg("GWE: aspect :: " .. tostring(slct), 3)
+		if sysTrack.emotion then
+			dbgMsg("GWE: aspect :: " .. tostring(slct), 3, "emotions")
+		end
 		n = pm - math.floor((pm-1)/6)*6
 		md = aspectList[slct][n]
-		dbgMsg("GWE: md :: " .. tostring(md), 3)
+		if sysTrack.emotion then
+			dbgMsg("GWE: md :: " .. tostring(md), 3, "emotions")
+		end
 		md = moods[md]
 		n = pm - math.floor((pm-1)/#md)*#md
-		dbgMsg("GWE: emote :: " .. tostring(md[n]), 3)
+		if sysTrack.emotion then
+			dbgMsg("GWE: emote :: " .. tostring(md[n]), 3, "emotions")
+		end
 		
 		func_time["getWeightedEmote"].END = os.time()
 		func_track("getWeightedEmote")
 		return md[n]
 	end
-	
+	--if sysTrack.emotion then
 	dbgMsg("No emote was scheduled for this pass.", 1)
+	--end
 	func_time["getWeightedEmote"].END = os.time()
 	func_track("getWeightedEmote")
 end
@@ -4200,7 +4230,7 @@ function SaveLog()
 	--local f = type(io)
 	dbgMsg("Debug log saved.", 0)
 	Script.Clipboard = dbg_log
-	Game.SendChat("/snd run EmoSaveLog")
+	Game.SendChat("/snd run SaveLog")
 	
 	--dbgMsg("Debug log saved: " .. filename, 2)
 end
@@ -4233,8 +4263,9 @@ function Backup(what)
 					Script.Storage.global.valid = true
 					Script.Storage[playerName] = CD[playerName] or {}
 					Script.SaveStorage()
+					dbgMsg("Calling SND...", 0)
 					Script.Clipboard = json.serialize(Script.Storage)
-					--Game.SendChat("/snd run EmoBackupData")
+					Game.SendChat("/snd run UserDataBackup")
 				  return
 				end
 			end
@@ -4447,7 +4478,12 @@ function doLoad()
 	---										---
 	--- 			globals					---
 	---										---		
-
+	
+	if playerName ~= lastPlayer then
+		dbgMsg("ƒdoLoadƒ :: switching? :: " .. tostring(lastPlayer) .. "  " .. tostring(Game.Player.Name), 0)
+		--return
+	end
+	
 	playerName = Game.Player.Name
 	if not playerName then
 		dbgMsg("ƒdoLoadƒ :: player unavailable? ::", 1)
@@ -4455,6 +4491,8 @@ function doLoad()
 		return
 	end
 	nickName = Game.Player.Entity.Firstname
+	
+	Script.Storage.global = Script.Storage.global or {}
 	
 	CD = CD or {}
 	CD[playerName] = Script.Storage[playerName] or {}
@@ -4502,7 +4540,9 @@ function doLoad()
 	if CD[playerName].nickName == "" then
 		CD[playerName].nickName = nickName
 	end
+	CD[playerName].world = Game.Player.HomeWorld
 	nickName = CD[playerName].nickName
+	CD.global[nickName] = playerName
 	currentGil = Game.Player.GetGil()
 	CD[playerName]["playerGil"] = currentGil
 	
@@ -4560,6 +4600,7 @@ function doLoad()
 	
 	CD[playerName].favoriteEntree = CD[playerName].favoriteEntree or ""
 	favoriteEntree = CD[playerName].favoriteEntree
+	dbgMsg("ƒdoLoadƒ :: favoriteEntree ::" .. favoriteEntree, 1)
 	CD[playerName].favoriteMeal = CD[playerName].favoriteMeal or ""
 	favoriteMeal = CD[playerName].favoriteMeal
 	
@@ -4575,6 +4616,8 @@ function doLoad()
 	
 	CD[playerName]["profile"] = CD[playerName]["profile"] or {}
 	CD[playerName]["Tracking"] = CD[playerName]["Tracking"] or nil
+	CD[playerName]["sysTrack"] = CD[playerName]["sysTrack"] or {}
+	sysTrack = CD[playerName]["sysTrack"] or {}
 	CD[playerName]["emoGroups"] = CD[playerName]["emoGroups"] or {}
 	CD[playerName]["emoteTracker"] = CD[playerName]["emoteTracker"] or {}
 	CD[playerName]["purchases"] = CD[playerName]["purchases"] or {}
@@ -4624,6 +4667,8 @@ function doLoad()
 	CD[playerName]["emotes"] = CD[playerName]["emotes"] or {}
 	emotesPlayer = {}
 	
+	initEmotes()
+	--[[
 	for k,v in pairs(emote) do
 		if v.defEmo then
 			emotesPlayer[k] = true
@@ -4633,6 +4678,7 @@ function doLoad()
 			emotesPlayer[k] = false
 		end
 	end
+	]]--
 	
 	CD[playerName]["emotes"] = emotesPlayer
 	CD[playerName]["emotionsSet"] = CD[playerName]["emotionsSet"] or nil
@@ -4655,6 +4701,7 @@ function doLoad()
 	CD[playerName]["currentOutfit"] = CD[playerName]["currentOutfit"] or ""
 	
 	currentOutfit = CD[playerName]["currentOutfit"]
+	CD[playerName]["glamItemInfo"] = CD[playerName]["glamItemInfo"] or {}
 	
 	if not currentOutfit then
 		currentOutfit = Game.Player.Entity.Job.Name
@@ -4683,6 +4730,13 @@ function doLoad()
 	for k,v in pairs(CD[playerName]["outfits"][currentOutfit]) do
 		currentOutfitSet[k] = v
 	end
+	
+	DressedCheck()
+	OutfitTempFactor()
+	
+	dbgMsg("ƒdoLoadƒ :: STRIP :: " .. STRIP, 1)
+	
+	
 	
 	---										---
 	--- 	---<< gil stuff >> ---			---
@@ -4733,12 +4787,13 @@ function doLoad()
 	updCnt = CD[playerName]["updCnt"]
 	idles = CD[playerName]["idles"]
 	collisions = CD[playerName]["collisions"]
+	seasonalAdjust = SeasonalAdjust(ftMonth, ftDay, 1)
 	--largestPrime = CD[playerName]["largestPrime"] --deprecate
 	
 	---										---
 	--- 			finalize				---
 	---										---
-	
+		
 	if CD[playerName]["lastSave"] then
 		local lastLog = math.floor(os.time() - CD[playerName]["lastSave"])
 		local slpAdj = lastLog * -0.137
@@ -4758,6 +4813,7 @@ function doLoad()
 	if not safe then
 		--Game.SendChat("/.chathandler toggle")
 	end
+	lastPlayer = playerName
 	WoluaXVersion = string.match(Game.Player.WoluaXVersion, "(%d+%.%d+%.%d+%.%d+)")
 	action = "loaded"
 	pause = CD.global.pause
@@ -4782,7 +4838,8 @@ function Update()
 	end -- lock
 	func_time["Update"].ST = os.time()
 	
-	if not CD[playerName] and action ~= "loading" and not IsPorting then
+	--if not CD[playerName] and action ~= "loading" and not IsPorting then
+	if playerName == "unknown" and action ~= "loading" and not IsPorting then
 		dbgMsg("ƒUpdateƒ :: doLoad() call", 1)
 		doLoad()
 		func_time["Update"].END = os.time()
@@ -4791,7 +4848,7 @@ function Update()
 		return
 	end
 	if action == "loading" then
-		playerName = Game.Player.Name
+		--playerName = Game.Player.Name
 		func_time["Update"].END = os.time()
 		func_track("Update")
 		return
@@ -4951,14 +5008,15 @@ function Update()
 		currentUpdateCall = "A"
 		--largestPrime = updCnt
 		--MoodUpdate()
+		local emote = getEmote(lastEmote)
 		if IsEmoting and (lastEmote == "pdead" and emoState.sleepy > 17) then
 			IsSleeping = true
 			MoodFromEmote(lastEmote)
 		elseif not lastEmote then
 			dbgMsg("Updater: LastEmote is " .. tostring(lastEmote) .. ".")
-		elseif not emote[lastEmote]["cd"] then
+		elseif not emote.cd then
 			dbgMsg("Missing .cd .. " .. tostring(lastEmote) .. ".")
-		elseif IsEmoting and lastEmote and (os.time() - rndTime) < emote[lastEmote].cd then
+		elseif IsEmoting and lastEmote and (os.time() - rndTime) < emote.cd then
 			--dbgMsg("Channeling.. " .. doEmo .. ".")
 			MoodFromEmote(lastEmote)
 		elseif (IsSitting and lastEmote == "doze") then
@@ -5037,6 +5095,8 @@ function Update()
 		if maintain then
 			SelfCare()
 		end
+		BCO = 0
+		BHO = 0
 		--Game.SendChat("/snd run EmoAreaCheck")
 	else
 		--if IsPrime(updCnt) then
@@ -5096,7 +5156,13 @@ function CDUpdater()
 	CD[playerName].collisions = collisions
 	CD[playerName].largestPrime = largestPrime
 	CD[playerName].playerGilBuff = tostring(gilBuff)
-	CD[playerName].traits = playerTraits
+	
+	CD[playerName].traits = {}
+	
+	for k,v in pairs (playerTraits) do
+		CD[playerName].traits[k] = true
+	end
+	
 	CD[playerName].prog = playerProg
 	CD[playerName].salesTotal = salesTotal
 	CD[playerName].combatTime = combatTime
@@ -5150,7 +5216,7 @@ function RestEffects()
 	if IsSleeping and emoState.sleepy > 11 then
 		EmoGyre("sleepy", -17)
 		EmoGyre("energized", 3.77)
-		EmoGyre("tired", -7)
+		--EmoGyre("tired", -7)
 		EmoGyre("bored", -7.7)
 		Moodle("zzz", "apply", "self", "buffs", "default")
 		func_time["RestEffects"].END = os.time()
@@ -5159,13 +5225,14 @@ function RestEffects()
 	end
 	IsSleeping = nil
 	if IsSitting then
-		if totalFuncTime == math.floor(totalFuncTime) then
+		dbgMsg("ƒRestEffectsƒ :: totalFuncTime :: " .. tostring(math.floor(totalFuncTime * 100)), 1)
+		if IsPrime(math.floor(totalFuncTime * 100)) then
 			local r = math.random(1,#sittin_motes)
 			if sittin_motes[r] then
-				DoRandom(sittin_motes[r])
+				DoRandom(sittin_motes[r], "as inspired by sitting.")
 			end
 		end
-		EmoGyre("tired", -1.23)
+		EmoGyre("sleepy", -0.77)
 	end
 	if emoState.sleepy > 369 then
 		local s = emoState.sleepy / 67
@@ -5195,6 +5262,7 @@ function StatusHandler()
 	func_time["StatusHandler"].ST = os.time()
 	local busy = 0
 	local tmp = 0
+	local hA = 0
 	if Game.Player.WellFed then
 		wellfed = true
 		UpdateHunger(2.345)
@@ -5219,15 +5287,24 @@ function StatusHandler()
 	end
 	if IsCrafting then
 		busy = busy + 1
+		hA = hA + 0.017
 	end
 	if InCombat then
 		busy = busy + 3
+		hA = hA + 0.0137
 	end
 	if IsEmoting then
 		busy = busy + 1
+		hA = hA + 0.0037
 	end
 	if IsFlying or IsJumping or IsFishing or IsPerforming or IsInCutscene or IsTrading or IsGathering then
 		busy = busy + 1
+		hA = hA + 0.0037
+	end
+	
+	if Decorating or Melding or PlayingTourney then
+		busy = busy +1
+		hA = hA + 0.0037
 	end
 	
 	if AtBell then
@@ -5239,6 +5316,7 @@ function StatusHandler()
 	if IsCasting then
 		CastingEffects()
 		busy = busy + 1
+		hA = hA + 0.0327
 	end
 	if busy > 0 then
 		idleTime = idleTime - busy
@@ -5251,17 +5329,26 @@ function StatusHandler()
 		idleTime = idleTime + 1
 		RestEffects()
 	end
-	if wellfed then
-		busy = busy * 0.61
-	end
+	--if wellfed then
+		--busy = busy * 0.61
+	--end
 	
+	EmoGyre("hot", hA * 3.69)
 	EmoGyre("hungry", busy)
 	EmoGyre("sleepy", busy)
-	EmoGyre("grungy", busy * 0.23)
-	EmoGyre("responsible", busy * 0.77)
-	EmoGyre("bored", busy * -2.33)
+	EmoGyre("grungy", busy * 0.333)
+	EmoGyre("responsible", busy * 0.37)
+	if busy > 0 then
+		EmoGyre("bored", busy * -2.33)
+	end
 	if emoState.dazed > 37 then
 		Leech("focused", "dazed", 0.0167, -1)
+	end
+	tmp = os.time() - bubbleBuff
+	if tmp < 311 then
+		tmp = (444 - tmp) * 0.017
+		EmoGyre("refreshed", tmp)
+		dbgMsg(":StatusHandler: bubbleBuff :: " .. tostring(reduce(tmp, 2)), 1)
 	end
 	--Leech("focused", "dazed", 0.67)
 	--currentGil = Game.Player.GetGil()
@@ -5293,36 +5380,58 @@ function StatusHandler()
 	end
 	if IsSwimming or IsDiving then
 		EmoGyre("aetheric", -1.39)
-		EmoGyre("refreshed", 27.77)
-		EmoGyre("grungy", -17.77)
+		EmoGyre("refreshed", 13.37)
+		EmoGyre("grungy", -23)
 		EmoGyre("wet", 2.77)
 	else
 		EmoGyre("refreshed", -1.11)
 	end
-	if emoState.grungy > 17 then
-		Leech("refreshed", "grungy", 0.023, -0.67)
-		Leech("responsible", "grungy", 0.017, 0.31)
+	
+	
+	if emoState.grungy > 777 then
+		if math.random(1,emoState.grungy * 0.69) > 777 then
+			Moodle("Grungy", "apply", "self", "buffs", "default")
+		end
+		if emoState.grungy > 1234 then
+			Dissolve("responsible", "grungy", 0.017)
+		--Leech("responsible", "grungy", 0.017, 0.31)
+		end
+	
+	end
+	
+	if emoState.grungy > 7.7 then
+		Leech("refreshed", "grungy", 0.077, -0.37)
 	end
 	
 	if playerTraits.vixen then
 		Dissolve("hot", "cold", 0.969 + emoState.hot * 0.169)
 	elseif playerTraits.aetheric then
 		--dbgMsg(":StatusHandler: Dissolve hot/cold :: ", 1)
-		if emoState.hot >= 7 and reduce(emoState.hot,3) == reduce(emoState.cold,3) then
+		if emoState.cold >= 7 and emoState.aetheric > 777 then
 			EmoGyre("aetheric", emoState.hot * 2)
-			EmoGyre("cold", emoState.cold * 0.77)
+			EmoGyre("hot", emoState.hot * 0.11)
+			EmoGyre("cold", emoState.cold * -0.77)
 			Moodle("Aetheric Dissipation", "apply", "self", "buffs", "default")
+			if sysTrack.environment or sysTrack.outfits or sysTrack.traits then
+				dbgMsg("꒱.StHdlr.꒱ Aetheric Dissipation (cold) ∫ " .. tostring(reduce(emoState.cold * 0.77, 4)), 3, {"environment", "outfits", "traits"})
+			end
 		else
+			local h = emoState.hot
+			local c = emoState.cold
 			Dissolve("hot", "cold", 1.111)
+			if sysTrack.environment or sysTrack.outfits or sysTrack.traits then
+				dbgMsg("꒱.StHdlr.꒱ hot reduction ∫ " .. tostring(reduce(h - emoState.hot, 4)), 4, {"environment", "outfits", "traits"})
+				dbgMsg("꒱.StHdlr.꒱ cold reduction ∫ " .. tostring(reduce(c - emoState.cold, 4)), 4, {"environment", "outfits", "traits"})
+			end
 		end
 	elseif playerTraits.spriggan then
 		if emoState.hot >= 7 and diff(emoState.hot, emoState.cold) < 0.77 then
 			EmoGyre("energized", emoState.hot * -1.77)
 			EmoGyre("hot", emoState.hot * -0.77)
-			EmoGyre("cold", emoState.cold * -0.44)
+			EmoGyre("cold", emoState.cold * -0.66)
 			Moodle("Aetheric Dissipation", "apply", "self", "buffs", "default")
 		else
-			Dissolve("hot", "cold", 1.477)
+			Dissolve("hot", "cold", 1.777)
 		end
 	else
 		Dissolve("hot", "cold", 0.999)
@@ -5373,6 +5482,12 @@ function UpdateFlags()
 	Occupied = Game.Player.Occupied or Game.Player.OccupiedInCutSceneEvent or Game.Player.OccupiedInQuestEvent or
 				Game.Player.OccupiedInEvent or Game.Player.Occupied30 or Game.Player.Occupied33 or
 				Game.Player.Occupied38 or Game.Player.Occupied39
+	
+	Decorating = Game.Player.Decorating
+	Melding = Game.Player.Melding
+	PlayingTourney = Game.Player.PlayingTourney
+
+
 	
 	--OccupiedInCutSceneEvent = Game.Player.OccupiedInCutSceneEvent
 	--OccupiedInQuestEvent = Game.Player.OccupiedInQuestEvent
@@ -5447,7 +5562,7 @@ function RunSndScript(script)
 end
 
 function SelfCare()
-	if safe or pause then
+	if safe or pause or IsBusy then
 		return
 	end
 	local r
@@ -5608,6 +5723,9 @@ function EatFood(what)
 					end
 				end
 			end
+			if slct then
+				dbgMsg("ƒEatFoodƒ :: " .. tostring(slct) .. " chosen as best meal.", 1)
+			end
 			if lastMeal and lastMealTime then
 				if k == lastMeal and (os.time() - lastMealTime) < 360 then
 					slct = nil
@@ -5650,44 +5768,56 @@ end
 
 function MovingEffects(amt)
 	if filterLog["2"] then
-		dbgMsg("MovingEffects", 2)
+		dbgMsg("MovingEffects", 2)
 	end
 	local weather = Game.Weather.Name
 	
-	local map = Game.Player.MapZone
-	local humidity = "normal"
-	local otf = reduce(OutfitTempFactor() * 0.31, 3)
+	local zone = zoneData(Game.Player.MapZone)
+	local humidity = 1
+	OutfitTempFactor()
+	--local otf, wet = table.unpack(OutfitTempFactor())
+	local otf, wet, grungy = OTF, OWF, OGF
+	otf = otf * 0.31
 	local wcAdj, huAdj = 0.244, 0.377 - otf * 0.13
 	local wc,hu = 0.27,0.21
 	local tmp, x, y, WC
 	local tf = 0
-	--[[if IsSprinting then
-		amt = amt * 1.7
-	end
-	if IsPeloton then
-		amt = amt * 1.3
-	end
-	if IsJogging then
-		amt = amt * 1.1
+	local hot, humid = 0.5, 0.97
+	
+	if weather_effects[weather] then
+		hot = weather_effects[weather].neutral.temp or 0.5
+		humid = weather_effects[weather].neutral.humidity or 0
 	end
 	
-	if HasMoonZoom then
-		amt = amt * 2.7
-	end]]--
-	
-	
-	if zones[map] then
-		if zones[map].climate then
-			if zones[map].climate.type then
-				if climates[zones[map].climate.type] then
-					humidity = climates[zones[map].climate.type]
-					tf = validTemps[zones[map].climate.temp]
+	if zone then
+		if zone.climate then
+			if zone.climate.type then
+				if climates[zone.climate.type] then
+					humidity = climates[zone.climate.type]
+					tf = validTemps[zone.climate.temp]
 				end
 			end
 		end
 	end
+	--if humidity == "string" then
+	humidity = humidMult[humidity] or 1
+	--end
+	hu = reduce(humidity * humid, 6)
+	wc = humidity * -0.11
+	
+	if sysTrack.environment or sysTrack.motion then
+		dbgMsg("꒱Motion꒱ • humidity (zone) ∫ " .. tostring(humidity), 1, {"motion", "environment"})
+		dbgMsg("꒱Motion꒱ • humidity (weather) ∫ " .. tostring(hu), 1, {"motion", "environment"})
+	end
+	hu = reduce((1 - hu) * 1.77, 4)
+	wc = 0.17 - hu
+	if sysTrack.environment or sysTrack.motion then
+		dbgMsg("꒱Motion꒱ • humidity ‰ " .. tostring(hu), 1, {"motion", "environment"})
+		--dbgMsg("꒱Motion꒱ • humidity ‰ " .. tostring(hu), 1, {"motion", "environment"})
+	end
 	--
 	--dbgMsg("MovingEffects :: windchill :: " .. tostring(amt * 0.67), 1)
+	humidity = "normal"
 	if humidity == "high" then
 		hu = 0.11
 		wc = 0.11
@@ -5712,7 +5842,7 @@ function MovingEffects(amt)
 		wc = 0.37
 		--EmoGyre("wet", amt * -0.17)
 		--EmoGyre("cold", amt * 0.37)
-	elseif  humidity == "arid" then
+	elseif humidity == "arid" then
 		hu = -0.37
 		wc = 0.41
 		--EmoGyre("wet", amt * -0.23)
@@ -5728,29 +5858,55 @@ function MovingEffects(amt)
 			wcAdj = wcAdj * 1.69
 		end
 	end
-	
+	--
 	WC = reduce(amt * wc * wcAdj, 3)
-	dbgMsg("MovingEffects :: wind :: " .. tostring(WC), 1)
-	tmp = reduce(WC * (1.77 - tf), 3)
-	dbgMsg("MovingEffects :: windchill (cold) :: " .. tostring(tmp), 1)
-	
+	if sysTrack.environment or sysTrack.motion then
+		dbgMsg("꒱Motion꒱ • wind ∫ " .. tostring(WC), 1, {"motion", "environment"})
+	end
+	tmp = reduce((WC * (1.77 - tf)) * 0.77, 3)
+	if sysTrack.environment or sysTrack["motion"] then
+		dbgMsg("꒱Motion꒱ • windchill (cold) ∫ " .. tostring(tmp), 2, {"motion", "environment"})
+	end
 	EmoGyre("wet", amt * hu * huAdj)
-	EmoGyre("cold", tmp )
+	EmoGyre("cold", tmp)
 	
-	y = CD[playerName].outfits[currentOutfit].wetAmt or 0
-	if weather == "Rain" then
-		x = 1.00 + OutfitTempFactor() * 0.01337
+	y = wet or 0
+	y = y + (0.44 - wc) * 0.013
+	if weather == "Rain" or weather == "Thunder" then
+		x = 0.997 + otf * 0.03337
+	elseif weather == "Fog" then
+		x = 0.99 + otf * 0.037
+	elseif weather == "Clouds" then
+		x = 0.99 + otf * 0.00737
 	else
-		x = 1.00 - WC * OutfitTempFactor() * 0.0737
+		x = 0.99 - WC * OTF * 0.234
 		--x = 1.03 - (WC * OutfitTempFactor() * 0.0337)
 	end
 	y = y * x
 	if y < 0 then
 		y = 0
 	end
-	CD[playerName].outfits[currentOutfit].wetAmt = y
 	
-	dbgMsg("MovingEffects :: windchill outfit drying :: " .. tostring(reduce(x,2)), 1)
+	x = reduce((x-1) * 1.77,4)
+	wet = x
+	
+	if IsSwimming or IsDiving then
+		dbgMsg("꒱Motion꒱ • grungy π " .. tostring(reduce(grungy,3)), 2, {"outfits", "environment", "motion"})
+		--grungy = grungy * (1 + x * 2.7)
+		dbgMsg("꒱Motion꒱ • swimming grungy adj ‰ " .. tostring(reduce(WC * -0.67,3)), 2, {"outfits", "environment", "motion"})
+		OutfitEnvironmental(wet, WC * -0.67)
+	else
+		OutfitEnvironmental(wet, 0)
+	end
+	--CD[playerName].outfits[currentOutfit].wetAmt = y
+	--OutfitTempFactor(x)
+	--otf, wet = table.unpack(OutfitTempFactor(x))
+	--otf, wet = OTF, OWF
+	if sysTrack.outfits or sysTrack.environment or sysTrack.motion then
+		
+		dbgMsg("꒱Motion꒱ • windchill outfit drying ‰ " .. tostring(reduce(x,3)), 2, {"outfits", "environment", "motion"})
+		dbgMsg("꒱Motion꒱ • outfit wet π " .. tostring(reduce(wet,3)), 2, {"outfits", "environment", "motion"})
+	end
 	amt = tonumber(amt) * 0.337
 
 
@@ -5764,14 +5920,21 @@ function MovingEffects(amt)
 	end
 	 
 	EmoGyre("hungry", amt * 1.77)
-	EmoGyre("grungy", amt * 6.39)
+	EmoGyre("grungy", amt * 0.37)
 	--EmoGyre("hungry", amt * 0.71)
 	
 	if playerRace == "Miqo'te" then
 		amt = amt * 1.27
 	end
+	
+	if sysTrack.environment or sysTrack.motion then
+		dbgMsg("꒱Motion꒱ • spd π " .. tostring(reduce(amt,1)), 1, {"motion","environment"})
+	end
+	
 	if playerTraits.aetheric then
-		dbgMsg("Moving amt :: " .. tostring(reduce(amt,2)), 3)
+		--if sysTrack.environment or sysTrack["motion"] or sysTrack["traits"] then
+			--dbgMsg("꒱Motion꒱ • ♀atheric♀ spd ∫ " .. tostring(reduce(amt,2)), 3, {"motion","environment","traits"})
+		--end
 		--emoState["aetheric"] = emoState["aetheric"] - amt*2.7
 		--EmoGyre("aetheric", amt*-1.1)
 		if emoState.aetheric > 333 and emoState.energized > 99 then
@@ -5789,19 +5952,23 @@ function MovingEffects(amt)
 			--emoState["aetheric"] = 0
 		--end
 	elseif playerTraits.spriggan then
-		dbgMsg("Moving amt :: " .. tostring(reduce(amt,2)), 3)
-		
+		if sysTrack.environment or sysTrack["motion"] or sysTrack["traits"] then
+			dbgMsg("Moving amt :: " .. tostring(reduce(amt,2)), 3, {"environment", "motion", "traits"})
+		end
 		--AetherHandler((amt * -0.77), "energized", "CheckPeloton")
 		EmoGyre("energized", amt * -1.17)
+		EmoGyre("aetheric", amt * 3.77)
 		EmoGyre("hot", amt * 0.44)
 	elseif playerTraits.vixen then
-		dbgMsg("Moving amt :: " .. tostring(reduce(amt,2)), 3)
+		if sysTrack.environment or sysTrack["motion"] or sysTrack["traits"] then
+			dbgMsg("Moving amt :: " .. tostring(reduce(amt,2)), 3, {"environment", "motion", "traits"})
+		end
 		--AetherHandler((amt * -0.77), "energized", "CheckPeloton")
 		EmoGyre("energized", amt * -2.69)
 		EmoGyre("hot", amt * 1.69)
 	else
-		EmoGyre("energized", amt*-2.39)
-		EmoGyre("hot", amt * 2.77)
+		EmoGyre("energized", amt*-1.39)
+		EmoGyre("hot", amt * 1.31)
 		--AetherHandler(amt*-0.9, "energized", "CheckPeloton")
 		--emoState["aetheric"] = emoState["aetheric"] + amt*0.9
 	end
@@ -5838,7 +6005,7 @@ function DeathEffects()
 	if lastNapCheck > 0 and tmp < 11 then
 		napTime = napTime + tmp
 	else
-		EmoGyre("grungy", 3.37)
+		EmoGyre("grungy", 13.37)
 		EmoGyre("cold", 3.37)
 		EmoGyre("sleepy", -7.37)
 		napTime = napTime + 1.37
@@ -6027,6 +6194,9 @@ function UpdatePos()
 		dbgMsg("disD: Out of Expected Range, Porting?" .. disD .. ".", 1)
 		Porting(disD)
 		return
+	elseif disD < 0.0977 and disD > 0.0001 and IsMoving and playerTraits.spriggan then
+		dbgMsg("disD: Obstacle Alert!", 1)
+		Game.SendChat("/gaction Jump")
 	end
 	
 	if (os.time() - lastDistUpdate) > 3.1415 then
@@ -6171,7 +6341,7 @@ local function onInvoke(textline)
 		--
 	elseif cmd == "poke" then
 		Poke(args)
-	elseif emote[cmd] then
+	elseif getEmote(cmd) then
 		DoRandom(cmd)
 	elseif cmd == "clear" then
 		
@@ -6261,6 +6431,10 @@ local function onInvoke(textline)
 		Dump(args)
 	elseif cmd == "track" then
 		TrackEmotion(args)
+	elseif cmd == "tracksys" or cmd == "systrack" or cmd == "systrk" then
+		TrackSystem(args)
+	elseif cmd == "tracking" or cmd == "trackingsys" or cmd == "tracklist" then
+		TrackList()
 	elseif cmd == "outfitsave" then --used by SND Script
 		OutfitSave(args)
 	elseif cmd == "outfit" then
@@ -6273,6 +6447,8 @@ local function onInvoke(textline)
 		OutfitHandler("puton " .. args)
 	elseif cmd == "takeoff" then
 		OutfitHandler("takeoff " .. args)
+	elseif cmd == "undress" then
+		CallRoutine("undress")
 	elseif cmd == "time" then
 		local tmp = Game.EorzeanTime
 		Game.SendChat("/e Time:  ".. tostring(tmp.Hour) .. ".")
@@ -6288,6 +6464,9 @@ local function onInvoke(textline)
 		tardis()
 	elseif cmd == "factor" or cmd == "factors" then
 		args = tonumber(args)
+		if not args then
+			return
+		end
 		args = math.floor(args)
 		local s = tostring(args) .. " = " .. table_to_string(factors(args), "*")
 		Game.SendChat(s)

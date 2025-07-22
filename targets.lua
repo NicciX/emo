@@ -60,6 +60,11 @@ local targetActions = {
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
+	["Washbasin"] = {
+		["routine"] = "washbasin",
+		["cooldown"] = 37.0,
+		["last"] = 0,
+	},
 	["Shower XStand"] = {
 		["routine"] = "shower",
 		["cooldown"] = 7.0,
@@ -88,6 +93,11 @@ local targetActions = {
 	["Dead"] = {
 		["routine"] = "rezcheck",
 		["cooldown"] = 17.0,
+		["last"] = 0,		
+	},
+	["Destination"] = {
+		["routine"] = "interact",
+		["cooldown"] = 7.0,
 		["last"] = 0,		
 	}
 	

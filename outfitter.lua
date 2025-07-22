@@ -7,6 +7,7 @@ local glams = {
 	["Aetherial Linen Tights"] = {
 		["slot"] = "legs",
 		["temp"] = 0.22,
+		["tag"] = "tights",
 	},
 	["Arcanaut's Robe of Healing"] = {
 		["slot"] = "body",
@@ -15,6 +16,7 @@ local glams = {
 			["robe"] = true,
 			["dress"] = true,
 		},
+		["tag"] = "dress",
 	},
 	["Augmented Quetzalli Visor of Aiming"] = {
 		["slot"] = "head",
@@ -23,6 +25,7 @@ local glams = {
 			["accessory"] = true,
 			["mask"] = true,
 		},
+		["tag"] = "mask",
 	},
 	["Boulevardier's Ruffled Pantaloons"] = {
 		["slot"] = "legs",
@@ -32,10 +35,12 @@ local glams = {
 			["pants"] = true,
 		},
 		["type"] = "pants",
+		["tag"] = "pants",
 	},
 	["Bouncer's Holster Vest"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.57,
+		["tag"] = "vest",
 	},
 	["Bridesmaid's Tights"] = {
 		["slot"] = "legs",
@@ -46,10 +51,12 @@ local glams = {
 			["panties"] = true,
 			["stockings"] = true,
 		},
+		["tag"] = "panties and stockings",
 	},
 	["Bunny Chief Tights"] = {
 		["slot"] = "legs",
 		["temp"] = 0.11,
+		["tag"] = "panties and stockings",
 	},
 	["Cactuar Pajama Shirt"] = {
 		["slot"] = "body",
@@ -57,18 +64,22 @@ local glams = {
 		["tags"] = {
 			["bodysuit"] = true,
 		},
+		["tag"] = "shirt",
 	},
 	["Calfskin Rider's Jacket"] = {
 		["slot"] = "body",
-		["temp"] = 1.11,
+		["temp"] = 0.66,
+		["tag"] = "jacket",
 	},
 	["Calfskin Rider's Shoes"] = {
 		["slot"] = "feet",
 		["temp"] = 0.11,
+		["tag"] = "shoes",
 	},
 	["Casual Boots"] = {
 		["slot"] = "feet",
-		["temp"] = 0.27,
+		["temp"] = 0.12,
+		["tag"] = "shoes",
 	},
 	["Claws of the Beast"] = {
 		["slot"] = "hands",
@@ -77,30 +88,35 @@ local glams = {
 			["nails"] = true,
 			["accessory"] = true,
 		},
+		["tag"] = "nails",
 	},
 	["Company Hat"] = {
 		["slot"] = "head",
 		["temp"] = 0.11,
+		["tag"] = "hat",
 	},
 	["Company Tabard"] = {
 		["slot"] = "body",
 		["temp"] = 0.11,
+		["tag"] = "dress",
 	},
 	["Cotton Tights"] = {
 		["slot"] = "legs",
 		["temp"] = 0.11,
+		["tag"] = "tights",
 	},
 	["Craftsman's Apron"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.77,
 	},
 	["Dalmascan Leather Shoes"] = {
 		["slot"] = "feet",
 		["temp"] = 0.12,
+		["tag"] = "shoes",
 	},
 	["Demonic Slops"] = {
 		["slot"] = "legs",
-		["temp"] = 0.11,
+		["temp"] = 0.29,
 	},
 	["Demonic Thighboots"] = {
 		["slot"] = "feet",
@@ -113,6 +129,7 @@ local glams = {
 	["Dirndl's Hat"] = {
 		["slot"] = "head",
 		["temp"] = 0.11,
+		["tag"] = "hat",
 	},
 	["Dirndl's Pumps"] = {
 		["slot"] = "feet",
@@ -123,6 +140,7 @@ local glams = {
 			["pumps"] = 2,
 			["mary janes"] = 1.5,
 		},
+		["tag"] = "shoes",
 	},
 	["Dirndl's Wrist Torque"] = {
 		["slot"] = "hands",
@@ -130,7 +148,8 @@ local glams = {
 	},
 	["Endless Summer Top"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.07,
+		["tag"] = "bra",
 	},
 	["Faire Joi"] = {
 		["slot"] = "body",
@@ -138,32 +157,43 @@ local glams = {
 	},
 	["False Nails"] = {
 		["slot"] = "hands",
-		["temp"] = 0.11,
+		["temp"] = 0.01,
+		["tag"] = "nails",
+	},
+	["Far Eastern Lady' Dress"] = {
+		["slot"] = "body",
+		["temp"] = 0.36,
+		["tag"] = "dress",
 	},
 	["Far Eastern Lady Errant's Skirt"] = {
 		["slot"] = "legs",
 		["temp"] = 0.44,
+		["tag"] = "skirt",
 	},
 	["Far Eastern Maiden's Bottoms"] = {
 		["slot"] = "legs",
-		["temp"] = 0.51,
+		["temp"] = 0.37,
+		["tag"] = "shorts",
 	},
 	["Far Eastern Matriarch's Dress"] = {
 		["slot"] = "body",
 		["temp"] = 1.11,
+		["tag"] = "gown",
 	},
 	["Far Eastern Matriarch's Sun Hat"] = {
 		["slot"] = "head",
-		["temp"] = 0.21,
+		["temp"] = 0.17,
 		["tags"] = {
 			["hat"] = true,
 			["festive"] = true,
 			["gaudy"] = true,
 		},
+		["tag"] = "hat",
 	},
 	["Far Eastern Schoolgirl's Boots"] = {
 		["slot"] = "feet",
 		["temp"] = 0.11,
+		["tag"] = "boots",
 	},
 	["Far Eastern Schoolgirl's Hair Ribbon"] = {
 		["slot"] = "head",
@@ -172,6 +202,7 @@ local glams = {
 			["ribbon"] = true,
 			["accessory"] = true,
 		},
+		["tag"] = "ribbon",
 	},
 	["Far Eastern Socialite's Boots"] = {
 		["slot"] = "feet",
@@ -180,6 +211,7 @@ local glams = {
 			["heels"] = true,
 			["booties"] = true,
 		},
+		["tag"] = "boots",
 	},
 	["Far Eastern Socialite's Gloves"] = {
 		["slot"] = "hands",
@@ -189,13 +221,17 @@ local glams = {
 		["slot"] = "legs",
 		["temp"] = 0.11,
 	},
+	["Fat Cat Slippers"] = {
+		["slot"] = "feet",
+		["temp"] = 0.23,
+	},
 	["Felicitous Hood"] = {
 		["slot"] = "head",
 		["temp"] = 0.11,
 	},
 	["Free Spirit's Cropped Slops"] = {
 		["slot"] = "legs",
-		["temp"] = 0.11,
+		["temp"] = 0.27,
 	},
 	["Free Spirit's Hat"] = {
 		["slot"] = "head",
@@ -223,23 +259,35 @@ local glams = {
 	},
 	["Glade Slops"] = {
 		["slot"] = "legs",
-		["temp"] = 0.69,
+		["temp"] = 0.49,
+		["tag"] = "pants",
+	},
+	["Hamlet Puller's Hat"] = {
+		["slot"] = "head",
+		["temp"] = 0.13,
 	},
 	["Hannish Wool Autumn Shirt"] = {
 		["slot"] = "body",
-		["temp"] = 0.99,
+		["temp"] = 0.67,
 	},
 	["Hempen Camise"] = {
 		["slot"] = "body",
 		["temp"] = 0.15,
 	},
-	["High House Breeches"] = {
+	["Hempen Pantalettes"] = {
 		["slot"] = "legs",
 		["temp"] = 0.11,
+		["tag"] = "panties",
+	},
+	["High House Breeches"] = {
+		["slot"] = "legs",
+		["temp"] = 0.44,
+		["tag"] = "pants",
 	},
 	["High House Halfboots"] = {
 		["slot"] = "feet",
-		["temp"] = 0.11,
+		["temp"] = 0.44,
+		["tag"] = "shoes",
 	},
 	["Hooded Fireglass Leather Vest"] = {
 		["slot"] = "body",
@@ -255,7 +303,7 @@ local glams = {
 	},
 	["Hypostatic Tunic of Aiming"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.33,
 	},
 	["Hyuran Skirt"] = {
 		["slot"] = "legs",
@@ -263,7 +311,11 @@ local glams = {
 	},
 	["Inferno Jacket"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.44,
+	},
+	["Isle Explorer's Culottes"] = {
+		["slot"] = "legs",
+		["temp"] = 0.21,
 	},
 	["Isle Explorer's Shirt"] = {
 		["slot"] = "body",
@@ -271,27 +323,31 @@ local glams = {
 	},
 	["Isle Farmhand's Cotton Gloves"] = {
 		["slot"] = "hands",
-		["temp"] = 0.11,
+		["temp"] = 0.23,
 	},
 	["Isle Farmhand's Cutoffs"] = {
 		["slot"] = "legs",
-		["temp"] = 0.33,
+		["temp"] = 0.13,
+		["tag"] = "shorts",
 	},
 	["Isle Vacationer's Sandals"] = {
 		["slot"] = "feet",
-		["temp"] = 0.11,
+		["temp"] = 0.07,
+		["tag"] = "sandals",
 	},
 	["Isle Vacationer's Tanga"] = {
 		["slot"] = "legs",
-		["temp"] = 0.033,
+		["temp"] = 0.06,
+		["tag"] = "panties",
 	},
 	["Isle Vacationer's Visor"] = {
 		["slot"] = "head",
-		["temp"] = 0.11,
+		["temp"] = 0.07,
+		["tag"] = "visor",
 	},
 	["Isle Vacationer's Wrist Torques"] = {
 		["slot"] = "hands",
-		["temp"] = 0.15,
+		["temp"] = 0.05,
 		["tags"] = {
 			["accessory"] = true,
 		},
@@ -299,6 +355,7 @@ local glams = {
 	["Kupo Jacket"] = {
 		["slot"] = "body",
 		["temp"] = 0.44,
+		["tag"] = "jacket",
 	},
 	["Lady's Knickers (Black)"] = {
 		["slot"] = "legs",
@@ -310,14 +367,17 @@ local glams = {
 			["panties"] = 1,
 			["cool"] = 1,
 		},
+		["tag"] = "panties",
 	},
 	["Leonhart Boots"] = {
 		["slot"] = "feet",
-		["temp"] = 0.33,
+		["temp"] = 0.19,
+		["tag"] = "boots",
 	},
 	["Lix Hose"] = {
 		["slot"] = "legs",
 		["temp"] = 0.33,
+		["tag"] = "tights",
 	},
 	["Loose Fit Overshirt"] = {
 		["slot"] = "body",
@@ -354,6 +414,10 @@ local glams = {
 	["Loyal Housemaid's Wristdresses"] = {
 		["slot"] = "hands",
 		["temp"] = 0.11,
+	},
+	["Makai Markswoman's Quartertights"] = {
+		["slot"] = "legs",
+		["temp"] = 0.14,
 	},
 	["Martial Artist's Pumps"] = {
 		["slot"] = "feet",
@@ -408,7 +472,7 @@ local glams = {
 	},
 	["No.2 Type B Boots"] = {
 		["slot"] = "feet",
-		["temp"] = 0.27,
+		["temp"] = 0.17,
 		["tags"] = {
 			["boots"] = true,
 		},
@@ -427,7 +491,7 @@ local glams = {
 	},
 	["Plain Long Skirt"] = {
 		["slot"] = "legs",
-		["temp"] = 0.99,
+		["temp"] = 0.66,
 		["tags"] = {
 			["skirt"] = true,
 		},
@@ -436,9 +500,20 @@ local glams = {
 		["slot"] = "head",
 		["temp"] = 0.11,
 	},
+	["Quan"] = {
+		["slot"] = "legs",
+		["temp"] = 0.27,
+		["tags"] = {
+			["silk"] = true,
+		},
+	},
 	["Rainbow Brightlily Corsage"] = {
 		["slot"] = "head",
-		["temp"] = 0.11,
+		["temp"] = 0.01,
+	},
+	["Rainbow Hyacinth Corsage"] = {
+		["slot"] = "head",
+		["temp"] = 0.033,
 	},
 	["Rebel Coat"] = {
 		["slot"] = "body",
@@ -446,7 +521,7 @@ local glams = {
 	},
 	["Recreationisle Dive Watch"] = {
 		["slot"] = "hands",
-		["temp"] = 0.11,
+		["temp"] = 0.02,
 	},
 	["Recreationisle Shoes"] = {
 		["slot"] = "feet",
@@ -466,7 +541,7 @@ local glams = {
 	},
 	["Scion Adventurer's Jacket"] = {
 		["slot"] = "body",
-		["temp"] = 0.79,
+		["temp"] = 0.57,
 	},
 	["Seneschal Prince's Headset"] = {
 		["slot"] = "head",
@@ -474,7 +549,7 @@ local glams = {
 	},
 	["Seneschal Prince's Jacket"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.27,
 	},
 	["Shishu Gozen Hakama"] = {
 		["slot"] = "legs",
@@ -520,7 +595,7 @@ local glams = {
 	},
 	["Spring Skirt"] = {
 		["slot"] = "legs",
-		["temp"] = 0.88,
+		["temp"] = 0.55,
 		["tags"] = {
 			["skirt"] = true,
 		},
@@ -535,7 +610,7 @@ local glams = {
 	},
 	["Street Jacket"] = {
 		["slot"] = "body",
-		["temp"] = 0.66,
+		["temp"] = 0.55,
 	},
 	["Striped Southern Seas Swimsuit"] = {
 		["slot"] = "body",
@@ -546,7 +621,7 @@ local glams = {
 	},
 	["Summer Indigo Shirt"] = {
 		["slot"] = "body",
-		["temp"] = 0.44,
+		["temp"] = 0.33,
 	},
 	["Summer Sunset Sandals"] = {
 		["slot"] = "feet",
@@ -558,7 +633,7 @@ local glams = {
 	},
 	["Tamamo Headband"] = {
 		["slot"] = "head",
-		["temp"] = -0.069,
+		["temp"] = 0.0,
 		["tags"] = {
 			["cool"] = true,
 			["vixen"] = true,
@@ -575,11 +650,11 @@ local glams = {
 	},
 	["Thavnairian Headdress"] = {
 		["slot"] = "head",
-		["temp"] = 0.11,
+		["temp"] = 0.06,
 	},
 	["Thavnairian Wool Autumn Shirt"] = {
 		["slot"] = "body",
-		["temp"] = 0.91,
+		["temp"] = 0.36,
 		["tags"] = {
 			["sweater"] = true,
 			["warm"] = true,
@@ -587,23 +662,27 @@ local glams = {
 	},
 	["The Emperor's New Hat"] = {
 		["slot"] = "head",
-		["temp"] = 0.11,
+		["temp"] = 0.0,
 	},
 	["Turali Trader's Shirt"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.33,
 	},
 	["Unorthodox Saint's Bottoms"] = {
 		["slot"] = "legs",
-		["temp"] = 0.11,
+		["temp"] = 0.22,
 	},
 	["Valentione Emissary's Bottoms"] = {
 		["slot"] = "legs",
-		["temp"] = 0.77,
+		["temp"] = 0.39,
 	},
 	["Valentione Emissary's Dress Boots"] = {
 		["slot"] = "feet",
-		["temp"] = 0.29,
+		["temp"] = 0.11,
+	},
+	["Valentione Rose Dress"] = {
+		["slot"] = "body",
+		["temp"] = 0.33,
 	},
 	["Valentione Rose Ribboned Gloves"] = {
 		["slot"] = "hands",
@@ -619,31 +698,32 @@ local glams = {
 	},
 	["Valentione Skirt"] = {
 		["slot"] = "legs",
-		["temp"] = 0.63,
+		["temp"] = 0.19,
 	},
 	["Vanguard Bolero of Aiming"] = {
 		["slot"] = "body",
-		["temp"] = 0.96,
+		["temp"] = 0.36,
 	},
 	["White Sunflower Corsage"] = {
 		["slot"] = "head",
-		["temp"] = 0.11,
+		["temp"] = 0.01,
 	},
 	["Winter Sweater"] = {
 		["slot"] = "body",
-		["temp"] = 0.81,
+		["temp"] = 0.55,
+		["tag"] = "sweater",
 	},
 	["Wintertide Blouson"] = {
 		["slot"] = "body",
-		["temp"] = 0.11,
+		["temp"] = 0.33,
 	},
 	["Wintertide Sheath Skirt"] = {
 		["slot"] = "legs",
-		["temp"] = 0.11,
+		["temp"] = 0.19,
 	},
 	["Wintertide Shoes"] = {
 		["slot"] = "feet",
-		["temp"] = 0.11,
+		["temp"] = 0.09,
 	},
 	["Woolen Cavalier's Hat"] = {
 		["slot"] = "head",
@@ -651,38 +731,47 @@ local glams = {
 	},
 	["YoRHa Type-51 Cap of Healing"] = {
 		["slot"] = "head",
-		["temp"] = 0.17,
+		["temp"] = 0.07,
 	},
 }
 
 local validTemps = {
-	["arctic"] = -21,
-	["cold"] = -1.3, -- ☃▽
-	["tundra"] = -3.0,
-	["cool"] = -0.22, -- ☆▼
+	["arctic"] = -1.39,
+	["cold"] = -0.57, -- ☃▽
+	["tundra"] = -0.97,
+	["cool"] = -0.33, -- ☆▼
 	["warm"] = 0.33, -- ○ 
 	["normal"] = 0, -- ★    °
 	["def"] = 0, -- ★ ≡
 	["hot"] = 1.0, -- ●▲
-	["moderate"] = 0.1,
-	["tropical"] = 0.51,
-	["plains"] = 0.77,
+	["moderate"] = 0.0,
+	["underground"] = 0.0,
+	["meadow"] = -0.039,
+	["desert"] = 0.177,
+	["tropical"] = 0.37,
+	["plains"] = 0.09,
+	["skyplains"] = -0.07,
 	["umbralplains"] = -2,
-	["indoors"] = -0.37,
-	["mountains"] = -0.71,
+	["indoors"] = 0.11,
+	["mountains"] = -0.11,
+	["mesa"] = 0.07,
 	["indoors-moderate"] = 0,
-	["coastal"] = 0.33,
-	["enchantedforest"] = -1,
+	["climate-controlled"] = -0.11,
+	["indoors-cool"] = -0.17,
+	["coastal"] = 0.23,
+	["coastal-cool"] = 0.0,
+	["enchanted-forest"] = -0,27,
 	["sylvan"] = 0.11,
-	["temperate"] = 0,
+	["temperate"] = 0.0,
 	--["wet"] = "wet", -- ☂ ☁
 	["aetheric"] = 3,  --₆☀∮
 	["space"] = -0.99,
 	["hell"] = 17, -- ☀
-	["naked"] = 13,
+	["naked"] = 1,
 	["scorchin"] = 21,
-	["island"] = 2.7,
+	["island"] = 0.09,
 	["enchanted-island"] = 0,
+	["sleeping-village"] = -0.15,
 	["biosphere"] = 0.23,
 }
 
@@ -690,21 +779,361 @@ local climates = {
 	["arctic"] = "dry",
 	["desert"] = "dry",
 	["coastal"] = "wet",
+	["meadow"] = "normal",
 	["tropical"] = "wet",
+	["underground"] = "wet",
 	["plains"] = "dry",
 	["island"] = "wet",
 	["temperate"] = "normal",
-	["enchantedforest"] = "normal",
+	["moderate"] = "normal",
+	["enchanted-forest"] = "normal",
 	["umbralplains"] = "arid",
+	["sleeping-village"] = "dry",
 	["tundra"] = "dry",
 	["sylvan"] = "wet",
 	["enchanted-island"] = "normal",
 	["desert"] = "arid",
+	["skyplains"] = "low",
 	["mountains"] = "normal",
+	["mesa"] = "arid",
 	["biosphere"] = "low",
 	["space"] = "arid",
-
 }
+
+local humidMult = {
+	["high"] = 1.037,
+	["dry"] = 0.95,
+	["low"] = 0.97,
+	["wet"] = 1.031,
+	["normal"] = 1.00,
+	["moderate"] = 0.99,
+	["arid"] = 0.93,
+}
+
+local weather_effects = {
+	["Clouds"] = {
+		["neutral"] = {
+			["effects"] = {
+				["happy"] = -0.25,
+				["sad"] = -0.55,
+				["confident"] = -0.75,
+				["energized"] = -0.75,
+				["sleepy"] = 0.25,
+				["bored"] = 0.25,
+				["wet"] = 0.0137,
+			},
+			["temp"] = 0.81,
+			["humidity"] = 0.941, -- multiplier for percentage adjustment, > 1 increases wet, while < 1 reduces it
+		},
+		["drybones"] = {
+			["effects"] = {
+				["happy"] = -1,
+				["sad"] = 1,
+				["confident"] = -1,
+				["energized"] = -1,
+				["sleepy"] = 1,
+			},
+		},
+	},
+	["Rain"] = {
+		["neutral"] = {
+			["effects"] = {
+				["happy"] = -3,
+				["sad"] = -2,
+				["confident"] = -5,
+				["focused"] = -1,
+				["cold"] = 0.47,
+				["hot"] = -0.33,
+				["energized"] = -2,
+				["sleepy"] = 2,
+				["bored"] = 2,
+				["wet"] = 3.69,
+				["aetheric"] = -7.37,
+				["grungy"] = -16.9,
+				["refreshed"] = 6.39,
+			},
+			["temp"] = 0.81,
+			["humidity"] = 1.37,
+		},
+	},
+	["Clear Skies"] = {
+		["neutral"] = {
+			["effects"] = {
+				["happy"] = 2,
+				["sad"] = -3,
+				["focused"] = 1,
+				["cold"] = -0.67,
+				["energized"] = 1,
+				["sleepy"] = -0.2,
+				["bored"] = -1,
+				["scared"] = -1,
+				["wet"] = -2.34,
+			},
+			["temp"] = 1.0,
+			["humidity"] = 0.87,
+		},
+		
+	},
+	["Fair Skies"] = {
+		["neutral"] = {
+			["effects"] = {
+				["happy"] = 1,
+				["sad"] = -2,
+				["cold"] = -0.37,
+				["focused"] = 1,
+				["confident"] = 1,
+				["energized"] = 1,
+				["sleepy"] = -0.2,
+				["bored"] = -1,
+				["scared"] = -1,
+				["wet"] = -1.69,
+			},
+			["temp"] = 1.0,
+			["humidity"] = 0.91,
+		},
+		
+	},
+	["Fog"] = {
+		["neutral"] = {
+			["effects"] = {
+				["disturbed"] = 0.75,
+				["sad"] = 0.25,
+				["focused"] = -1,
+				["confident"] = -2,
+				["energized"] = -1,
+				["sleepy"] = 1,
+				["curious"] = 0.75,
+				["scared"] = 0.75,
+				["cold"] = 0.44,
+				["wet"] = 0.0017,
+				["aetheric"] = 0.19,
+			},
+			["temp"] = 0.71,
+			["humidity"] = 0.971,
+		},
+	},
+	["Wind"] = {
+		["neutral"] = {
+			["effects"] = {
+				["focused"] = -1,
+				["confident"] = -3,
+				["energized"] = 1,
+				["uncomfortable"] = 1,
+				["curious"] = 1,
+				["scared"] = 1,
+				["cold"] = 0.37,
+				["wet"] = -0.44,
+				["aetheric"] = 0.45,
+			},
+			["temp"] = 0.79,
+			["humidity"] = 0.97,
+		},
+		
+	},
+	["Gales"] = {
+		["neutral"] = {
+			["effects"] = {
+				["disturbed"] = 2,
+				["focused"] = -1,
+				["confident"] = -3,
+				["energized"] = -1,
+				["uncomfortable"] = 1,
+				["refreshed"] = 3,
+				["scared"] = 1,
+				["cold"] = 1,
+				["wet"] = -0.13,
+				["aetheric"] = 0.75,
+			},
+			["temp"] = 0.69,
+			["humidity"] = 1.01,
+		},
+	},
+	["Dust Storms"] = {
+		["neutral"] = {
+			["effects"] = {
+				["disturbed"] = 2,
+				["focused"] = -1,
+				["confident"] = -4,
+				["energized"] = -1,
+				["grungy"] = 3.9,
+				["curious"] = 1,
+				["scared"] = 1,
+				["wet"] = -3.9,
+				["aetheric"] = -0.33,
+			},
+			["temp"] = 1.11,
+			["humidity"] = 0.87,
+		},
+		
+	},
+	["Heat Waves"] = {
+		["neutral"] = {
+			["effects"] = {
+				["focused"] = -2,
+				["sleepy"] = 1,
+				["energized"] = -2,
+				["refreshed"] = -3,
+				["uncomfortable"] = 2,
+				["wet"] = -0.49,
+			},
+			["temp"] = 1.77,
+			["humidity"] = 1.03,
+		},
+		
+	},
+	["Blizzards"] = {
+		["neutral"] = {
+			["effects"] = {
+				["cold"] = 1.69,
+				["focused"] = -1,
+				["sleepy"] = 1,
+				["energized"] = -3,
+				["uncomfortable"] = 3,
+				["wet"] = 0.77,
+				["concerned"] = 1,
+				["disturbed"] = 2,
+				["happy"] = -1,
+				["hot"] = -1.69,
+			},
+			["temp"] = 0.51,
+			["humidity"] = 1.03,
+		},
+	},
+	["Snow"] = {
+		["neutral"] = {
+			["effects"] = {
+				["cold"] = 0.06,
+				["focused"] = -1,
+				["sleepy"] = -0.2,
+				["energized"] = -1,
+				["refreshed"] = 2.6,
+				["wet"] = 0.0000337,
+				["happy"] = 1,
+				["confident"] = 1,
+				["sad"] = -1,
+			},
+				["temp"] = 0.41,
+				["humidity"] = 0.969,
+		},
+	},
+	["Gloom"] = {
+		["neutral"] = {
+			["effects"] = {
+				["dazed"] = 1,
+				["focused"] = -1,
+				["sleepy"] = 2,
+				["energized"] = -1,
+				["refreshed"] = -1,
+				["angry"] = 1,
+				["concerned"] = 1,
+				["disturbed"] = 2,
+				["social"] = -1,
+				["aetheric"] = 0.17,
+			},
+			["temp"] = 0.37,
+			["humidity"] = 1.03,
+		},
+	},
+	["Moon Dust"] = {
+		["neutral"] = {
+			["effects"] = {
+				["dazed"] = 1,
+				["focused"] = -1,
+				["sleepy"] = 2,
+				["energized"] = -1,
+				["angry"] = 2,
+				["grungy"] = 3,
+				["social"] = -1,
+				["aetheric"] = 0.17,
+			},
+			["temp"] = 0.31,
+			["humidity"] = 0.77,
+		},
+	},
+	["Tension"] = {
+		["neutral"] = {
+			["effects"] = {
+				["dazed"] = 1,
+				["focused"] = -1,
+				["sleepy"] = 2,
+				["energized"] = 1,
+				["angry"] = 1,
+				["disturbed"] = 2,
+				["social"] = -1,
+				["aetheric"] = 0.23,
+			},
+		},
+		["temp"] = 1.3,
+		["humidity"] = 1.07,
+	},
+	["Thunder"] = {
+		["neutral"] = {
+			["effects"] = {
+				["dazed"] = 1,
+				["focused"] = -1,
+				["scared"] = 2,
+				["energized"] = 0.25,
+				["scared"] = 1,
+				["wet"] = 0.37,
+				["disturbed"] = 2.5,
+				["social"] = -1,
+				["aetheric"] = 0.51,
+			},
+		},
+		["temp"] = 0.77,
+		["humidity"] = 1.01,
+	},
+	["Umbral Static"] = {
+		["neutral"] = {
+			["effects"] = {
+				["curious"] = 1,
+				["flirty"] = 2,
+				["scared"] = 2,
+				["energized"] = 1.65,
+				["tense"] = 1.5,
+				["angry"] = 2,
+				["aetheric"] = 1.39,
+			},
+			["temp"] = 1.39,
+			["humidity"] = 1.01,
+		},
+	},
+	["Umbral Wind"] = {
+		["neutral"] = {
+			["effects"] = {
+				["curious"] = 3,
+				["playful"] = 1.7,
+				["refreshed"] = 7.7,
+				["energized"] = 1.95,
+				["tense"] = 1,
+				["disturbed"] = 6.6,
+				["angry"] = 3,
+				["grungy"] = -33,
+				["aetheric"] = 1.69,
+			},
+			["temp"] = 1.77,
+			["humidity"] = 0.99,
+		},
+	},
+	["Astromagnetic Storms"] = {
+		["neutral"] = {
+			["effects"] = {
+				["curious"] = 1.6,
+				["sad"] = 1,
+				["scared"] = 1.5,
+				["energized"] = 2.95,
+				["tense"] = 2,
+				["disturbed"] = 3.5,
+				["angry"] = 2,
+				["hungry"] = -2,
+				["aetheric"] = 2.31,
+			},
+			["temp"] = 2.11,
+			["humidity"] = 0.90,
+		},
+	},
+}
+
 
 -- hot = ▲
 -- warm = △
@@ -847,21 +1276,21 @@ local gearSlotName = {
 }
 
 function GetClimate()
-	local map = Game.Player.MapZone
-	if zones[map] then
-		if zones[map].climate then
-			return zones[map].climate
+	local zone = zoneData(Game.Player.MapZone)
+	if zone then
+		if zone.climate then
+			return zone.climate
 		end
 	end
-	return {["type"] = "temperate", ["temp"] = "normal", ["humidity"] = "normal"}
+	--return {["type"] = "temperate", ["temp"] = "normal", ["humidity"] = "normal"}
 end
 
 function SetClimate()
-	local map = Game.Player.MapZone
-	if zones[map] then
-		if zones[map].climate then
-			if zones[map].climate.temp then
-				currentClimate = zones[map].climate.temp
+	local zone = zoneData(Game.Player.MapZone)
+	if zone then
+		if zone.climate then
+			if zone.climate.temp then
+				currentClimate = zone.climate.temp
 			end
 		end
 	end
@@ -957,18 +1386,77 @@ function OutfitLoad(co)
 	end
 end
 
-function OutfitTempFactor()
-	--local eTime = Game.EorzeanTime.Hour
-	--local weather = Game.Weather.Name
-	--2660
-	local strip = DressedCheck()
+function LastWorn(slot)
+	local ti = math.floor(os.time())
+	local y = 0
+	local z = 0
+	local lw
+	local tag
+	if not CD[playerName].glamItemInfo[slot] then
+		UpdateGlamItem(slot)
+	end
+	lw = CD[playerName].glamItemInfo[slot].lastWorn
+	if glams[slot] then
+		tag = glams[slot].tag or glams[slot].slot
+	else
+		tag = slot
+	end
+	--CD[playerName].glamItemInfo[slot].lastWorn = ti
+	if lw then
+		y = CD[playerName].glamItemInfo[slot].wet or 0
+		z = CD[playerName].glamItemInfo[slot].grungy or 0
+		if (ti - lw) > 420 and y > 0 then
+			if sysTrack.environment or sysTrack.outfits then
+				--• wet ‰
+				dbgMsg("꒱|LastWorn|꒱  [".. tag .. "] <lastworn> wet π " .. tostring(reduce(y,4)), 3, {"outfits","environment"})
+				dbgMsg("꒱|LastWorn|꒱  [".. tag .. "] <lastworn> grungy π " .. tostring(reduce(z,4)), 3, {"outfits","environment"})
+			end
+			y = reduce(y * (1 - (ti - lw) / 7777), 3)
+			z = reduce(y * (1 - (ti - lw) / 7777), 3)
+			if y < 0 then
+				y = 0
+			end
+			CD[playerName].glamItemInfo[slot].wet = y
+			CD[playerName].glamItemInfo[slot].grungy = z
+			if sysTrack.environment or sysTrack["outfits"] then	
+				dbgMsg("꒱|LastWorn|꒱  outfit <update> wet π " .. tostring(y), 3, {"outfits","environment"})
+				dbgMsg("꒱|LastWorn|꒱  outfit <update> grungy π " .. tostring(z), 3, {"outfits","environment"})
+			end
+		end
+	
+	end
+	CD[playerName].glamItemInfo[slot].lastWorn = ti
+	return {y,z}
+end
+
+function OutfitEnvironmental(wet, grungy)
+	local strip = STRIP
 	local slot
 	local sX
 	local oc
+	--local wet = 0
+	--local grungy = math.log(emoState.grungy)
+	local w, g
 	--local clmt = GetClimate()
 	local warm = 0
+	local ti = os.time()
+	local adjW = 0
+	local adjG = 0
 	
+	if OTF > 0 then
+		adjW = 1 + wet
+		adjG = 1 + grungy
+		--adjG = OGF / grungy / OTF
+	else
+		if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+			dbgMsg("꒱.OutfitEnv.꒱ No Outfit - Naked!", 2, {"outfits", "environment", "weather"})
+		end
+		return
+	end
+	
+	--head slot
 	sX = strip:sub(1,1)
+	
 	if sX ~= "♠" then
 		slot = CD[playerName].outfits[currentOutfit].headGlam
 		if not slot then
@@ -976,13 +1464,42 @@ function OutfitTempFactor()
 		end
 		if slot then
 			if glams[slot] then
-				warm = warm + glams[slot].temp
+				n = glams[slot].temp
 			else
-				warm = warm + 0.07
+				n = 0.07
+				UpdateGlamItem(slot, n)
+			end
+			
+			--n = n / OTF
+
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitHeadSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ head:grungy ∫ " .. tostring(reduce(g, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ head:wet ∫ " .. tostring(reduce(w, 4)), 4, {"outfits", "environment", "weather"})
 			end
 		end
+	else
+		outfitHeadSlot = nil
 	end
-	
+	--body slot
 	sX = strip:sub(2,2)
 	if sX ~= "♠" then
 		slot = CD[playerName].outfits[currentOutfit].bodyGlam
@@ -990,17 +1507,43 @@ function OutfitTempFactor()
 			slot = CD[playerName].outfits[currentOutfit].bodyName
 		end
 		if slot then
-			oc = slot
 			if glams[slot] then
-				warm = warm + glams[slot].temp
+				n = glams[slot].temp
 			else
-				warm = warm + 0.44
+				n = 0.44
+				UpdateGlamItem(slot, n)
 			end
+			
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitBodySlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ body:grungy ∫ " .. tostring(reduce(g, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ body:wet ∫ " .. tostring(reduce(w, 4)), 4, {"outfits", "environment", "weather"})
+			end
+			oc = slot
 		end
 	else
+		outfitBodySlot = nil
 		oc = CD[playerName].outfits[currentOutfit].bodyName
 	end
-	--ω♡∩
+	--ω♥∩
 	sX = strip:sub(7,7)
 	if sX ~= "ω" then
 		slot = CD[playerName].outfits[currentOutfit].braGlam
@@ -1008,11 +1551,40 @@ function OutfitTempFactor()
 			slot = CD[playerName].outfits[currentOutfit].braName
 		end
 		if slot then
-			if glams[slot] and oc then
-				warm = warm + glams[slot].temp
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.11
+				UpdateGlamItem(slot, n)
+			end
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitBraSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ bra:grungy ∫ " .. tostring(reduce(g, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ bra:wet ∫ " .. tostring(reduce(w, 4)), 4, {"outfits", "environment", "weather"})
 			end
 		end
+	else
+		outfitBraSlot = nil
 	end
+	--hands slot
 	oc = nil
 	sX = strip:sub(3,3)
 	if sX ~= "♠" then
@@ -1021,13 +1593,42 @@ function OutfitTempFactor()
 			slot = CD[playerName].outfits[currentOutfit].handsName
 		end
 		if slot then
-			oc = true
 			if glams[slot] then
-				warm = warm + glams[slot].temp
+				n = glams[slot].temp
+			else
+				n = 0.03
+				UpdateGlamItem(slot, n)
 			end
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitHandsSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ hands:grungy ∫ " .. tostring(reduce(adjG * n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ hands:wet ∫ " .. tostring(reduce(adjW * n, 4)), 5, {"outfits", "environment", "weather"})
+			end
+			oc = slot
 		end
+	else
+		outfitHandsSlot = nil
+		oc = CD[playerName].outfits[currentOutfit].handsName
 	end
-	--ω♡∩
+	--ω♥∩
 	sX = strip:sub(9,9)
 	if sX ~= "∩" then
 		slot = CD[playerName].outfits[currentOutfit].nailsGlam
@@ -1035,11 +1636,40 @@ function OutfitTempFactor()
 			slot = CD[playerName].outfits[currentOutfit].nailsName
 		end
 		if slot then
-			if glams[slot] and oc then
-				warm = warm + glams[slot].temp
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.01
+				UpdateGlamItem(slot, n)
+			end
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitNailsSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ nails:grungy ∫ " .. tostring(reduce(g, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ nails:wet ∫ " .. tostring(reduce(w, 4)), 4, {"outfits", "environment", "weather"})
 			end
 		end
+	else
+		outfitNailsSlot = nil
 	end
+	--legs slot
 	oc = nil
 	sX = strip:sub(4,4)
 	if sX ~= "♠" then
@@ -1048,28 +1678,81 @@ function OutfitTempFactor()
 			slot = CD[playerName].outfits[currentOutfit].legsName
 		end
 		if slot then
-			oc = true
 			if glams[slot] then
-				--dbgMsg("OTF Legs: :: " .. tostring(slot), 1)
-				warm = warm + glams[slot].temp
+				n = glams[slot].temp
 			else
-				warm = warm + 0.41
+				n = 0.41
+				UpdateGlamItem(slot, n)
 			end
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitLegsSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ legs:grungy ∫ " .. tostring(reduce(g, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ legs:wet ∫ " .. tostring(reduce(w, 4)), 4, {"outfits", "environment", "weather"})
+			end
+			oc = slot
 		end
+	else
+		outfitLegsSlot = nil
+		oc = CD[playerName].outfits[currentOutfit].legsName
 	end
-	--ω♡∩
+	--ω♥∩
 	sX = strip:sub(8,8)
-	if sX ~= "♡" then
+	if sX ~= "♥" then
 		slot = CD[playerName].outfits[currentOutfit].pantiesGlam
 		if not slot then
 			slot = CD[playerName].outfits[currentOutfit].pantiesName
 		end
 		if slot then
-			if glams[slot] and oc then
-				--dbgMsg("OTF ∨: :: " .. tostring(slot), 1)
-				warm = warm + glams[slot].temp
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.039
+				UpdateGlamItem(slot, n)
+			end
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitPantiesSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ panties:grungy ∫ " .. tostring(reduce(g, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ panties:wet ∫ " .. tostring(reduce(w, 4)), 4, {"outfits", "environment", "weather"})
 			end
 		end
+	else
+		outfitPantiesSlot = nil
 	end
 	
 	sX = strip:sub(5,5)
@@ -1080,14 +1763,320 @@ function OutfitTempFactor()
 		end
 		if slot then
 			if glams[slot] then
-				warm = warm + glams[slot].temp
+				n = glams[slot].temp
 			else
-				warm = warm + 0.22
+				n = 0.13
+				UpdateGlamItem(slot, n)
+			end
+			w = (CD[playerName].glamItemInfo[slot].wet or 0) + wet * n
+			g = (CD[playerName].glamItemInfo[slot].grungy or 0) + grungy * n
+			
+			if g < 0 then
+				g = 0
+			elseif g > 3.69 * n then
+				g = 3.69 * n
+			end
+			if w < 0 then
+				w = 0
+			elseif w > 3.69 * n then
+				w = 3.69 * n
+			end
+			
+			CD[playerName].glamItemInfo[slot].wet = w
+			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			outfitFeetSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ feet:grungy ∫ " .. tostring(reduce(g, 4)), 4, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OutfitEnv.꒱ feet:wet ∫ " .. tostring(reduce(w, 4)), 4, {"outfits", "environment", "weather"})
 			end
 		end
+	else
+		outfitFeetSlot = nil
+	end
+	--OTF = warm
+	
+	
+	func_time["OutfitTempFactor"].END = os.time()
+	func_track("OutfitTempFactor")
+	--return {warm, wet}
+end
+
+function OutfitTempFactor()
+	func_time["OutfitTempFactor"].ST = os.time()
+	
+	local strip = STRIP
+	local slot, sX, oc
+	local wet = 0
+	local grunge = 0
+	local warm = 0
+	local w, g
+	local ti = os.time()
+	
+	--head slot
+	sX = strip:sub(1,1)
+	if sX ~= "♠" then
+		slot = CD[playerName].outfits[currentOutfit].headGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].headName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.07
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitHeadSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ head:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ head:wet ∫ " .. tostring(reduce(w, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ head:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+		end
+	else
+		outfitHeadSlot = nil
 	end
 	
-	return warm
+	--body slot
+	sX = strip:sub(2,2)
+	if sX ~= "♠" then
+		slot = CD[playerName].outfits[currentOutfit].bodyGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].bodyName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.44
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitBodySlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ body:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ body:wet ∫ " .. tostring(reduce(w, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ body:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+			oc = slot
+		end
+	else
+		outfitBodySlot = nil
+		oc = CD[playerName].outfits[currentOutfit].bodyName
+	end
+	
+	--ω♡∩ bra slot
+	sX = strip:sub(7,7)
+	if sX ~= "ω" then
+		slot = CD[playerName].outfits[currentOutfit].braGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].braName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.11
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitBraSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ bra:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ bra:wet ∫ " .. tostring(reduce(W, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ bra:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+		end
+	else
+		outfitBraSlot = nil
+	end
+	
+	--hands slot
+	oc = nil
+	sX = strip:sub(3,3)
+	if sX ~= "♠" then
+		slot = CD[playerName].outfits[currentOutfit].handsGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].handsName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.03
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitHandsSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ hands:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ hands:wet ∫ " .. tostring(reduce(w, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ hands:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+			oc = slot
+		end
+	else
+		outfitHandsSlot = nil
+		oc = CD[playerName].outfits[currentOutfit].handsName
+	end
+	
+	--ω♡∩ nails
+	sX = strip:sub(9,9)
+	if sX ~= "∩" then
+		slot = CD[playerName].outfits[currentOutfit].nailsGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].nailsName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.01
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitNailsSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ nails:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ nails:wet ∫ " .. tostring(reduce(w, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ nails:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+		end
+	else
+		outfitNailsSlot = nil
+	end
+	
+	--legs slot
+	oc = nil
+	sX = strip:sub(4,4)
+	if sX ~= "♠" then
+		slot = CD[playerName].outfits[currentOutfit].legsGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].legsName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.41
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitLegsSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ legs:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ legs:wet ∫ " .. tostring(reduce(w, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ legs:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+			oc = slot
+		end
+	else
+		outfitLegsSlot = nil
+		oc = CD[playerName].outfits[currentOutfit].legsName
+	end
+	
+	--ω♡∩ panties
+	sX = strip:sub(8,8)
+	if sX ~= "♥" then
+		slot = CD[playerName].outfits[currentOutfit].pantiesGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].pantiesName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.039
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitPantiesSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ panties:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ panties:wet ∫ " .. tostring(reduce(w, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ panties:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+		end
+	else
+		outfitPantiesSlot = nil
+	end
+	
+	--feet slot
+	sX = strip:sub(5,5)
+	if sX ~= "♠" then --sX ~= "♠"
+		slot = CD[playerName].outfits[currentOutfit].feetGlam
+		if not slot then
+			slot = CD[playerName].outfits[currentOutfit].feetName
+		end
+		if slot then
+			if glams[slot] then
+				n = glams[slot].temp
+			else
+				n = 0.13
+				UpdateGlamItem(slot, n)
+			end
+			
+			w, g = table.unpack(LastWorn(slot))
+			wet = wet + w
+			grunge = grunge + g
+			warm = warm + n
+			
+			outfitFeetSlot = slot
+			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
+				dbgMsg("꒱.OTF.꒱ feet:warm ∫ " .. tostring(reduce(n, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ feet:wet ∫ " .. tostring(reduce(w, 4)), 6, {"outfits", "environment", "weather"})
+				dbgMsg("꒱.OTF.꒱ feet:grungy ∫ " .. tostring(reduce(g, 4)), 6, {"outfits", "environment", "weather"})
+			end
+		end
+	else
+		outfitFeetSlot = nil
+	end
+	
+	OTF = reduce(warm, 4)
+	OWF = reduce(wet, 4)
+	OGF = reduce(grunge, 4)
+	
+	func_time["OutfitTempFactor"].END = os.time()
+	func_track("OutfitTempFactor")
+	return {warm, wet}
 end
 
 function TakeoffRandom(list)
@@ -1130,27 +2119,33 @@ function RemoveItem(args)
 		if slot == "body" and (currentOutfitSet["body"] == currentOutfitSet["bra"] or currentOutfitSet["bra"] == 0) then
 			currentOutfitSet[slot] = 0
 			currentOutfitSet["bra"] = 0
+			CD[playerName].outfits[currentOutfit].wearingBra = nil
 			Game.Player.Equipped.Body.Remove()
 			--Game.SendChat("/snd run " .. SNDRemoveCall[slot])
 		elseif slot == "legs" and (currentOutfitSet["legs"] == currentOutfitSet["panties"] or currentOutfitSet["panties"] == 0) then
 			currentOutfitSet[slot] = 0
 			currentOutfitSet["panties"] = 0
+			CD[playerName].outfits[currentOutfit].wearingPanties = nil
 			Game.Player.Equipped.Legs.Remove()
 			--Game.SendChat("/snd run " .. SNDRemoveCall[slot])
 		elseif slot == "hands" and (currentOutfitSet["hands"] == currentOutfitSet["nails"] or currentOutfitSet["nails"] == 0) then
 			currentOutfitSet["nails"] = 0
 			currentOutfitSet[slot] = 0
+			CD[playerName].outfits[currentOutfit].wearingNails = nil
 			Game.Player.Equipped.Hands.Remove()
 			--Game.SendChat("/snd run " .. SNDRemoveCall[slot])
-		elseif slot == "body" and CD[playerName]["outfits"][currentOutfit]["bra"] > 0 then
+		elseif slot == "body" and CD[playerName]["outfits"][currentOutfit]["bra"] > 0 and CD[playerName].outfits[currentOutfit].wearingBra then
 			dbgMsg("Body -> Bra : slot: " .. tostring(CD[playerName]["outfits"][currentOutfit]["bra"]), 1)
 			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["bra"]
+			--CD[playerName].outfits[currentOutfit].wearingBra = true
 			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["bra"])
-		elseif slot == "legs" and CD[playerName]["outfits"][currentOutfit]["panties"] > 0 then
+		elseif slot == "legs" and CD[playerName]["outfits"][currentOutfit]["panties"] > 0 and CD[playerName].outfits[currentOutfit].wearingPanties then
 			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["panties"]
+			--CD[playerName].outfits[currentOutfit].wearingPanties = true
 			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["panties"])
-		elseif slot == "hands" and CD[playerName]["outfits"][currentOutfit]["nails"] > 0 then
+		elseif slot == "hands" and CD[playerName]["outfits"][currentOutfit]["nails"] > 0 and CD[playerName].outfits[currentOutfit].wearingNails then
 			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["nails"]
+			--CD[playerName].outfits[currentOutfit].wearingNails = true
 			Game.SendChat("/equip " .. CD[playerName]["outfits"][currentOutfit]["nails"])
 		elseif slot == "facewear" and CD[playerName]["outfits"][currentOutfit]["facewear"] then
 			currentOutfitSet[slot] = nil
@@ -1159,19 +2154,28 @@ function RemoveItem(args)
 			dbgMsg("Facewear not set... ", 0)
 		elseif slot == "panties" and CD[playerName].outfits[currentOutfit].panties == currentOutfitSet.legs then
 			currentOutfitSet[slot] = 0
+			CD[playerName].outfits[currentOutfit].wearingpanties = nil
 			Game.Player.Equipped.Legs.Remove()
 		elseif slot == "bra" and CD[playerName].outfits[currentOutfit].bra == currentOutfitSet.body then
 			currentOutfitSet[slot] = 0
+			CD[playerName].outfits[currentOutfit].wearingBra = nil
 			Game.Player.Equipped.Body.Remove()
 		elseif slot == "nails" and CD[playerName].outfits[currentOutfit].nails == currentOutfitSet.nails then
 			currentOutfitSet[slot] = 0
+			CD[playerName].outfits[currentOutfit].wearingNails = nil
 			Game.Player.Equipped.Hands.Remove()
 		elseif slot == "panties" and CD[playerName].outfits[currentOutfit].panties ~= currentOutfitSet.legs then
 			currentOutfitSet[slot] = 0
+			CD[playerName].outfits[currentOutfit].wearingPanties = nil
 			dbgMsg("Panties removed for " .. currentOutfit .. " O₀oLaLa.", 0)
 		elseif slot == "bra" and CD[playerName].outfits[currentOutfit].bra ~= currentOutfitSet.body then
 			currentOutfitSet[slot] = 0
+			CD[playerName].outfits[currentOutfit].wearingBra = nil
 			dbgMsg("Bra removed for " .. currentOutfit .. " (•Y•)", 0)
+		elseif slot == "nails" and CD[playerName].outfits[currentOutfit].nails ~= currentOutfitSet.hands then
+			currentOutfitSet[slot] = 0
+			CD[playerName].outfits[currentOutfit].wearingNails = nil
+			dbgMsg("Nails removed for " .. currentOutfit, 0)
 			--Game.Player.Equipped.Legs.Remove()
 		else
 			currentOutfitSet[slot] = nil
@@ -1206,6 +2210,10 @@ function PutonItem(slot, id)
 			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["facewear"]
 			Game.SendChat("/facewear \"" .. CD[playerName]["outfits"][currentOutfit]["facewear"] .. "\"")
 		elseif CD[playerName]["outfits"][currentOutfit][slot] > 0 then
+			local tmp = IsUnderwear(slot)
+			if tmp then
+				CD[playerName].outfits[currentOutfit][tmp] = true
+			end
 			--local itemData = tostring(CD[playerName]["outfits"][currentOutfit][slot]) .. "." .. tostring(slot)
 			--dbgMsg("Saving Clipboard Data [" .. itemData .. "], please wait...", 0)
 			--Script.Clipboard = tostring(CD[playerName]["outfits"][currentOutfit][slot]) .. "." .. tostring(slot)
@@ -1268,34 +2276,40 @@ function IsUnderwear(slot)
 		end
 		if (Game.Player.Equipped.Body.GlamName == CD[playerName].outfits[currentOutfit].braGlam) or
 			(Game.Player.Equipped.Body.ItemName == CD[playerName].outfits[currentOutfit].braName) then
-			return true
+			return "wearingBra"
 		end
-		return false
+		return nil
 	elseif validSlotId[slot] == "legs" then
 		if Game.Player.Equipped.Legs.ItemName == "" then
 			return nil
 		end
 		if (Game.Player.Equipped.Legs.GlamName == CD[playerName].outfits[currentOutfit].pantiesGlam) or
 			(Game.Player.Equipped.Legs.ItemName == CD[playerName].outfits[currentOutfit].pantiesName) then
-			return true
+			return "wearingPanties"
 		end
-		return false
+		return nil
 	elseif validSlotId[slot] == "hands" then
 		if Game.Player.Equipped.Hands.ItemName == "" then
 			return nil
 		end
-		if (Game.Player.Equipped.Hands.GlamName == CD[playerName].outfits[currentOutfit].handsGlam) or
-			(Game.Player.Equipped.Hands.ItemName == CD[playerName].outfits[currentOutfit].handsName) then
-			return true
+		if (Game.Player.Equipped.Hands.GlamName == CD[playerName].outfits[currentOutfit].nailsGlam) or
+			(Game.Player.Equipped.Hands.ItemName == CD[playerName].outfits[currentOutfit].nailsName) then
+			return "wearingNails"
 		end
-		return false
+		return nil
 	end
 end
 
-
+function UpdateGlamItem(key, warm)
+	CD[playerName].glamItemInfo[key] = CD[playerName].glamItemInfo[key] or {}
+	CD[playerName].glamItemInfo[key].wet = CD[playerName].glamItemInfo[key].wet or 0
+	if warm then
+		CD[playerName].glamItemInfo[key].warm = tostring(warm)
+	end
+end
 
 function DressedCheck()
-	local strip = "♠♠♠♠♠-ω♥∩-♦♦♦♦♦"
+	local strip = STRIP
 	local val
 	local u
 	
@@ -1307,6 +2321,7 @@ function DressedCheck()
 	val = Game.Player.Equipped.Head.Item
 	--dbgMsg("DressedCheck: head :: " .. tostring(val), 1)
 	val = string.format("%x", val)
+	--UpdateGlamItem(val)
 	val = hex_to_utf(val)
 	strip = str_ins(strip,val,1,1)
 	
@@ -1317,21 +2332,27 @@ function DressedCheck()
 		val = Game.Player.Equipped.Body.Item
 		u = val
 		val = string.format("%x", val)
+		--UpdateGlamItem(val)
 		val = hex_to_utf(val)
 		strip = str_ins(strip,val,2,2)
 	end
 	
 	if u > 0 then
-		val = CD[playerName].outfits[currentOutfit].bra
+		val = CD[playerName].outfits[currentOutfit].bra or 0
 		--dbgMsg("DressedCheck: bra ω :: " .. tostring(val), 1)
-		if val > 0 then
+		if val > 0 and CD[playerName].outfits[currentOutfit].wearingBra then
 			dbgMsg("DressedCheck:       `ω´     ✓Bra      :: " .. tostring(val), 16)
 			val = string.format("%x", val)
+			--UpdateGlamItem(val)
 			val = hex_to_utf(val)
 			strip = str_ins(strip,val,7,7)
 		else
+			strip = str_ins(strip, "ω", 7,7)
 			dbgMsg("DressedCheck:       ‹ω›     ~Bra~     :: " .. tostring(val), 16)
 		end
+	else
+		strip = str_ins(strip,"♠",2,2)
+		strip = str_ins(strip, "ω", 7,7)
 	end
 	
 	if IsUnderwear("pants") then
@@ -1341,20 +2362,26 @@ function DressedCheck()
 		val = Game.Player.Equipped.Legs.Item
 		u = val
 		val = string.format("%x", val)
+		--UpdateGlamItem(val)
 		val = hex_to_utf(val)
 		strip = str_ins(strip,val,4,4)
 	end
 	
 	if u > 0 then
-		val = CD[playerName].outfits[currentOutfit].panties
-		if val > 0 then
+		val = CD[playerName].outfits[currentOutfit].panties or 0
+		if val > 0 and CD[playerName].outfits[currentOutfit].wearingPanties then
 			dbgMsg("DressedCheck:       ¯▽¯    ✓Panties   :: " .. tostring(val), 16)
 			val = string.format("%x", val)
+			--UpdateGlamItem(val)
 			val = hex_to_utf(val)
 			strip = str_ins(strip,val,8,8)
 		else
+			strip = str_ins(strip,"♥",8,8)
 			dbgMsg("DressedCheck:       ‹∨›    ~Panties~  :: " .. tostring(val), 16)
 		end
+	else
+		strip = str_ins(strip,"♠",4,4)
+		strip = str_ins(strip, "♥",8,8)
 	end
 	
 	if IsUnderwear("hands") then
@@ -1364,24 +2391,31 @@ function DressedCheck()
 		val = Game.Player.Equipped.Hands.Item
 		u = val
 		val = string.format("%x", val)
+		--UpdateGlamItem(val)
 		val = hex_to_utf(val)
 		strip = str_ins(strip,val,3,3)
 	end
 	
 	if u > 0 then
-		val = CD[playerName].outfits[currentOutfit].nails
-		if val > 0 then
+		val = CD[playerName].outfits[currentOutfit].nails or 0
+		if val > 0 and CD[playerName].outfits[currentOutfit].wearingNails then
 			dbgMsg("DressedCheck:       _∩_     ✓Nails    :: " .. tostring(val), 16)
 			val = string.format("%x", val)
+			--UpdateGlamItem(val)
 			val = hex_to_utf(val)
 			strip = str_ins(strip,val,9,9)
 		else
+			strip = str_ins(strip,"∩",9,9)
 			dbgMsg("DressedCheck:       .∩.     ~Nails~   :: " .. tostring(val), 16)
 		end
+	else
+		strip = str_ins(strip,"♠",3,3)
+		strip = str_ins(strip, "∩",9,9)
 	end
 	
 	val = Game.Player.Equipped.Feet.Item
 	val = string.format("%x", val)
+	--UpdateGlamItem(val)
 	val = hex_to_utf(val)
 	--dbgMsg("DressedCheck: feet :: " .. tostring(val), 1)
 	strip = str_ins(strip,val,5,5)
@@ -1416,6 +2450,7 @@ function DressedCheck()
 	--dbgMsg("DressedCheck: lring :: " .. tostring(val), 1)
 	strip = str_ins(strip,val,15,15)
 	
+	STRIP = strip
 	return strip
 	
 	--string.format("%x", val)
@@ -1712,6 +2747,17 @@ function UpdateOutfit(co)
 		CD[playerName].outfits[currentOutfit].panties = CD[playerName].outfits[currentOutfit].panties or "0"
 		CD[playerName].outfits[currentOutfit].bra = CD[playerName].outfits[currentOutfit].bra or "0"
 		CD[playerName].outfits[currentOutfit].nails = CD[playerName].outfits[currentOutfit].nails or "0"
+		
+		if CD[playerName].outfits[currentOutfit].panties ~= "0" then
+			CD[playerName].outfits[currentOutfit].wearingPanties = true
+		end
+		if CD[playerName].outfits[currentOutfit].bra ~= "0" then
+			CD[playerName].outfits[currentOutfit].wearingBra = true
+		end
+		if CD[playerName].outfits[currentOutfit].nails ~= "0" then
+			CD[playerName].outfits[currentOutfit].wearingNails = true
+		end
+		
 		--Is set by the Profiler
 		--CD[playerName].outfits[currentOutfit].temp = tostring(reduce(OutfitTempFactor() * 0.31, 3))
 		CD[playerName].outfits[currentOutfit].job = Game.Player.Entity.Job.ShortName
@@ -1814,6 +2860,7 @@ function OutfitHandler(args)
 				CD[playerName].outfits[currentOutfit].pantiesDyeB = Game.Player.Equipped.Legs.DyeB
 				glam = Game.Player.Equipped.Legs.GlamName
 				CD[playerName].outfits[currentOutfit].pantiesGlam = glam
+				CD[playerName].outfits[currentOutfit].wearingPanties = true
 				if glam then
 					if not CD[playerName].glams.panties[glam] then
 						CD[playerName].glams.panties[glam] = {}
@@ -1830,6 +2877,7 @@ function OutfitHandler(args)
 				CD[playerName].outfits[currentOutfit].braDyeB = Game.Player.Equipped.Body.DyeB
 				glam = Game.Player.Equipped.Body.GlamName
 				CD[playerName].outfits[currentOutfit].braGlam = glam
+				CD[playerName].outfits[currentOutfit].wearingBra = true
 				if glam then
 					if not CD[playerName].glams.bra[glam] then
 						CD[playerName].glams.bra[glam] = {}
@@ -1846,6 +2894,7 @@ function OutfitHandler(args)
 				CD[playerName].outfits[currentOutfit].nailsDyeB = Game.Player.Equipped.Hands.DyeB
 				glam = Game.Player.Equipped.Hands.GlamName
 				CD[playerName].outfits[currentOutfit].nailsGlam = glam
+				CD[playerName].outfits[currentOutfit].wearingNails = true
 				if glam then
 					if not CD[playerName].glams.nails[glam] then
 						CD[playerName].glams.nails[glam] = {}
@@ -1866,6 +2915,7 @@ function OutfitHandler(args)
 				CD[playerName].outfits[currentOutfit].pantiesDyeB = Game.Player.Equipped.Legs.DyeB
 				glam = Game.Player.Equipped.Legs.GlamName
 				CD[playerName].outfits[currentOutfit].pantiesGlam = glam
+				CD[playerName].outfits[currentOutfit].wearingPanties = true
 				if glam then
 					if not CD[playerName].glams.panties[glam] then
 						CD[playerName].glams.panties[glam] = {}
@@ -1880,6 +2930,7 @@ function OutfitHandler(args)
 				CD[playerName].outfits[currentOutfit].braDyeB = Game.Player.Equipped.Body.DyeB
 				glam = Game.Player.Equipped.Body.GlamName
 				CD[playerName].outfits[currentOutfit].braGlam = glam
+				CD[playerName].outfits[currentOutfit].wearingBra = true
 				if glam then
 					if not CD[playerName].glams.bra[glam] then
 						CD[playerName].glams.bra[glam] = {}
@@ -1894,6 +2945,7 @@ function OutfitHandler(args)
 				CD[playerName].outfits[currentOutfit].nailsDyeB = Game.Player.Equipped.Hands.DyeB
 				glam = Game.Player.Equipped.Hands.GlamName
 				CD[playerName].outfits[currentOutfit].nailsGlam = glam
+				CD[playerName].outfits[currentOutfit].wearingNails = true
 				if glam then
 					if not CD[playerName].glams.nails[glam] then
 						CD[playerName].glams.nails[glam] = {}
@@ -1945,4 +2997,5 @@ end
 return {validTemps, smartOutfitSelect, outfitTempEffects, validtags, validStyles,
 		validSlotId, gearSlotName, OutfitSave, OutfitLoad, GetClimate, SetClimate,
 		TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit,
-		glams, IsUnderwear, OutfitTempFactor, DressBest, DressedCheck, climates}
+		glams, IsUnderwear, OutfitTempFactor, OutfitEnvironmental, DressBest, DressedCheck, climates,
+		UpdateGlamItem, humidMult, weather_effects}
