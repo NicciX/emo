@@ -6,7 +6,7 @@ local buff = {
 			["boosts"] = { -- moods the token effects
 				["sleepy"] = -17.77,
 				["anxious"] = 2.34,
-				["energized"] = 3.77,
+				["energized"] = 3.25,
 				["hungry"] = -1.23
 			},
 			["method"] = "math.sin(X)*7.77", -- the boosted moods will be adjusted by this function

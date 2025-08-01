@@ -29,9 +29,6 @@ function ChatHandler()
 	chatStack[stackIdx] = nil
 	stackIdx = #chatStack
 	
-	--if #chatBuffer
-	
-	--Game.SendChat("/e CHAT: " .. tostring(filterLog[9]))
 	if filterLog["9"] then
 		--Game.SendChat("/e CHAT: " .. tostring(txt))
 		local t = formatTime(stamp)
@@ -40,6 +37,7 @@ function ChatHandler()
 	end
 
 	if #txt > 0 then
+		SALAD = ChattyChop(txt)
 		if string.find(txt, " beckons to you.") then
 			if not CD[playerName].traits["stubborn"] and playerRace ~= "Miqo'te" then
 				txt = string.gsub(txt, " beckons to you.", "")
@@ -109,6 +107,11 @@ function ChatHandler()
 			Game.SendChat("/armoury body")
 		elseif string.startsWith(txt, "You use a") then
 			--dbgMsg("chatter: test", 1)
+			txt = string.gsub(txt, "You use a ", "")
+			txt = string.gsub(txt, "", "")
+			txt = string.gsub(txt, "serving of ", "")
+			txt = string.gsub(txt, ".", "")
+			
 			if lastEntree then
 				if string.contains(txt:lower(), lastEntree:lower()) then
 					--lastEntree = nil
@@ -121,6 +124,7 @@ function ChatHandler()
 					lastMealTime = nil
 				end
 			end
+			lastConsumed = txt:gsub("(%l)(%w+)", function(a,b) return string.upper(a)..b end)
 		elseif txt == "bags" or txt == "inventory" then
 			Game.SendChat("/isort condition inventory ilv des")
 			Game.SendChat("/isort execute inventory")
@@ -322,7 +326,7 @@ function Shame(txt)
 end
 
 local bijous = {
-	["keys"] = {"diamonds", "birds", "onibi", "sunshine", "emerald", "indigo", "stardust"},
+	["keys"] = {"diamonds", "birds", "onibi", "sunshine", "emerald", "indigo", "stardust", "potpourri"},
 	["diamonds"] = "/useitem 38539",
 	["birds"] = "/useitem 41500",
 	["onibi"] = "/useitem 40392",
@@ -332,6 +336,7 @@ local bijous = {
 	["indigo"] = "/useitem 5901",
 	["stardust"] = "/useitem 7810",
 	["pumpkin"] = "/useitem 16929",
+	["potpourri"] = "/useitem 33710",
 
 }
 
@@ -375,14 +380,33 @@ local mischief = {
 	["Meerkat"] = true,
 }
 
+local birds = {
+	["feathers"] = {"Bluebird", "Owlet", "Ugly Duckling", "Hunting Hawk", "Road Sparrow",
+					"Silver Dasher", "Gull", "Blue-footed Booby", "Puffin", "Uolosapa", 
+					"Skallic Uolosapa", "Heavy Hatchling"},
+	["Bluebird"] = true,
+	["Owlet"] = true,
+	["Ugly Duckling"] = true,
+	["Hunting Hawk"] = true,
+	["Road Sparrow"] = true,
+	["Silver Dasher"] = true,
+	["Gull"] = true,
+	["Blue-footed Booby"] = true,
+	["Puffin"] = true,
+	["Uolosapa"] = true,
+	["Skallic Uolosapa"] = true,
+	["Heavy Hatchling"] = true,
+}
+
 local poppits = {
-	["strings"] = {"Calca", "Brina", "Meerkat", "Wind-up Edda", "Wind-up Chimera", "Shoebill"},
+	["strings"] = {"Calca", "Brina", "Meerkat", "Wind-up Edda", "Wind-up Chimera", "Shoebill", "Manjimutt"},
 	["Calca"] = true,
 	["Brina"] = true,
 	["Meerkat"] = true,
 	["Shoebill"] = true,
 	["Wind-up Chimera"] = true,
 	["Wind-up Edda"] = true,
+	["Manjimutt"] = true,
 }
 
 local turnips = {
@@ -574,6 +598,21 @@ function getKitty(cat)
 	return true
 end
 
+function getBird(bird)
+	if bird == "random" then
+		dbgMsg("getBird: bird :: " .. tostring(bird), 1)
+		local r = math.random(1, #birds.feathers)
+		local k = birds.feathers[r]
+		dbgMsg("getBird: k :: " .. tostring(k), 1)
+		if birds[k] then
+			Game.SendChat("/minion \"" .. k .. "\"")
+		end
+	elseif birds[bird] then
+		Game.SendChat("/minion \"" .. birds[bird] .. "\"")
+	end
+	return true
+end
+
 function getKyurghen(turnip)
 	if turnip == "random" then
 		dbgMsg("getKyurghen: turnip :: " .. tostring(turnip), 1)
@@ -752,10 +791,22 @@ function ChattyChop(chat)
 	local salad = {}
 	local cnt = 0
 	local s = string.match(chat, "(%a+)")
+	local c,pr
 	while s and cnt < 53 do
 		salad[#salad+1] = s
+		c = string.lower(s)
+		cHAIn[c] = cHAIn[c] or {}
+		cHAIn[c].link = (cHAIn[c].link or 0) + 1
+		cHAIn[c].pos = (cHAIn[c].pos or 0) + cnt + 1
+		if pr then
+			cHAIn[c].follows = cHAIn[c].follows or {}
+			cHAIn[c].follows[pr] = (cHAIn[c].follows[pr] or 0) + 1
+		end
 		chat = string.gsub(chat, s, "", 1)
 		s = string.match(chat, "(%a+)")
+		pr = string.lower(s)
+		cHAIn[c].precedes = cHAIn[c].precedes or {}
+		cHAIn[c].precedes[pr] = (cHAIn[c].precedes[pr] or 0) + 1
 		cnt = cnt + 1
 	end
 	func_time["ChattyChop"].END = os.time()
@@ -1534,6 +1585,89 @@ function StartTour(txt)
 	end
 end
 
+function JogBot(act)
+	local beans = LoadBeacons()
+	local x,y,z = Game.Player.Entity.PosX, Game.Player.Entity.PosY, Game.Player.Entity.PosZ
+	local sh = "JogPath"
+	local ch
+	local n, p, dis
+	local d = 5000
+	if not beans.JogPath1 then
+		dbgMsg("✓JogBot✓ :: No paths were found for this map.", 1)
+		return
+	end
+	
+	if jogTime then
+		rm = math.floor(jogTime - os.time())
+		dbgMsg("✓✓ Jog time remaining ::  " .. formatTime(rm), 1)
+	end
+	
+	if act == "start" then
+		jogKey = nil
+		n = 1
+		ch = sh .. tostring(n)
+		repeat
+			--dis = distTarget(x,y,z,beans[ch].XPos,beans[ch].YPos,beans[ch].ZPos)
+			dis = distBeacon(ch)
+			if dis < d then
+				d = dis
+				p = n
+			end
+			--n = string.char(string.byte(n)+1)
+			n = n + 1
+			ch = sh .. tostring(n)
+			if not beans[ch] then
+				n = nil
+			end
+		until not n
+		ch = sh .. tostring(p)
+		if (os.time() > (jogTime or (os.time() + 69))) or (p == jogStart and not jogTime) then
+		
+		--if os.time() > (jogTime or (os.time() + 69))  then
+			
+		--elseif (p == jogStart) then
+			MoveToBeacon(ch)
+			jogKey = nil
+			jogStart = nil
+			jogTime = nil
+			dbgMsg("✓JogBot✓ :: ~~^~~.", 1)
+			return
+		else
+			jogKey = tostring(p)
+			jogStart = tostring(p)
+		end
+	elseif not jogKey then
+		jogKey = "1"
+		jogStart = "1"
+		ch = "JogPath1"
+	else
+		--jogKey = string.char(string.byte(jogKey)+1)
+		jogKey = tostring(tonumber(jogKey)+1)
+		ch = sh .. jogKey
+		if not beans[ch] then
+			jogKey = "1"
+			ch = "JogPath1"
+		end
+		if (os.time() > (jogTime or (os.time() + 69))) or ((jogKey == jogStart or jogKey == jogStop) and not jogTime) then
+			MoveToBeacon(ch)
+			jogKey = nil
+			jogStart = nil
+			jogStop = nil
+			jogTime = nil
+			dbgMsg("✓JogBot✓ :: ~~^~~.", 1)
+			return
+		end
+	end
+	jogX = beans[ch].XPos
+	jogY = beans[ch].YPos
+	jogZ = beans[ch].ZPos
+	MoveToBeacon(ch)
+	if d > 22 then
+		Game.SendChat("/gaction Sprint")
+	end
+	
+end
+
 function NextCurrent(txt)
 	local map = Game.Player.MapZone
 	local con, cur
@@ -1589,6 +1723,7 @@ function PowerWords(txt, toss, chn, sender)
 	elseif string.sub(txt, 1,6) == "switch" then
 		txt = string.gsub(txt,"switch", "")
 		txt = string.gsub(txt," ", "")
+		txt = txt:sub(1,1):upper()..txt:sub(2,#txt):lower()
 		--dbgMsg("‡PowerWords‡ Switching to" .. txt, 1)
 		if CD.global[txt] then
 			CDUpdater()
@@ -1613,7 +1748,10 @@ function PowerWords(txt, toss, chn, sender)
 	elseif string.sub(txt,1,5) == "dress" then
 		txt = string.gsub(txt,"dress", "")
 		if txt ~= "" then
-			OutfitHandler("load " .. txt)
+			txt = string.gsub(txt," ", "")
+			txt = txt:upper()
+			DressBest(txt)
+			--OutfitHandler("load " .. txt)
 		elseif txt == "best" or txt == "temp" then
 			DressBest()
 		else
@@ -1633,6 +1771,37 @@ function PowerWords(txt, toss, chn, sender)
 		CallRoutine("undress")
 		DressedCheck()
 		OutfitTempFactor()
+	elseif string.sub(txt,1,4) == "swim" then
+		txt = string.gsub(txt, "swim ", "")
+		swimTime = nil
+		if (tonumber(txt) or 0) > 0 then
+			swimTime = os.time() + tonumber(txt) * 60
+		end
+		laundry = nil
+		SwimHandler()
+	elseif string.sub(txt,1,7) == "laundry" or string.sub(txt,1,7) == "launder" then
+		swimTime = nil
+		laundry = true
+		SwimHandler()
+	elseif string.sub(txt,1,3) == "jog" then
+		txt = string.gsub(txt, "jog", "")
+		txt = string.gsub(txt, " ", "")
+		if txt == "stop" then
+			jogKey = nil
+			jogStart = nil
+		elseif string.contains(txt,"stopat") or string.contains(txt,"stop at") then
+			txt = string.gsub(txt, "stopat", "")
+			txt = string.gsub(txt, "stop at", "")
+			if tonumber(txt) > 0 then
+				jogStop = txt
+			end
+			JogBot("start")
+		elseif (tonumber(txt) or 0) > 0 then
+			jogTime = os.time() + tonumber(txt) * 60
+			JogBot("start")
+		else
+			JogBot("start")
+		end
 	elseif string.sub(txt,1,4) == "mark" then
 		txt = string.gsub(txt, "mark ", "")
 		if string.sub(txt,1,2) == "me" then
@@ -2009,6 +2178,8 @@ function FlameCheck(flame, toss, txt, chn, sender)
 		Crystal(txt, chn, toss)
 	elseif flame == "*kitty*" then
 		getKitty("random")
+	elseif flame == "*bird*" then
+		getBird("random")
 	elseif flame == "*bunny*" then
 		getBunny("random")
 	elseif flame == "*motley*" then
@@ -2079,7 +2250,8 @@ function MatchStick(txt, sender, chn)
 	
 	local bits, bobs, cnt
 	
-	local salad = ChattyChop(txt)
+	--local salad = ChattyChop(txt)
+	local salad = SALAD or ChattyChop(txt)
 	local toss = ""
 	
 	local fire = {}
@@ -2208,7 +2380,7 @@ end
 
 return {ChatHandler, Blimey, StringsHandler, Chatty, ChattyChop, JujuHoodoo, FlameCheck, MatchStick, Windfall,
 		TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous, Expense, cookTheBooks, validEarnings,
-		Census, startTour, NextCurrent}
+		Census, StartTour, NextCurrent, JogBot}
 
 --	^								^	--
 --	^	^^^ Chat Handler ^^^ 		^	--

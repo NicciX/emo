@@ -294,6 +294,10 @@ local matchsticks = {
 		["mark"] = "*PW*",
 		["logging"] = "*PW*",
 		["switch"] = "*PW*",
+		["swim"] = "*PW*",
+		["jog"] = "*PW*",
+		["launder"] = "*PW*",
+		["laundry"] = "*PW*",
 		
 		["will be up in"] = "*compulsion*",
 		
@@ -372,9 +376,11 @@ local matchsticks = {
 		["kyurghen"] = "*turnip*",
 		["mandragora"] = "*turnip*",
 		--["egg"] = "*turnip*",
+		["bird"] = "*bird*",
 		["familiar"] = "*poppit*",
 		["minion"] = "*poppit*",
 		["calca"] = "*poppit*",
+		["poppit"] = "*poppit*",
 		["brina"] = "*poppit*",
 		["Calca"] = "*poppit*",
 		["Brina"] = "*poppit*",
@@ -585,6 +591,10 @@ local matchsticks = {
 		["elpis"] = "*destination*",
 		["idylshire"] = "*destination*",
 		["shesh"] = "*destination*",
+		["mordona"] = "*destination*",
+		["mordhona"] = "*destination*",
+		["dona"] = "*destination*",
+		
 		["You use a"] = "*consume*",
 		
 		["apple"] = "*food*",

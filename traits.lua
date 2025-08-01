@@ -16,39 +16,51 @@ function AddTrait(tag)
 	if tag == "aetheric" then
 		if playerTraits.vixen then
 			dbgMsg("[" .. tag .. "] is incompatible with the vixen trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.spriggan then
 			dbgMsg("[" .. tag .. "] is incompatible with the spriggan trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.muggle then
 			dbgMsg("[" .. tag .. "] is incompatible with the muggle trait.", 0)
+			tag = "invalid"
 		end
-		tag = "invalid"
+		--tag = "invalid"
 	elseif tag == "vixen" then
 		if playerTraits.aetheric then
 			dbgMsg("[" .. tag .. "] is incompatible with the aetheric trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.spriggan then
 			dbgMsg("[" .. tag .. "] is incompatible with the spriggan trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.muggle then
 			dbgMsg("[" .. tag .. "] is incompatible with the muggle trait.", 0)
+			tag = "invalid"
 		end
-		tag = "invalid"
+		--tag = "invalid"
 	elseif tag == "spriggan" then
 		if playerTraits.vixen then
 			dbgMsg("[" .. tag .. "] is incompatible with the vixen trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.aetheric then
 			dbgMsg("[" .. tag .. "] is incompatible with the aetheric trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.muggle then
 			dbgMsg("[" .. tag .. "] is incompatible with the muggle trait.", 0)
+			tag = "invalid"
 		end
-		tag = "invalid"
+		--tag = "invalid"
 	elseif tag == "muggle" then
 		if playerTraits.vixen then
 			dbgMsg("[" .. tag .. "] is incompatible with the vixen trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.aetheric then
 			dbgMsg("[" .. tag .. "] is incompatible with the aetheric trait.", 0)
+			tag = "invalid"
 		elseif playerTraits.spriggan then
 			dbgMsg("[" .. tag .. "] is incompatible with the spriggan trait.", 0)
+			tag = "invalid"
 		end
-		tag = "invalid"
+		
 	end
 	if traits[tag] then
 		playerTraits[tag] = true
@@ -149,7 +161,7 @@ local traits = {
 				["tired"] = 0.1,
 				["energized"] = -0.1,
 				["hungry"] = 0.1,
-				["bored"] = 0.1,
+				["grungy"] = 0.1,
 				["tense"] = 0.1,
 				["responsible"] = 0.1,
 				["social"] = 0.1,
@@ -169,9 +181,8 @@ local traits = {
 				["angry"] = 0.2,
 				["happy"] = -0.1,
 				["confident"] = 0.025,
-				["hot"] = 0.35,
-				["cold"] = -0.025,
-				["tired"] = 0.1,
+				["hot"] = 0.17,
+				["cold"] = -0.077,
 				["energized"] = -0.25,
 				["focused"] = 0.05,
 				["sleepy"] = 0.045,
@@ -180,7 +191,7 @@ local traits = {
 				["tense"] = 0.05,
 				["uncomfortable"] = 0.025,
 				["neutral"] = -0.025,
-				["apathetic"] = 0.325,
+				["grungy"] = 0.5,
 				["busy"] = 0.3,
 				["responsible"] = 0.025,
 				["hungry"] = 0.035,

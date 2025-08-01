@@ -443,7 +443,7 @@ local glams = {
 	},
 	["Minmisle Top Hat"] = {
 		["slot"] = "head",
-		["temp"] = -0.11,
+		["temp"] = 0.0,
 		["tags"] = {
 			["hat"] = 2,
 			["mini"] = 2,
@@ -737,7 +737,7 @@ local glams = {
 
 local validTemps = {
 	["arctic"] = -1.39,
-	["cold"] = -0.57, -- ☃▽
+	["cold"] = -0.67, -- ☃▽
 	["tundra"] = -0.97,
 	["cool"] = -0.33, -- ☆▼
 	["warm"] = 0.33, -- ○ 
@@ -802,12 +802,12 @@ local climates = {
 
 local humidMult = {
 	["high"] = 1.037,
-	["dry"] = 0.95,
-	["low"] = 0.97,
+	["dry"] = 0.91,
+	["low"] = 0.93,
 	["wet"] = 1.031,
 	["normal"] = 1.00,
-	["moderate"] = 0.99,
-	["arid"] = 0.93,
+	["moderate"] = 0.98,
+	["arid"] = 0.87,
 }
 
 local weather_effects = {
@@ -822,8 +822,8 @@ local weather_effects = {
 				["bored"] = 0.25,
 				["wet"] = 0.0137,
 			},
-			["temp"] = 0.81,
-			["humidity"] = 0.941, -- multiplier for percentage adjustment, > 1 increases wet, while < 1 reduces it
+			["temp"] = 0.87,
+			["humidity"] = 1.041, -- multiplier for percentage adjustment, > 1 increases wet, while < 1 reduces it
 		},
 		["drybones"] = {
 			["effects"] = {
@@ -850,10 +850,10 @@ local weather_effects = {
 				["wet"] = 3.69,
 				["aetheric"] = -7.37,
 				["grungy"] = -16.9,
-				["refreshed"] = 6.39,
+				["refreshed"] = 1.39,
 			},
 			["temp"] = 0.81,
-			["humidity"] = 1.37,
+			["humidity"] = 1.97,
 		},
 	},
 	["Clear Skies"] = {
@@ -888,7 +888,7 @@ local weather_effects = {
 				["scared"] = -1,
 				["wet"] = -1.69,
 			},
-			["temp"] = 1.0,
+			["temp"] = 0.99,
 			["humidity"] = 0.91,
 		},
 		
@@ -905,11 +905,11 @@ local weather_effects = {
 				["curious"] = 0.75,
 				["scared"] = 0.75,
 				["cold"] = 0.44,
-				["wet"] = 0.0017,
+				["wet"] = 0.0147,
 				["aetheric"] = 0.19,
 			},
-			["temp"] = 0.71,
-			["humidity"] = 0.971,
+			["temp"] = 0.77,
+			["humidity"] = 1.37,
 		},
 	},
 	["Wind"] = {
@@ -926,7 +926,7 @@ local weather_effects = {
 				["aetheric"] = 0.45,
 			},
 			["temp"] = 0.79,
-			["humidity"] = 0.97,
+			["humidity"] = 0.88,
 		},
 		
 	},
@@ -945,7 +945,7 @@ local weather_effects = {
 				["aetheric"] = 0.75,
 			},
 			["temp"] = 0.69,
-			["humidity"] = 1.01,
+			["humidity"] = 0.79,
 		},
 	},
 	["Dust Storms"] = {
@@ -962,7 +962,7 @@ local weather_effects = {
 				["aetheric"] = -0.33,
 			},
 			["temp"] = 1.11,
-			["humidity"] = 0.87,
+			["humidity"] = 0.77,
 		},
 		
 	},
@@ -995,25 +995,25 @@ local weather_effects = {
 				["happy"] = -1,
 				["hot"] = -1.69,
 			},
-			["temp"] = 0.51,
-			["humidity"] = 1.03,
+			["temp"] = 0.11,
+			["humidity"] = 1.43,
 		},
 	},
 	["Snow"] = {
 		["neutral"] = {
 			["effects"] = {
-				["cold"] = 0.06,
+				["cold"] = 0.144,
 				["focused"] = -1,
 				["sleepy"] = -0.2,
 				["energized"] = -1,
 				["refreshed"] = 2.6,
-				["wet"] = 0.0000337,
+				["wet"] = 0.0741,
 				["happy"] = 1,
 				["confident"] = 1,
 				["sad"] = -1,
 			},
-				["temp"] = 0.41,
-				["humidity"] = 0.969,
+				["temp"] = 0.23,
+				["humidity"] = 1.37,
 		},
 	},
 	["Gloom"] = {
@@ -1030,7 +1030,7 @@ local weather_effects = {
 				["social"] = -1,
 				["aetheric"] = 0.17,
 			},
-			["temp"] = 0.37,
+			["temp"] = 1.07,
 			["humidity"] = 1.03,
 		},
 	},
@@ -1282,7 +1282,7 @@ function GetClimate()
 			return zone.climate
 		end
 	end
-	--return {["type"] = "temperate", ["temp"] = "normal", ["humidity"] = "normal"}
+	return {["type"] = "moderate", ["temp"] = "normal", ["humidity"] = 1.0, ["grungy"] = 0.019,}
 end
 
 function SetClimate()
@@ -1322,6 +1322,55 @@ local SNDRemoveCall = { --Leave for Reference
 	--EquippedItems = 1000
 	--MoveItemToContainer(itemID, srcCont, dstCont)
 }
+
+function SwimHandler(xt)
+	local sh = "WaterEntry"
+	local x,y,z = Game.Player.Entity.PosX, Game.Player.Entity.PosY, Game.Player.Entity.PosZ
+	local dis, k, ch, rm
+	local ld = 555
+	local bc = LoadBeacons()
+	if not IsSwimming then
+		if not laundry then
+			CallRoutine("undress")
+		end
+		DressedCheck()
+		OutfitTempFactor()
+	end
+	
+	if xt then
+		sh = "WaterExit"
+		swimTime = nil
+	end
+	if swimTime then
+		rm = math.floor(swimTime - os.time())
+		dbgMsg("✓✓ Swim time remaining ::  " .. formatTime(rm), 1)
+	end
+	for i=1,22 do -- 2V ixen2
+		ch = sh .. string.char(64+i)
+		--dbgMsg("✓✓ i :: " .. tostring(ch), 1)
+		if bc[ch] then
+			dis = distTarget(x,y,z,bc[ch].XPos,bc[ch].YPos,bc[ch].ZPos)
+			if IsSwimming and not xt then
+				if math.random(1,22) <= i then
+					MoveToBeacon(ch)
+					if dis > 22 then
+						Game.SendChat("/gaction Sprint")
+					end
+					return
+				end
+			end
+			if dis < ld then
+				ld = dis
+				k = ch
+			end
+		end
+	end
+	if k then
+		MoveToBeacon(k)
+	end
+	
+	return "ahoy"
+end
 
 function OutfitSave(args)
 	dbgMsg(".OutfitSave.", 2)
@@ -1412,9 +1461,12 @@ function LastWorn(slot)
 				dbgMsg("꒱|LastWorn|꒱  [".. tag .. "] <lastworn> grungy π " .. tostring(reduce(z,4)), 3, {"outfits","environment"})
 			end
 			y = reduce(y * (1 - (ti - lw) / 7777), 3)
-			z = reduce(y * (1 - (ti - lw) / 7777), 3)
+			z = reduce(z * (1 - (ti - lw) / 7777), 3)
 			if y < 0 then
 				y = 0
+			end
+			if z < 0 then
+				z = 0
 			end
 			CD[playerName].glamItemInfo[slot].wet = y
 			CD[playerName].glamItemInfo[slot].grungy = z
@@ -1430,6 +1482,7 @@ function LastWorn(slot)
 end
 
 function OutfitEnvironmental(wet, grungy)
+	func_time["OutfitEnvironmental"].ST = os.time()
 	local strip = STRIP
 	local slot
 	local sX
@@ -1442,6 +1495,9 @@ function OutfitEnvironmental(wet, grungy)
 	local ti = os.time()
 	local adjW = 0
 	local adjG = 0
+	
+	OWF = 0
+	OGF = 0
 	
 	if OTF > 0 then
 		adjW = 1 + wet
@@ -1489,6 +1545,9 @@ function OutfitEnvironmental(wet, grungy)
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
 			
+			OWF = OWF + w
+			OGF = OGF + g
+			
 			outfitHeadSlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
 				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
@@ -1530,6 +1589,9 @@ function OutfitEnvironmental(wet, grungy)
 			
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			OWF = OWF + w
+			OGF = OGF + g
 			
 			outfitBodySlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
@@ -1574,6 +1636,9 @@ function OutfitEnvironmental(wet, grungy)
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
 			
+			OWF = OWF + w
+			OGF = OGF + g
+			
 			outfitBraSlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
 				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
@@ -1615,6 +1680,9 @@ function OutfitEnvironmental(wet, grungy)
 			
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			OWF = OWF + w
+			OGF = OGF + g
 			
 			outfitHandsSlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
@@ -1659,6 +1727,9 @@ function OutfitEnvironmental(wet, grungy)
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
 			
+			OWF = OWF + w
+			OGF = OGF + g
+			
 			outfitNailsSlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
 				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
@@ -1700,6 +1771,9 @@ function OutfitEnvironmental(wet, grungy)
 			
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
+			
+			OWF = OWF + w
+			OGF = OGF + g
 			
 			outfitLegsSlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
@@ -1744,6 +1818,9 @@ function OutfitEnvironmental(wet, grungy)
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
 			
+			OWF = OWF + w
+			OGF = OGF + g
+			
 			outfitPantiesSlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
 				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 5, {"outfits", "environment", "weather"})
@@ -1785,6 +1862,9 @@ function OutfitEnvironmental(wet, grungy)
 			CD[playerName].glamItemInfo[slot].wet = w
 			CD[playerName].glamItemInfo[slot].grungy = g
 			
+			OWF = OWF + w
+			OGF = OGF + g
+			
 			outfitFeetSlot = slot
 			if sysTrack.outfits or sysTrack.environment or sysTrack.weather then
 				--dbgMsg("꒱.OutfitEnv.꒱ n ∫ " .. tostring(reduce(n, 4)), 4, {"outfits", "environment", "weather"})
@@ -1798,8 +1878,8 @@ function OutfitEnvironmental(wet, grungy)
 	--OTF = warm
 	
 	
-	func_time["OutfitTempFactor"].END = os.time()
-	func_track("OutfitTempFactor")
+	func_time["OutfitEnvironmental"].END = os.time()
+	func_track("OutfitEnvironmental")
 	--return {warm, wet}
 end
 
@@ -2076,7 +2156,7 @@ function OutfitTempFactor()
 	
 	func_time["OutfitTempFactor"].END = os.time()
 	func_track("OutfitTempFactor")
-	return {warm, wet}
+	return {warm, wet, grunge}
 end
 
 function TakeoffRandom(list)
@@ -2177,11 +2257,19 @@ function RemoveItem(args)
 			CD[playerName].outfits[currentOutfit].wearingNails = nil
 			dbgMsg("Nails removed for " .. currentOutfit, 0)
 			--Game.Player.Equipped.Legs.Remove()
+		elseif slot == "head" then
+			currentOutfitSet[slot] = 0
+			Game.Player.Equipped.Head.Remove()
+			currentOutfitSet[slot] = 0
+		elseif slot == "feet" then
+			currentOutfitSet[slot] = 0
+			Game.Player.Equipped.Feet.Remove()
 		else
-			currentOutfitSet[slot] = nil
+			currentOutfitSet[slot] = 0
 			Game.Player.Equipped[slot:sub(1,1):upper()..slot:sub(2)].Remove()
 		end
 	end
+	return args
 end
 
 function PutonItem(slot, id)
@@ -2195,16 +2283,19 @@ function PutonItem(slot, id)
 		if tonumber(id) then
 			if slot == "panties" then
 				Game.SendChat("/equip " .. tostring(id))
-				Script.QueueDelay(1.500)
-				Script.QueueAction(OutfitHandler, "set panties")
+				--Script.QueueDelay(1.500)
+				--Script.QueueAction(OutfitHandler, "set panties")
+				OutfitHandler("set panties")
 			elseif slot == "bra" then
 				Game.SendChat("/equip " .. tostring(id))
-				Script.QueueDelay(1.500)
-				Script.QueueAction(OutfitHandler, "set bra")
+				--Script.QueueDelay(1.500)
+				--Script.QueueAction(OutfitHandler, "set bra")
+				OutfitHandler("set bra")
 			elseif slot == "nails" then
 				Game.SendChat("/equip " .. tostring(id))
-				Script.QueueDelay(1.500)
-				Script.QueueAction(OutfitHandler, "set nails")
+				--Script.QueueDelay(1.500)
+				--Script.QueueAction(OutfitHandler, "set nails")
+				OutfitHandler("set nails")
 			end
 		elseif slot == "facewear" and not currentOutfitSet[slot] then
 			currentOutfitSet[slot] = CD[playerName]["outfits"][currentOutfit]["facewear"]
@@ -2303,6 +2394,7 @@ end
 function UpdateGlamItem(key, warm)
 	CD[playerName].glamItemInfo[key] = CD[playerName].glamItemInfo[key] or {}
 	CD[playerName].glamItemInfo[key].wet = CD[playerName].glamItemInfo[key].wet or 0
+	CD[playerName].glamItemInfo[key].grungy = CD[playerName].glamItemInfo[key].grungy or 0
 	if warm then
 		CD[playerName].glamItemInfo[key].warm = tostring(warm)
 	end
@@ -2346,6 +2438,7 @@ function DressedCheck()
 			--UpdateGlamItem(val)
 			val = hex_to_utf(val)
 			strip = str_ins(strip,val,7,7)
+			currentOutfitSet["bra"] = val
 		else
 			strip = str_ins(strip, "ω", 7,7)
 			dbgMsg("DressedCheck:       ‹ω›     ~Bra~     :: " .. tostring(val), 16)
@@ -2375,6 +2468,7 @@ function DressedCheck()
 			--UpdateGlamItem(val)
 			val = hex_to_utf(val)
 			strip = str_ins(strip,val,8,8)
+			currentOutfitSet["panties"] = val
 		else
 			strip = str_ins(strip,"♥",8,8)
 			dbgMsg("DressedCheck:       ‹∨›    ~Panties~  :: " .. tostring(val), 16)
@@ -2404,6 +2498,7 @@ function DressedCheck()
 			--UpdateGlamItem(val)
 			val = hex_to_utf(val)
 			strip = str_ins(strip,val,9,9)
+			currentOutfitSet["nails"] = val
 		else
 			strip = str_ins(strip,"∩",9,9)
 			dbgMsg("DressedCheck:       .∩.     ~Nails~   :: " .. tostring(val), 16)
@@ -2456,26 +2551,32 @@ function DressedCheck()
 	--string.format("%x", val)
 end
 
-function DressBest()
+function DressBest(job)
 	local ztf = ZoneTempFactor
 	--local otf = reduce(OutfitTempFactor() * 0.37, 3)
-	local job = Game.Player.Entity.Job.ShortName
+	job = (job or Game.Player.Entity.Job.ShortName)
 	local df = 7777
+	local q,t
 	local cd
 	local slct
-	dbgMsg("Dress Best: Trace A :: ", 1)
+	dbgMsg("Dress Best: job :: " .. job, 1)
+	dbgMsg("Dress Best: optOutfitTemp :: " .. tostring(optOutfitTemp), 1)
 	if optOutfitTemp then
+		t = optOutfitTemp
+		if t < 0 then
+			t = 0
+		end
 		for k, v in pairs(CD[playerName].outfits) do
-			if v.job == job and v.temp then
-				--dbgMsg("Dress Best: dress check :: " .. k, 1)
-				if diff(optOutfitTemp, tonumber(v.temp) * 0.91) < df then
-				--if 6 - math.abs(v.temp * 0.37 - optOutfitTemp) < df then
-				--if diff(optOutfitTemp, tonumber(v.temp) * 0.37) < df then
-					slct = k
-					df = diff(optOutfitTemp,tonumber(v.temp) * 0.91)
-					dbgMsg("Dress Best: dress check :: " .. k .. " :: " .. tostring(df), 1)
-				end
+			--dbgMsg("Dress Best: v.job :: " .. tostring(v.job), 1)
+			--dbgMsg("Dress Best: v.temp :: " .. tostring(v.temp), 1)
+			q = (tonumber(v.temp) or 1) * 0.91
+			--dbgMsg("Dress Best: dress check :: " .. k, 1)
+			if diff(t,q) < df and v.job == job then
+				slct = k
+				df = diff(t,q)
+				dbgMsg("Dress Best: dress check :: " .. k .. " :: " .. tostring(df), 1)
 			end
+			--end
 		end
 		if slct then
 			if slct == currentOutfit then
@@ -2484,7 +2585,7 @@ function DressBest()
 					lastDressCheck = os.time()
 					return false
 				end
-				dbgMsg("Dress Best: Trace A :: ", 1)
+				--dbgMsg("Dress Best: Trace A :: ", 1)
 				if (os.time() - lastDressCheck) > 77 and not playerTraits.modest and emoState.hot > 69 then
 					dbgMsg("Dress Best: Trace A.2 :: ", 1)
 					cd = TakeoffRandom({"top", "pants"})
@@ -2497,7 +2598,7 @@ function DressBest()
 					end
 					
 				end
-				dbgMsg("Dress Best: Trace B :: ", 1)
+				--dbgMsg("Dress Best: Trace B :: ", 1)
 				if (os.time() - lastDressCheck) > 33 and emoState.hot > 37 then
 					dbgMsg("Dress Best: Trace B.2 :: ", 1)
 					if playerTraits.vixen then
@@ -2515,11 +2616,12 @@ function DressBest()
 					lastDressCheck = os.time()
 					return false
 				end
-				dbgMsg("Dress Best: Trace C :: ", 1)
+				--dbgMsg("Dress Best: Trace C :: ", 1)
 				--lastDressCheck = os.time()
 				return false
 				--dbgMsg("Dress Best: " .. currentOutfit, 3)
 			else
+				dbgMsg("Dress Best: Select :: " .. slct, 1)
 				lastDressCheck = os.time()
 				OutfitLoad(slct)
 				return true
@@ -2998,4 +3100,4 @@ return {validTemps, smartOutfitSelect, outfitTempEffects, validtags, validStyles
 		validSlotId, gearSlotName, OutfitSave, OutfitLoad, GetClimate, SetClimate,
 		TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit,
 		glams, IsUnderwear, OutfitTempFactor, OutfitEnvironmental, DressBest, DressedCheck, climates,
-		UpdateGlamItem, humidMult, weather_effects}
+		UpdateGlamItem, humidMult, weather_effects, SwimHandler}

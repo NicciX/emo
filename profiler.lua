@@ -4,6 +4,13 @@
 --- function profiler table
 
 func_time = {
+	["OutfitEnvironmental"] = {
+		["ST"] = 0,
+		["END"] = 0,
+		["tot"] = 0,
+		["calls"] = 0,
+		["longest"] = 0,
+	},
 	["OutfitTempFactor"] = {
 		["ST"] = 0,
 		["END"] = 0,
@@ -681,7 +688,6 @@ function profiler(filter, mt)
 		if filter == "longest" then
 			for k,v in pairs(func_time) do
 				fT[#fT+1] = {k = k, longest = v.longest}
-				
 			end
 			if mt == "desc" or mt == "hilo" then
 				table.sort(fT, function(a, b)
@@ -1235,7 +1241,7 @@ function dumpInfo(args)
 		end
 	end
 	
-	if what == "all" or what == "outfits" or what == "outfit" then
+	if (what == "all" or what == "outfits" or what == "outfit") and CD[playerName] then
 		dbgMsg("                    ", 0)
 		dbgMsg("⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻-⁻", 0)
 		dbgMsg("   ∇→-----  -----←∇", 0) -- Outfits

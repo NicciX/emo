@@ -62,7 +62,12 @@ local targetActions = {
 	},
 	["Washbasin"] = {
 		["routine"] = "washbasin",
-		["cooldown"] = 37.0,
+		["cooldown"] = 33.0,
+		["last"] = 0,
+	},
+	["Purification Module"] = {
+		["routine"] = "laundry",
+		["cooldown"] = 137.0,
 		["last"] = 0,
 	},
 	["Shower XStand"] = {

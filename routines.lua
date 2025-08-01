@@ -255,8 +255,8 @@ local routines = {
 		[7] = {
 			["run"] = true,
 			["func"] = function() 
-				EmoGyre("grungy", -333)
-				EmoGyre("refreshed", 113)
+				EmoGyre("grungy", -377.77)
+				EmoGyre("refreshed", 111)
 			end,
 			["w"] = 3.11,
 		},
@@ -331,6 +331,211 @@ local routines = {
 		
 	},
 	
+	["laundry"] = {
+		[1] = {
+			["do"] = "pinteract",
+			["w"] = 1.0,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				--local d = Game.Player.Target.RotationDegrees
+				--Game.Player.SetRot(d+90)
+				doRotate = 5
+				rotStop = 90
+			end,
+			["w"] = 3.77,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function()
+				if rotStop then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 2,
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function()
+				rotStop = nil
+				doRotate = OGF * 13
+			end,
+			["w"] = 3.00,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function()
+				if not playerTraits.muggle then
+					OutfitEnvironmental(0.77, -0.27 - OWF * 0.17)
+				else
+					EmoGyre("grungy", -500)
+					OutfitEnvironmental(0.60, -0.10)
+				end
+			end,
+			["w"] = 3.00,
+		},
+		[6] = {
+			["run"] = true,
+			["func"] = function()
+				--OutfitTempFactor()
+				dbgMsg("∫.Laundry.∫ grungy π " .. tostring(reduce(OGF,4)), 0)
+				dbgMsg("∫.Laundry.∫ wet π " .. tostring(reduce(OWF,4)), 0)
+			end,
+			["w"] = 3.00,
+		},
+		[7] = {
+			["do"] = "target Purification Module",
+			["w"] = 1.11,
+		},
+		[8] = {
+			["test"] = true,
+			["func"] = function()
+				doRotate = nil
+				if OGF > 0.0013 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 1.000,
+		},
+		[9] = {
+			["do"] = "pinteract",
+			["w"] = 1.0,
+		},
+		[10] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = -3
+				rotStop = 90
+			end,
+			["w"] = 4.77,
+		},
+		[11] = {
+			["test"] = true,
+			["func"] = function()
+				rotStop = nil
+				doRotate = nil
+				if rotStop then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 10,
+			["w"] = 1.000,
+		},
+		[12] = {
+			["do"] = "target Purification Module",
+			["w"] = 1.11,
+		},
+		[13] = {
+			["do"] = "pinteract",
+			["w"] = 1.0,
+		},
+		[14] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = OWF * 17
+			end,
+			["w"] = 3.00,
+		},
+		[15] = {
+			["run"] = true,
+			["func"] = function()
+				if not playerTraits.muggle then
+					OutfitEnvironmental(-0.77, -0.07)
+				else
+					OutfitEnvironmental(-0.25, -0.01)
+				end
+			end,
+			["w"] = 3.00,
+		},
+		[16] = {
+			["run"] = true,
+			["func"] = function()
+				dbgMsg("∫.Laundry.∫ grungy π " .. tostring(reduce(OGF,4)), 0)
+				dbgMsg("∫.Laundry.∫ wet π " .. tostring(reduce(OWF,4)), 0)
+			end,
+			["w"] = 3.00,
+		},
+		[17] = {
+			["run"] = true,
+			["func"] = function()
+				RemoveItem("top")
+				EmoGyre("refreshed", OWF * 69)
+			end,
+			["w"] = 3.00,
+		},
+		[18] = {
+			["run"] = true,
+			["func"] = function()
+				RemoveItem("shoes")
+			end,
+			["w"] = 3.00,
+		},
+		[19] = {
+			["run"] = true,
+			["func"] = function()
+				RemoveItem("pants")
+				EmoGyre("grungy", OWF * -6.9)
+			end,
+			["w"] = 3.00,
+		},
+		
+		[20] = {
+			["run"] = true,
+			["func"] = function()
+				RemoveItem("gloves")
+			end,
+			["w"] = 3.00,
+		},
+		[21] = {
+			["test"] = true,
+			["func"] = function()
+				if OWF > 0.0013 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 12,
+			["w"] = 1.000,
+		},
+		[22] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = -2
+				rotStop = 90
+			end,
+			["w"] = 3.77,
+		},
+		[23] = {
+			["run"] = true,
+			["func"] = function()
+				OutfitLoad()
+			end,
+			["w"] = 3.77,
+		},
+		[24] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = nil
+				rotStop = nil
+			end,
+			["w"] = 1.00,
+		},
+		
+	},
 	
 	["leves"] = {
 		[1] = {
@@ -472,6 +677,84 @@ local routines = {
 			["w"] = 9.11,
 		},
 		
+	},
+	
+	["SwimBot"] = {
+		[1] = {
+			["test"] = true,
+			["func"] = function()
+				if not IsSwimming then
+					return false
+				else
+					return true
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 7.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				DressBest()
+				DressedCheck()
+				OutfitTempFactor()
+				--MoveToBeacon("WaterExit")
+				--GotoRelativePosition(tarvec(), -87, 0.625, Game.Player.Target.RotationDegrees)
+			end,
+			["w"] = 1.11,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 1.000,
+		},
+		[4] = {
+			["test"] = true,
+			["func"] = function()
+				if emoState.cold > 15 or (OGF == 0 and OWF > OTF) then
+					if swimTime then
+						if os.time() > swimTime then
+							return false
+						else
+							return true
+						end
+					else
+						return false
+					end
+				else
+					return true
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 7,
+			["w"] = 7.000,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function()
+				SwimHandler(true)
+				--MoveToBeacon("WaterExit")
+				--GotoRelativePosition(tarvec(), -87, 0.625, Game.Player.Target.RotationDegrees)
+			end,
+			["w"] = 3.11,
+		},
+		[6] = {
+			["test"] = true,
+			["func"] = function() return true end,
+			["do"] = "end",
+			["w"] = 2.000,
+		},
+		[7] = {
+			["run"] = true,
+			["func"] = function()
+				SwimHandler()
+				--MoveToBeacon("WaterExit")
+				--GotoRelativePosition(tarvec(), -87, 0.625, Game.Player.Target.RotationDegrees)
+			end,
+			["w"] = 3.11,
+		},
 	},
 	
 	["phantomsurvey"] = {

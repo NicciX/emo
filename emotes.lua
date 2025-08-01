@@ -1446,7 +1446,7 @@ local emote = {
 			["tense"] = -1,
 			["curious"] = -2,
 			["nosey"] = -2.5,
-			["concerned"] = -1.5,
+			["focused"] = 3.9,
 			["surprised"] = -0.5,
 			["social"] = -0.5
 		}
@@ -2584,7 +2584,7 @@ local emote = {
 			["social"] = -0.55,
 			["flirty"] = -0.35,
 			["cold"] = 0.21,
-			["wet"] = 0.33,
+			["wet"] = 2.34,
 			["grungy"] = 1.3,
 		}
 	},

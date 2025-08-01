@@ -1190,8 +1190,8 @@ function EnvironmentHandler()
 	
 	if playerTraits.spriggan then
 		warm = warm - 0.177
-		r = math.random(1,88)
-		if r >= 77 then
+		r = math.random(1,77)
+		if r >= 69 then
 			adj = reduce(Gyre.black[4] * 0.01, 4)
 			warm = warm * adj
 			if sysTrack.environment or sysTrack.traits or sysTrack.EnvironmentHandler then
@@ -1322,16 +1322,24 @@ function GyreLite(emo, amt)
 			dbgMsg("ƒGyreLiteƒ :: invalid emotional data :: " .. tostring(emo), 1)
 			--break
 		elseif emoState[emo] == math.floor(emoState[emo]) and emoState[emo] > 77 then
-			doBijou("onibi")
-			local e = emoState[emo]
 			
-			if math.random(1,99) > 77 then
-				emoState[emo] = reduce(math.random() * 3.1 * e, 4)
+			local e = emoState[emo]
+			local r
+			
+			if math.random(1,111) > 77 then
+				doBijou("onibi")
+				r = reduce(e + e * math.random() * 2.1, 4)
+				--r = reduce(math.random() * 3.1 * e, 4)
+				emoState[emo] = r
 				dbgMsg("Gyre Powerful internal forces increase " .. emo .. " (" .. tostring(e) .. ") ‰ (" .. tostring(emoState[emo]) .. ").", 1)
+				EmoGyre("refreshed", r * 0.711)
+				OutfitEnvironmental(-0.477, -0.13)
 			else
-				emoState[emo] = reduce(math.random() * e * 0.77, 4)
+				doBijou("any")
+				r = reduce(math.random() * e * 0.77, 4)
+				emoState[emo] = r
 				dbgMsg("Gyre Powerful internal forces reduce " .. emo .. " (" .. tostring(e) .. ") ‰ (" .. tostring(emoState[emo]) .. ").", 1)
-				
+				EmoGyre("grungy", math.abs(e-r) * 0.044)
 			end
 		end
 	end
