@@ -184,12 +184,35 @@ local zones = {
 			["disturbed"] = -0.1,
 		}
 	},
+	[137] = { --Easter La Noscea - Costa del Sol
+		["name"] = "Easter La Noscea",
+		["cont"] = "La Noscea",
+		["climate"] = {
+			["type"] = "coastal",
+			["temp"] = "coastal",
+			["humidity"] = "normal",
+			["nighthot"] = 0.79, -- percentage
+			["nightcold"] = 1.31,
+			["stm"] = 0.37,
+			["grungy"] = 0.043,
+		},
+		["effects"] = {
+			["refreshed"] = 0.15,
+			["tense"] = -0.65,
+			["uncomfortable"] = -0.5,
+			["happy"] = 0.44,
+			["flirty"] = 0.39,
+			["playful"] = 0.47,
+			["social"] = -0.35,
+			["disturbed"] = -0.3,
+		}
+	},
 	[140] = { --Western Thanalan - Horizon's Edge
 		["name"] = "Western Thanalan - Horizon's Edge",
 		["cont"] = "Thanalan",
 		["climate"] = {
 			["type"] = "desert",
-			["temp"] = "hot",
+			["temp"] = "warm",
 			["humidity"] = "low",
 			["nighthot"] = 0.89, -- percentage
 			["nightcold"] = 1.27,
@@ -211,7 +234,7 @@ local zones = {
 		["cont"] = "Thanalan",
 		["climate"] = {
 			["type"] = "desert",
-			["temp"] = "hot",
+			["temp"] = "warm",
 			["humidity"] = "dry",
 			["nighthot"] = 0.82, -- percentage
 			["nightcold"] = 1.22,
@@ -280,7 +303,7 @@ local zones = {
 		["climate"] = {
 			["type"] = "desert",
 			["temp"] = "hot",
-			["humidity"] = "very-low",
+			["humidity"] = 0.29,
 			["nighthot"] = 0.77, -- percentage
 			["nightcold"] = 1.37,
 			["stm"] = 0.27,
@@ -303,7 +326,7 @@ local zones = {
 		["cont"] = "Thanalan",
 		["climate"] = {
 			["type"] = "desert",
-			["temp"] = "hot",
+			["temp"] = "desert",
 			["humidity"] = "low",
 			["nighthot"] = 0.82, -- percentage
 			["nightcold"] = 1.21,
@@ -560,10 +583,10 @@ local zones = {
 		["cont"] = "La Noscea",
 		["climate"] = {
 			["type"] = "indoors",
-			["temp"] = "indoors",
+			["temp"] = "indoors-cool",
 			["humidity"] = "low",
-			["nighthot"] = 0.67, -- percentage
-			["nightcold"] = 1.27,
+			["nighthot"] = 0.95, -- percentage
+			["nightcold"] = 1.05,
 			["stm"] = 0.13,
 		},
 		["effects"] = {
@@ -624,6 +647,23 @@ local zones = {
 	[400] = { --The Churning Mists
 		["name"] = "The Churning Mists",
 		["cont"] = "Dravania",
+		["climate"] = {
+			["type"] = "skyplains",
+			["temp"] = "skyplains",
+			["humidity"] = 0.937,
+			["nighthot"] = 0.79, -- percentage
+			["nightcold"] = 1.17,
+			["stm"] = 0.11,
+			["grungy"] = 0.049,
+		},
+		["effects"] = {
+			["grungy"] = 0.13,
+			["sleepy"] = 1.3,
+		},
+	},
+	[401] = { --The Sea of Clouds
+		["name"] = "The Sea of Clouds",
+		["cont"] = "Abalathia's Spine",
 		["climate"] = {
 			["type"] = "skyplains",
 			["temp"] = "skyplains",
@@ -930,11 +970,16 @@ local zones = {
 	[813] = {
 		["name"] = "Lakeland",
 		["cont"] = "Norvrandt",
+		["climate"] = {
+			["type"] = "enchanted-forest",
+			["temp"] = "enchanted-forest",
+			["humidity"] = "normal",
+			["nighthot"] = 0.80, -- percentage
+			["nightcold"] = 1.20,
+			["stm"] = 0.11,
+		},
 		["effects"] = {
-			["hot"] = 0.05,
-			["cold"] = -0.15,
-			["wet"] = -0.35,
-			["tired"] = -0.25,
+			["disturbed"] = 0.25,
 			["amused"] = 0.55,
 			["curious"] = 0.25,
 			["confident"] = 0.10,
@@ -1479,6 +1524,7 @@ local zones = {
 			["humidity"] = "low",
 			["nighthot"] = 0.83, -- percentage
 			["nightcold"] = 1.26,
+			["grungy"] = 0.069,
 			["stm"] = 0.23,
 		},
 		["effects"] = {
@@ -1663,7 +1709,30 @@ local zones = {
 		["nighthot"] = -1.45,
 		["nightcold"] = 0.95,
 	},
-
+	[1291] = {--Phaenna
+		["name"] = "Phaenna",
+		["cont"] = "????",
+		["climate"] = {
+			["type"] = "space",
+			["temp"] = "planetoid",
+			["humidity"] = 0.90,
+			["nighthot"] = 0.90, -- percentage
+			["nightcold"] = 1.11,
+			["stm"] = 0.0,
+		},
+		["effects"] = {
+			["wet"] = -0.15,
+			["focused"] = 0.25,
+			["disturbed"] = -0.45,
+			["uncomfortable"] = 0.15,
+			["happy"] = 0.15,
+			["curious"] = 0.75,
+			["bored"] = -0.25,
+			["mischievous"] = 0.15,
+			["confident"] = 0.25,
+			["aetheric"] = 1.37,
+		},
+	},
 }
 
 local function zoneData(map)

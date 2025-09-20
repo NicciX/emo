@@ -18,6 +18,10 @@ local glams = {
 		},
 		["tag"] = "dress",
 	},
+	["Augmented Historia Bliaud of Aiming"] = {
+		["slot"] = "body",
+		["temp"] = 0.57,
+	},
 	["Augmented Quetzalli Visor of Aiming"] = {
 		["slot"] = "head",
 		["temp"] = 0.17,
@@ -44,7 +48,7 @@ local glams = {
 	},
 	["Bridesmaid's Tights"] = {
 		["slot"] = "legs",
-		["temp"] = 0.27,
+		["temp"] = 0.17,
 		["tags"] = {
 			["lingerie"] = true,
 			["underwear"] = true,
@@ -107,7 +111,11 @@ local glams = {
 	},
 	["Craftsman's Apron"] = {
 		["slot"] = "body",
-		["temp"] = 0.77,
+		["temp"] = 0.44,
+	},
+	["Critical Hit B-1 Tour Breeches"] = {
+		["slot"] = "legs",
+		["temp"] = 0.34,
 	},
 	["Dalmascan Leather Shoes"] = {
 		["slot"] = "feet",
@@ -133,7 +141,7 @@ local glams = {
 	},
 	["Dirndl's Pumps"] = {
 		["slot"] = "feet",
-		["temp"] = 0.23,
+		["temp"] = 0.13,
 		["tags"] = {
 			["heels"] = 1,
 			["dolly"] = 2,
@@ -172,7 +180,7 @@ local glams = {
 	},
 	["Far Eastern Maiden's Bottoms"] = {
 		["slot"] = "legs",
-		["temp"] = 0.37,
+		["temp"] = 0.27,
 		["tag"] = "shorts",
 	},
 	["Far Eastern Matriarch's Dress"] = {
@@ -229,6 +237,14 @@ local glams = {
 		["slot"] = "head",
 		["temp"] = 0.11,
 	},
+	["Form-fitting Moogle Neotunic"] = {
+		["slot"] = "body",
+		["temp"] = 0.21,
+	},
+	["Form-fitting Mica Neotunic"] = {
+		["slot"] = "body",
+		["temp"] = 0.21,
+	},
 	["Free Spirit's Cropped Slops"] = {
 		["slot"] = "legs",
 		["temp"] = 0.27,
@@ -281,12 +297,12 @@ local glams = {
 	},
 	["High House Breeches"] = {
 		["slot"] = "legs",
-		["temp"] = 0.44,
+		["temp"] = 0.34,
 		["tag"] = "pants",
 	},
 	["High House Halfboots"] = {
 		["slot"] = "feet",
-		["temp"] = 0.44,
+		["temp"] = 0.19,
 		["tag"] = "shoes",
 	},
 	["Hooded Fireglass Leather Vest"] = {
@@ -419,6 +435,22 @@ local glams = {
 		["slot"] = "legs",
 		["temp"] = 0.14,
 	},
+	["Maritime Mirrored Sunglasses"] = {
+		["slot"] = "head",
+		["temp"] = 0.01,
+	},
+	["Maritime Sandals"] = {
+		["slot"] = "feet",
+		["temp"] = 0.07,
+	},
+	["Maritime Shorts"] = {
+		["slot"] = "legs",
+		["temp"] = 0.23,
+	},
+	["Maritime Top"] = {
+		["slot"] = "body",
+		["temp"] = 0.41,
+	},
 	["Martial Artist's Pumps"] = {
 		["slot"] = "feet",
 		["temp"] = 0.11,
@@ -439,7 +471,7 @@ local glams = {
 	},
 	["Mheg Deaca Bottoms"] = {
 		["slot"] = "legs",
-		["temp"] = 0.11,
+		["temp"] = 0.21,
 	},
 	["Minmisle Top Hat"] = {
 		["slot"] = "head",
@@ -485,6 +517,10 @@ local glams = {
 		["slot"] = "feet",
 		["temp"] = 0.11,
 	},
+	["Oversized Mica Neotunic"] = {
+		["slot"] = "body",
+		["temp"] = 0.23,
+	},
 	["Pearl Roselle Capeline"] = {
 		["slot"] = "head",
 		["temp"] = 0.21,
@@ -495,6 +531,10 @@ local glams = {
 		["tags"] = {
 			["skirt"] = true,
 		},
+	},
+	["Plain Pajama Bottoms"] = {
+		["slot"] = "legs",
+		["temp"] = 0.19,
 	},
 	["Purple Cherry Blossom Corsage"] = {
 		["slot"] = "head",
@@ -537,7 +577,7 @@ local glams = {
 	},
 	["Scion Adventurer's Boots"] = {
 		["slot"] = "feet",
-		["temp"] = 0.33,
+		["temp"] = 0.18,
 	},
 	["Scion Adventurer's Jacket"] = {
 		["slot"] = "body",
@@ -587,7 +627,7 @@ local glams = {
 	},
 	["Spriggan Cap"] = {
 		["slot"] = "head",
-		["temp"] = 0.39,
+		["temp"] = 0.01,
 	},
 	["Spring Bottoms"] = {
 		["slot"] = "legs",
@@ -606,7 +646,7 @@ local glams = {
 	},
 	["Street Handwear"] = {
 		["slot"] = "hands",
-		["temp"] = 0.13,
+		["temp"] = 0.09,
 	},
 	["Street Jacket"] = {
 		["slot"] = "body",
@@ -622,6 +662,10 @@ local glams = {
 	["Summer Indigo Shirt"] = {
 		["slot"] = "body",
 		["temp"] = 0.33,
+	},
+	["Summer Sunset Beach Cover-up"] = {
+		["slot"] = "body",
+		["temp"] = 0.11,
 	},
 	["Summer Sunset Sandals"] = {
 		["slot"] = "feet",
@@ -702,7 +746,7 @@ local glams = {
 	},
 	["Vanguard Bolero of Aiming"] = {
 		["slot"] = "body",
-		["temp"] = 0.36,
+		["temp"] = 0.51,
 	},
 	["White Sunflower Corsage"] = {
 		["slot"] = "head",
@@ -729,6 +773,10 @@ local glams = {
 		["slot"] = "head",
 		["temp"] = 0.11,
 	},
+	["Yafaemi Trousers of Casting"] = {
+		["slot"] = "legs",
+		["temp"] = 0.31,
+	},
 	["YoRHa Type-51 Cap of Healing"] = {
 		["slot"] = "head",
 		["temp"] = 0.07,
@@ -737,18 +785,18 @@ local glams = {
 
 local validTemps = {
 	["arctic"] = -1.39,
-	["cold"] = -0.67, -- ☃▽
-	["tundra"] = -0.97,
+	["cold"] = -0.97, -- ☃▽
+	["tundra"] = -1.67,
 	["cool"] = -0.33, -- ☆▼
 	["warm"] = 0.33, -- ○ 
 	["normal"] = 0, -- ★    °
 	["def"] = 0, -- ★ ≡
-	["hot"] = 1.0, -- ●▲
+	["hot"] = 0.57, -- ●▲
 	["moderate"] = 0.0,
 	["underground"] = 0.0,
 	["meadow"] = -0.039,
 	["desert"] = 0.177,
-	["tropical"] = 0.37,
+	["tropical"] = 0.57,
 	["plains"] = 0.09,
 	["skyplains"] = -0.07,
 	["umbralplains"] = -2,
@@ -758,17 +806,19 @@ local validTemps = {
 	["indoors-moderate"] = 0,
 	["climate-controlled"] = -0.11,
 	["indoors-cool"] = -0.17,
+	["indoors-chill"] = -0.39,
 	["coastal"] = 0.23,
 	["coastal-cool"] = 0.0,
 	["enchanted-forest"] = -0,27,
 	["sylvan"] = 0.11,
+	["planetoid"] = -0.39,
 	["temperate"] = 0.0,
 	--["wet"] = "wet", -- ☂ ☁
 	["aetheric"] = 3,  --₆☀∮
 	["space"] = -0.99,
 	["hell"] = 17, -- ☀
-	["naked"] = 1,
-	["scorchin"] = 21,
+	["naked"] = 0.63,
+	["scorchin"] = 1,
 	["island"] = 0.09,
 	["enchanted-island"] = 0,
 	["sleeping-village"] = -0.15,
@@ -945,7 +995,7 @@ local weather_effects = {
 				["aetheric"] = 0.75,
 			},
 			["temp"] = 0.69,
-			["humidity"] = 0.79,
+			["humidity"] = 0.39,
 		},
 	},
 	["Dust Storms"] = {
@@ -1028,7 +1078,7 @@ local weather_effects = {
 				["concerned"] = 1,
 				["disturbed"] = 2,
 				["social"] = -1,
-				["aetheric"] = 0.17,
+				["aetheric"] = -0.37,
 			},
 			["temp"] = 1.07,
 			["humidity"] = 1.03,
@@ -1248,8 +1298,8 @@ local validSlotId = {
 	["necklace"] = "neck",
 	["choker"] = "neck",
 	["ribbon"] = "neck",
-	["ringr"] = "ringr",
-	["rring"] = "ringr",
+	["ringr"] = "rring",
+	["rring"] = "rring",
 	["ringl"] = "lring",
 	["lring"] = "lring",
 	["bra"] = "bra",
@@ -1263,16 +1313,16 @@ local validSlotId = {
 local gearSlotName = {
 	["0"] = "Weapon",
 	["1"] = "Offhand",
-	["2"] = "Head",
-	["3"] = "Body", -- Top				ArmoryBody = 3202
-	["4"] = "Hands", -- Gloves			ArmoryHands = 3203
-	["6"] = "Legs", -- Pants			ArmoryLegs = 3205
-	["7"] = "Feet", -- Shoes			ArmoryFeets = 3206
-	["8"] = "Ears", -- Earring			ArmoryEar = 3207
-	["9"] = "Neck", -- Necklace			ArmoryNeck = 3208
-	["10"] = "Wrist", -- Bracelet		ArmoryWrist = 3209
-	["11"] = "RRing", -- RingR			ArmoryRings = 3300
-	["12"] = "LRing",
+	["head"] = "Head",
+	["body"] = "Body", -- Top				ArmoryBody = 3202
+	["hands"] = "Hands", -- Gloves			ArmoryHands = 3203
+	["legs"] = "Legs", -- Pants			ArmoryLegs = 3205
+	["feet"] = "Feet", -- Shoes			ArmoryFeets = 3206
+	["ears"] = "Ears", -- Earring			ArmoryEar = 3207
+	["neck"] = "Neck", -- Necklace			ArmoryNeck = 3208
+	["wrist"] = "Wrist", -- Bracelet		ArmoryWrist = 3209
+	["rring"] = "RRing", -- RingR			ArmoryRings = 3300
+	["lring"] = "LRing",
 }
 
 function GetClimate()
@@ -1468,8 +1518,10 @@ function LastWorn(slot)
 			if z < 0 then
 				z = 0
 			end
-			CD[playerName].glamItemInfo[slot].wet = y
-			CD[playerName].glamItemInfo[slot].grungy = z
+			--CD[playerName].glamItemInfo[slot].wet = y
+			--CD[playerName].glamItemInfo[slot].grungy = z
+			CD[playerName].glamItemInfo[slot].wet = 0
+			CD[playerName].glamItemInfo[slot].grungy = 0
 			if sysTrack.environment or sysTrack["outfits"] then	
 				dbgMsg("꒱|LastWorn|꒱  outfit <update> wet π " .. tostring(y), 3, {"outfits","environment"})
 				dbgMsg("꒱|LastWorn|꒱  outfit <update> grungy π " .. tostring(z), 3, {"outfits","environment"})
@@ -2266,7 +2318,12 @@ function RemoveItem(args)
 			Game.Player.Equipped.Feet.Remove()
 		else
 			currentOutfitSet[slot] = 0
-			Game.Player.Equipped[slot:sub(1,1):upper()..slot:sub(2)].Remove()
+			local gsn = gearSlotName[slot:sub(1,1):lower()..slot:sub(2)]
+			if gsn then
+				if Game.Player.Equipped[gsn] then
+					Game.Player.Equipped[gsn].Remove()
+				end
+			end
 		end
 	end
 	return args

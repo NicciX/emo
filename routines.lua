@@ -331,6 +331,52 @@ local routines = {
 		
 	},
 	
+	["funANDgames"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function()
+				emoReact("playful", "inspired by the music")
+			end,
+			["w"] = 12.00,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				emoReact("mischievous", "compelled by the music")
+			end,
+			["w"] = 15.00,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function()
+				emoReact("playful", "inspired by the music")
+			end,
+			["w"] = 12.00,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function()
+				emoReact("mischievous", "compelled by the music")
+			end,
+			["w"] = 15.00,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function()
+				emoReact("playful", "inspired by the music")
+			end,
+			["w"] = 12.00,
+		},
+		[6] = {
+			["run"] = true,
+			["func"] = function()
+				emoReact("mischievous", "compelled by the music")
+			end,
+			["w"] = 12.00,
+		},
+	
+	},
+	
 	["laundry"] = {
 		[1] = {
 			["do"] = "pinteract",
@@ -374,7 +420,7 @@ local routines = {
 					OutfitEnvironmental(0.77, -0.27 - OWF * 0.17)
 				else
 					EmoGyre("grungy", -500)
-					OutfitEnvironmental(0.60, -0.10)
+					OutfitEnvironmental(0.60, -0.23)
 				end
 			end,
 			["w"] = 3.00,
@@ -452,9 +498,9 @@ local routines = {
 			["run"] = true,
 			["func"] = function()
 				if not playerTraits.muggle then
-					OutfitEnvironmental(-0.77, -0.07)
+					OutfitEnvironmental(-1.77, -0.11)
 				else
-					OutfitEnvironmental(-0.25, -0.01)
+					OutfitEnvironmental(-0.95, -0.09)
 				end
 			end,
 			["w"] = 3.00,
@@ -470,23 +516,31 @@ local routines = {
 		[17] = {
 			["run"] = true,
 			["func"] = function()
-				RemoveItem("top")
-				EmoGyre("refreshed", OWF * 69)
+				if CD[playerName].glamItemInfo.body.wet < 0.01 then
+					RemoveItem("top")
+				end
+				EmoGyre("refreshed", OWF * 369)
 			end,
 			["w"] = 3.00,
 		},
 		[18] = {
 			["run"] = true,
 			["func"] = function()
-				RemoveItem("shoes")
+				if CD[playerName].glamItemInfo.feet.wet < 0.01 then
+					RemoveItem("shoes")
+				end
+				--RemoveItem("shoes")
 			end,
 			["w"] = 3.00,
 		},
 		[19] = {
 			["run"] = true,
 			["func"] = function()
-				RemoveItem("pants")
-				EmoGyre("grungy", OWF * -6.9)
+				if CD[playerName].glamItemInfo.legs.wet < 0.01 then
+					RemoveItem("pants")
+				end
+				--RemoveItem("pants")
+				EmoGyre("grungy", OWF * -169)
 			end,
 			["w"] = 3.00,
 		},
@@ -494,7 +548,242 @@ local routines = {
 		[20] = {
 			["run"] = true,
 			["func"] = function()
-				RemoveItem("gloves")
+				if CD[playerName].glamItemInfo.hands.wet < 0.01 then
+					RemoveItem("gloves")
+				end
+				--RemoveItem("gloves")
+			end,
+			["w"] = 3.00,
+		},
+		[21] = {
+			["test"] = true,
+			["func"] = function()
+				if OWF > 0.0013 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 12,
+			["w"] = 1.000,
+		},
+		[22] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = -2
+				rotStop = 90
+			end,
+			["w"] = 3.77,
+		},
+		[23] = {
+			["run"] = true,
+			["func"] = function()
+				OutfitLoad()
+			end,
+			["w"] = 3.77,
+		},
+		[24] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = nil
+				rotStop = nil
+			end,
+			["w"] = 1.00,
+		},
+		
+	},
+	
+	["laundryX"] = {
+		[1] = {
+			["do"] = "pinteract",
+			["w"] = 1.0,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				--local d = Game.Player.Target.RotationDegrees
+				--Game.Player.SetRot(d+90)
+				doRotate = 5
+				rotStop = 90
+			end,
+			["w"] = 3.77,
+		},
+		[3] = {
+			["test"] = true,
+			["func"] = function()
+				if rotStop then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 2,
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function()
+				rotStop = nil
+				if not rotDir then
+					rotDir = 1
+				else
+					rotDir = rotDir * -1
+				end
+				--dbgMsg("∫.Laundry.∫ ±doRotate π " .. tostring(dir), 0)
+				doRotate = (3.3 - OGF) * 13 * rotDir
+				dbgMsg("∫.Laundry.∫ ±doRotate π " .. tostring(doRotate), 0)
+			end,
+			["w"] = 1.00,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function()
+				if not playerTraits.muggle then
+					OutfitEnvironmental(0.27, -0.17 - OWF * 0.07)
+				else
+					EmoGyre("grungy", -150)
+					OutfitEnvironmental(0.29, -0.13)
+				end
+			end,
+			["w"] = 1.00,
+		},
+		[6] = {
+			["run"] = true,
+			["func"] = function()
+				--OutfitTempFactor()
+				dbgMsg("∫.Laundry.∫ grungy π " .. tostring(reduce(OGF,4)), 0)
+				dbgMsg("∫.Laundry.∫ wet π " .. tostring(reduce(OWF,4)), 0)
+			end,
+			["w"] = 0.50,
+		},
+		[7] = {
+			["do"] = "target Purification Module",
+			["w"] = 1.11,
+		},
+		[8] = {
+			["test"] = true,
+			["func"] = function()
+				doRotate = nil
+				if OGF > 0.0013 then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 4,
+			["w"] = 1.000,
+		},
+		[9] = {
+			["do"] = "pinteract",
+			["w"] = 1.0,
+		},
+		[10] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = -3
+				rotStop = 90
+			end,
+			["w"] = 4.77,
+		},
+		[11] = {
+			["test"] = true,
+			["func"] = function()
+				rotStop = nil
+				doRotate = nil
+				if rotStop then
+					return true
+				else
+					return false
+				end
+			end,
+			["do"] = "jmp",
+			["jmp"] = 10,
+			["w"] = 1.000,
+		},
+		[12] = {
+			["do"] = "target Purification Module",
+			["w"] = 1.11,
+		},
+		[13] = {
+			["do"] = "pinteract",
+			["w"] = 1.0,
+		},
+		[14] = {
+			["run"] = true,
+			["func"] = function()
+				doRotate = OWF * 17
+			end,
+			["w"] = 3.00,
+		},
+		[15] = {
+			["run"] = true,
+			["func"] = function()
+				if not playerTraits.muggle then
+					OutfitEnvironmental(-0.77, -0.11)
+				else
+					OutfitEnvironmental(-0.95, -0.09)
+				end
+			end,
+			["w"] = 3.00,
+		},
+		[16] = {
+			["run"] = true,
+			["func"] = function()
+				dbgMsg("∫.Laundry.∫ grungy π " .. tostring(reduce(OGF,4)), 0)
+				dbgMsg("∫.Laundry.∫ wet π " .. tostring(reduce(OWF,4)), 0)
+			end,
+			["w"] = 3.00,
+		},
+		[17] = {
+			["run"] = true,
+			["func"] = function()
+				local s = CD[playerName].outfits[currentOutfit].bodyGlam
+				if CD[playerName].glamItemInfo[s].wet < 0.45 then
+					CD[playerName].glamItemInfo[s].wet = 0
+					RemoveItem("top")
+				end
+				EmoGyre("refreshed", OWF * 369)
+			end,
+			["w"] = 3.00,
+		},
+		[18] = {
+			["run"] = true,
+			["func"] = function()
+				local s = CD[playerName].outfits[currentOutfit].feetGlam
+				if CD[playerName].glamItemInfo[s].wet < 0.25 then
+					CD[playerName].glamItemInfo[s].wet = 0
+					RemoveItem("shoes")
+				end
+				--RemoveItem("shoes")
+			end,
+			["w"] = 3.00,
+		},
+		[19] = {
+			["run"] = true,
+			["func"] = function()
+				local s = CD[playerName].outfits[currentOutfit].legsGlam
+				if CD[playerName].glamItemInfo[s].wet < 0.35 then
+					CD[playerName].glamItemInfo[s].wet = 0
+					RemoveItem("pants")
+				end
+				--RemoveItem("pants")
+				EmoGyre("grungy", OWF * -169)
+			end,
+			["w"] = 3.00,
+		},
+		
+		[20] = {
+			["run"] = true,
+			["func"] = function()
+				local s = CD[playerName].outfits[currentOutfit].handsGlam
+				if CD[playerName].glamItemInfo[s].wet < 0.25 then
+					CD[playerName].glamItemInfo[s].wet = 0
+					RemoveItem("gloves")
+				end
+				--RemoveItem("gloves")
 			end,
 			["w"] = 3.00,
 		},
@@ -679,6 +968,401 @@ local routines = {
 		
 	},
 	
+	["pray"] = {
+		[1] = {
+			["do"] = "target <me>",
+			["w"] = 2.11,
+		},
+		[2] = {
+			["do"] = "useitem 2002400",
+			["w"] = 3.3,
+		},
+		[3] = {
+			["do"] = "target Shell",
+			["w"] = 2.11,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("pray")
+			end,
+			["w"] = 3.000,
+		},
+	},
+	
+	["smoke-bomb"] = {
+		[1] = {
+			["do"] = "useitem 2002437", --acrid-smelling powder
+			["w"] = 3.3,
+		},
+	},
+	
+	["ambergris"] = {
+		[1] = {
+			["do"] = "facetarget",
+			["w"] = 1.11,
+		},
+		[2] = {
+			["do"] = "useitem 2002405",
+			["w"] = 1.11,
+		},
+	},
+	
+	["morbid-lore"] = {
+		[1] = {
+			["do"] = "think motion",
+			["w"] = 3.11,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("It is in fashion amongst wealthy Ul'dahn merchants and nobles to bring morbol seedlings to banquets, so that the upper crust might inhale the seedkin's “boot-like” bad breath to induce vomiting, allowing them to engorge themselves for the duration of the gatherings.")
+			end,
+			["w"] = 1.11,
+		},
+	},
+	
+	["the-baconator"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("apple")
+			end,
+			["w"] = 3.600,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("A mysterious bipedal swine given away as a prize after it was discovered gorging itself in the Manderville Gold Saucer kitchens. Assuming he is not a real pig, many have tried poking, unmasking, and dispelling the portly pork's guise...but to no avail.")
+			end,
+			["w"] = 3.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("poke")
+			end,
+			["w"] = 7.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("allsaintscharm")
+			end,
+			["w"] = 3.000,
+		},
+	},
+	
+	["lecherous-purple"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("deny")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("One can only imagine the time and effort master goldsmith Godbert put into the creation of this lifelike recreation of a lecherous purple octopus.")
+			end,
+			["w"] = 2.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("disappointed")
+			end,
+			["w"] = 3.000,
+		},
+	},
+	["magic-tears"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("spectacles")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("One of the most outlandish theories recently posed by scholars of the void is that ahrimans do not reproduce by typical sexual means, but rather by shedding tears which eventually grow into new creatures.")
+			end,
+			["w"] = 1.11,
+		},
+	},
+	
+	["onions"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("apple")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("Aw, bloody hells! Who's cuttin' onions back there!?")
+			end,
+			["w"] = 2.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("cry")
+			end,
+			["w"] = 3.000,
+		},
+	},
+	
+	["overstuffed-chicken"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("apple")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("It would be foolish to believe that a chocobo could achieve this size dining on greens alone, regardless of how many hundreds of bushels were devoured...in a single sitting. Chicken bones found beneath the chick's bedding suggest he may have a taste for his succulent cousins.")
+			end,
+			["w"] = 1.11,
+		},
+	},
+	
+	["calca"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("think")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				if math.random(1,100) > 44 then
+					Game.SendChat("Upon realizing the Antitower would require several layers of defenses to keep out unwanted visitors, the spire's creator breathed life into several common dolls. Hairless at first, its maker adorned it with blonde locks, along with other aesthetically pleasing accessories.")
+				else
+					Game.SendChat("Adorable dolls! Terrible dolls! Yip-ho-ho! - Calcabrina")
+				end	
+			end,
+			["w"] = 1.11,
+		},
+	},
+	
+	["brina"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("think")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				if math.random(1,100) > 44 then
+					Game.SendChat("Tasked to defend the Antitower along with Calca, Brina scurried off to the safety of a treasure coffer after meeting defeat at the hands of adventurers. Impressed that anyone could uncover its hiding place, Brina decided to make itself a gift to the adventurer who found it.")
+				else
+					Game.SendChat("Adorable dolls! Terrible dolls! Yip-ho-ho! - Calcabrina")
+				end	
+			end,
+			["w"] = 1.11,
+		},
+	},
+	
+	["goobbue-diet"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("apple")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("To achieve their cyclopean size, goobbues must maintain a daily diet of several times their own weight. Luckily, the beastkin are not finicky eaters, and will consume almost anything that cannot outrun them. If rumors are to be believed, this includes Lalafells.")
+			end,
+			["w"] = 1.11,
+		},
+	},
+	
+	["fat-cats-ahoy"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("apple")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("Born in an unmarked alley in an unnamed town, this poor creature had to hunt the mean streets just to stay alive...until learning that following retainers and feeding off the slaughter left in their wakes was a safer, easier way to a full belly.")
+			end,
+			["w"] = 4.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("pet")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["vomit-lapper"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("sweep")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("Despite being found lapping up day-old vomit behind the Forgotten Knight, the air of nobility displayed by this pup as he rolled in the filth was proof enough of his royal bloodline, and before the night was through, an official pedigree was drawn up, changing Gestahl's life forever.")
+			end,
+			["w"] = 4.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("clap")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["widowmaker"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("choco")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("Thanks to its voracious appetite, this young anteater has grown to a size to rival an adult Lalafell. Though appearing to otherwise be harmless, in certain parts its kind is said to prey on seasonal workers─and the men specifically─thus earning it the moniker of the Widowmaker.")
+			end,
+			["w"] = 4.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("kneel")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["goldfinger"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("choco")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				if math.random(1,100) > 44 then
+					Game.SendChat("Whether this creature is a beaver turned into gold, or gold turned into a beaver is anyone's guess. It is said to appear in the passages of Lyhe Ghiah at the very moment one's heart's desire is fulfilled. Given the location, that would generally involve some sort of treasure.")
+				else
+					Game.SendChat("No, anything but beavers! -  ")
+				end
+			end,
+			["w"] = 4.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("gratuity")
+			end,
+			["w"] = 5.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("showleft")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
+	["giantfinger"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("blush")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				if math.random(1,100) > 44 then
+					Game.SendChat("A mysterious being that appeared at Phisor Lran. Whatever may be the truth of its identity, some mysteries in the world are better left unsolved. Let it be enough that everyone has their heart's desire...")
+				else
+					Game.SendChat(" ")
+				end
+			end,
+			["w"] = 4.11,
+		},
+		[3] = {
+			["do"] = "useitem 12042",
+			["w"] = 1.0,
+		},
+	},
+	
+	["young-entrepeneur"] = {
+		[1] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("pen")
+			end,
+			["w"] = 3.000,
+		},
+		[2] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("In an attempt to secure funding for the financially strapped organization, the Crystal Braves treasurer took it upon himself to have three score thousand crafted and delivered to Rowena's House of Splendors for sale...where they have been collecting dust since...")
+			end,
+			["w"] = 4.11,
+		},
+		[3] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("deny")
+			end,
+			["w"] = 1.000,
+		},
+		[4] = {
+			["run"] = true,
+			["func"] = function()
+				Game.SendChat("Lies! Nothing but lies! It's more likely that Mr. Leveilleur, is yet another hapless victim of Khloe Aliapoh!")
+			end,
+			["w"] = 4.11,
+		},
+		[5] = {
+			["run"] = true,
+			["func"] = function() 
+				DoRandom("scheme")
+			end,
+			["w"] = 1.000,
+		},
+	},
+	
 	["SwimBot"] = {
 		[1] = {
 			["test"] = true,
@@ -713,19 +1397,13 @@ local routines = {
 		[4] = {
 			["test"] = true,
 			["func"] = function()
-				if emoState.cold > 15 or (OGF == 0 and OWF > OTF) then
-					if swimTime then
-						if os.time() > swimTime then
-							return false
-						else
-							return true
-						end
-					else
-						return false
-					end
-				else
-					return true
+				if os.time() > (swimTime or os.time()) then
+					return false
 				end
+				if emoState.cold > 15 or (OGF == 0 and OWF > OTF) then
+					return false
+				end
+				return true
 			end,
 			["do"] = "jmp",
 			["jmp"] = 7,
@@ -897,6 +1575,34 @@ local routines = {
 			["w"] = 0.525,
 		},
 		[9] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("earrings")
+			end,
+			["w"] = 0.525,
+		},
+		[10] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("necklace")
+			end,
+			["w"] = 0.525,
+		},
+		[11] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("lring")
+			end,
+			["w"] = 0.525,
+		},
+		[12] = {
+			["run"] = true,
+			["func"] = function() 
+				RemoveItem("rring")
+			end,
+			["w"] = 0.525,
+		},
+		[13] = {
 			["run"] = true,
 			["func"] = function() 
 				DoRandom("examineself")

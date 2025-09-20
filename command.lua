@@ -1,7 +1,7 @@
 -- Emobot
 --- by Nicci M.
 
-emoVer = "0.7.71" --current version
+emoVer = "0.7.77" --current version
 
 blockNegativeEffects = true --was changed from enableNegativeEffects 0.7.13
 blockAutonomousActions = nil --was changed from enableAutonomousActions 0.7.13
@@ -37,6 +37,8 @@ loginStatus = nil
 
 chatStack = {}
 stackIdx = 0
+
+cHAIn = {}
 
 local lock = {}
 SQD = 234 -- Script Queue Delay
@@ -134,6 +136,8 @@ OGF = 0 --Outfit Grunge Factor
 BCO = 0 --BaseClimateOverride
 BHO = 0 --BaseHumidityOverride
 STRIP = "♠♠♠♠♠-ω♥∩-♦♦♦♦♦"
+
+currentMinion = ""
 
 --time related vars
 tZone = 5*3600 -- Timezone adjust -- CST
@@ -236,7 +240,7 @@ TakeoffRandom, RemoveItem, PutonItem, SmartOutfit, OutfitHandler, UpdateOutfit,
 glams, IsUnderwear, OutfitTempFactor, OutfitEnvironmental, DressBest, DressedCheck, climates,
 UpdateGlamItem, humidMult, weather_effects, SwimHandler = table.unpack(require "outfitter")
 
-emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn,
+emoHandler, tokenHandler, tokenStack, UpdateStorageData, AetherHandler, JujuChurn, ResetGyre,
 Gyre, GyreConduit, aspectTable, EmoGyre, aspectAffinity, moods, dbgGyre, runGyreMethod, 
 gyreMethods, updateAffinity, aspectPass, GyreLite, GyreCheck, EnvironmentHandler = table.unpack(require "handlers")
 
@@ -250,7 +254,8 @@ buff = require "buffs"
 
 ChatHandler, Blimey, StringsHandler, Chatty, ChattyChop, JujuHoodoo, FlameCheck, MatchStick, Windfall,
 TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous, Expense, cookTheBooks, validEarnings,
-Census, StartTour, NextCurrent, JogBot = table.unpack(require "chatter")
+Census, StartTour, NextCurrent, JogBot, WhipIT, Proclaim, MinionMadness, minions, SaladGyre,
+chaiNLength, LettuceLoad, shiftSG, ChaiNGanG = table.unpack(require "chatter")
 
 func_time, dumpInfo, SetDBG, dbgMsg, trim_log, func_track, efficiency, filterLog, profiler = table.unpack(require "profiler")
 
@@ -297,6 +302,7 @@ validFuncTrack = {
 	["MovingEffects"] = "MovingEffects",
 	["OutfitEnvironmental"] = "OutfitEnvironmental",
 	["oe"] = "OutfitEnvironmental",
+	["windfall"] = "windfall",
 	["OutfitTempFactor"] = "OutfitTempFactor",
 }
 
@@ -338,6 +344,7 @@ validSysChan = {
 	["NPCDialogue"] = "NPCDialogue",
 	["NPCDialogueAnnouncements"] = "NPCDialogueAnnouncements",
 	["retainersale"] = "RetainerSale",
+	["l2"] = "l2",
 	["65"] = "Loot",
 	["62"] = "gil",
 	["Debug"] = "Debug",
@@ -427,6 +434,24 @@ validChn = { -- valid channels that EmoBot is allowed to send chat too
 	["l2"] = "/l2 ",
 	["3"] = true,
 	["4"] = true
+}
+
+validChainChn = {
+	["fc"] = true,
+	["freecompany"] = true,
+	["party"] = true,
+	["telloutgoing"] = true,
+	["tell"] = true,
+	["2105"] = true, -- info channel
+	["2242"] = true,
+	["p"] = true,
+	["ls1"] = true,
+	["ls2"] = true,
+	["yell"] = true,
+	["l2"] = true,
+	["a"] = true,
+	["alliance"] = true,
+	["shout"] = true,
 }
 
 currentConduit = {
@@ -977,10 +1002,10 @@ local decayRate = {
 	
 		["bored"] = 0.36,
 		["scared"] = 0.35,
-		["sleepy"] = 1.69,
-		["sad"] = 0.15,
+		["sleepy"] = -1.69,
+		["sad"] = 0.75,
 		["cold"] = 0.35,
-		["grungy"] = -0.23,
+		["grungy"] = -0.36,
 	
 		["angry"] = 0.35,
 		["embarrassed"] = 0.325,
@@ -991,7 +1016,7 @@ local decayRate = {
 	
 		["hungry"] = -0.023,
 		["puzzled"] = 0.35,
-		["energized"] = 0.65,
+		["energized"] = 1.33,
 		["busy"] = 1,
 		["amazed"] = 0.35,
 		["surprised"] = 0.35,
@@ -1000,7 +1025,7 @@ local decayRate = {
 		["uncomfortable"] = 0.5,
 		["impatient"] = 0.25,
 		["refreshed"] = 0.33,
-		["wet"] = 2.77,
+		["wet"] = 1.77,
 		["nosey"] = 0.35,
 		
 		["happy"] = 23,
@@ -1529,6 +1554,9 @@ function factorial(n)
 end
 
 function capit(str)
+	if not str then
+		return str
+	end
 	return str:lower():gsub("^%l", string.upper)
 end
 
@@ -1902,7 +1930,7 @@ function decayPass()
 		aetheric = 1
 	end
 	
-	local adj = -1.37 + (aetheric * (0.396 * AB)) - ((aetheric - 1) * 0.27)
+	local adj = -1.39 + (aetheric * (0.333 * AB)) - ((aetheric - 1) * 0.27)
 	--dbgMsg(".|decayPass|. --- Meds :: " .. tostring(AethericBuffer), 1)
 	--dbgMsg(".|decayPass|. --- Wellfed :: " .. tostring(wellfed), 1)
 	--dbgMsg(".|decayPass|. --- Is Aetheric :: " .. tostring(aetheric), 1)
@@ -1927,7 +1955,7 @@ function decayPass()
 			--dbgMsg(".|decayPass|. :: " .. k .. " :: " .. tostring(v*adj*-5.1), 1)
 			if playerTraits.aetheric and k == "aetheric" then
 				--dbgMsg(".|decayPass|. :: " .. k .. " :: " .. tostring(v*adj*2.7), 1)
-				x = 3.7+(emoState.aetheric * 0.0377)
+				x = 2.7+(emoState.aetheric * 0.0333)
 				--dbgMsg(".|decayPass|. :: " .. k .. " :: " .. tostring(v*adj*x), 1)
 				EmoGyre(k, v*adj*x)
 			elseif playerTraits.aetheric and k == "energized" then
@@ -1967,6 +1995,12 @@ function decayPass()
 		end
 	end
 	
+	if not Sys.Weather then
+		func_time["decayPass"].END = os.time()
+		func_track("decayPass")
+		return
+	end
+	
 	
 	if weather_effects[weather] then
 		hot = weather_effects[weather].neutral.temp or 1.0
@@ -1975,8 +2009,10 @@ function decayPass()
 		hot = 1.0
 		humid = 0.977
 	end
-
-	humid = humid * (humidMult[clmt.humidity] or clmt.humidity)
+	
+	if clmt then
+		--humid = humid * (clmt.humidity or 0.5)
+	end
 	hot = hot + validTemps[clmt.temp]
 	
 	--[[
@@ -2014,7 +2050,7 @@ function decayPass()
 	--x = 1
 	y = wet or 0
 	if emoState.wet > 7.7 then
-		y = emoState.wet * 0.0137
+		y = emoState.wet * 0.0027
 		x = x - y
 	else
 		if x < 1 then
@@ -2033,28 +2069,28 @@ function decayPass()
 		if playerTraits.aetheric then
 			gMag = gMag + math.log(emoState.grungy, 23) * 0.0033
 		elseif playerTraits.spriggan then
-			gMag = gMag + math.log(emoState.grungy, 21) * 0.0011
+			gMag = gMag + math.log(emoState.grungy, 21) * 0.0021
 		else
-			gMag = gMag + math.log(emoState.grungy, 27) * 0.0021
+			gMag = gMag + math.log(emoState.grungy, 27) * 0.0027
 		end
 	end
 	
 	if gMag ~= 0 then
-		gMag = (gMag + y * -0.27) * 0.29
+		gMag = (gMag + y * -0.27) * 0.41
 	end
 	
-	OutfitEnvironmental(y * 0.77, gMag)
+	OutfitEnvironmental(y * 0.27, gMag)
 	--OutfitTempFactor()
 	
 	if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
 		dbgMsg("꒱|d∫Pass|꒱ • pre-pass grungy π " .. tostring(reduce(grungy,4)), 2, {"decayPass", "outfits","environment"})
 		dbgMsg("꒱|d∫Pass|꒱ • grunge amt ∫ " .. tostring(reduce(gMag,4)), 2, {"decayPass", "outfits","environment"})
-		dbgMsg("꒱|d∫Pass|꒱ • OGF π " .. tostring(reduce(OGF,4)), 2, {"decayPass", "outfits","environment"})
+		dbgMsg("꒱|d∫Pass|꒱ • OGF π " .. tostring(reduce(OGF,4)), 1, {"decayPass", "outfits","environment"})
 	end
 	
 	if OGF == grungy and OGF > 0 and gMag ~= 0 then
 		if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
-			dbgMsg("꒱|d∫Pass|꒱ • Outfit grungy |Max| ", 2, {"decayPass", "outfits","environment"})
+			dbgMsg("꒱|d∫Pass|꒱ • Outfit grungy |Max| ", 1, {"decayPass", "outfits","environment"})
 		end
 		if math.random() * 7 < OGF then
 			Moodle("Grungy", "apply", "self", "buffs", "default")
@@ -2064,12 +2100,12 @@ function decayPass()
 	if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then	
 		dbgMsg("꒱|d∫Pass|꒱ • pre-pass wet π " .. tostring(reduce(wet,4)), 2, {"decayPass", "outfits","environment"})
 		dbgMsg("꒱|d∫Pass|꒱ • wet amt ∫ " .. tostring(reduce(y * 0.77,4)), 2, {"decayPass", "outfits","environment"})
-		dbgMsg("꒱|d∫Pass|꒱ • OWF π " .. tostring(reduce(OWF,4)), 2, {"decayPass", "outfits","environment"})
+		dbgMsg("꒱|d∫Pass|꒱ • OWF π " .. tostring(reduce(OWF,4)), 1, {"decayPass", "outfits","environment"})
 	end
 	
 	if OWF == wet and OWF > 0 and y ~= 0 then
 		if sysTrack.environment or sysTrack.outfits or sysTrack.decayPass then
-			dbgMsg("꒱|d∫Pass|꒱ • Outfit wet |Max| ", 2, {"decayPass", "outfits","environment"})
+			dbgMsg("꒱|d∫Pass|꒱ • Outfit wet |Max| ", 1, {"decayPass", "outfits","environment"})
 		end
 		--Max wet effects
 	end		
@@ -2099,7 +2135,7 @@ function decayPass()
 		EmoGyre("grungy", math.log(emoState.wet) * -23)
 		emoState.wet = 31
 	elseif emoState.wet > 3.3 then
-		EmoGyre("grungy", math.log(emoState.wet) * -1.3)
+		EmoGyre("grungy", math.log(emoState.wet) * 0.33)
 	elseif emoState.wet < 0 then
 		emoState.wet = 0
 	end
@@ -2376,7 +2412,13 @@ function distTarget(px,py,pz,tx,ty,tz)
 end
 
 function distBeacon(bcn)
+	if not bcn then
+		return
+	end
 	local beans = LoadBeacons()
+	if not beans then
+		return
+	end
 	local dis
 	local x,y,z = Game.Player.Entity.PosX, Game.Player.Entity.PosY, Game.Player.Entity.PosZ
 	if beans[bcn] then
@@ -2628,7 +2670,7 @@ function BeaconCheck()
 							if a == "aetheric" then
 								
 								AetherHandler(b, "aetheric", "BeaconCheck")
-							else
+							elseif emoState[a] then
 								emoState[a] = math.floor((emoState[a] + b)*10000)/10000
 							end
 							if emoState[a] < 0 then
@@ -2744,7 +2786,7 @@ function Purchased(txt, chn)
 	local lim = 0
 	for k,v in pairs(CD[playerName].purchases) do
 		--dbgMsg(":Purchases: "..tostring(k),1)
-		if string.find(k, txt) then
+		if string.find(k:lower(), txt:lower()) then
 			
 			if lim < 7 then
 				--dbgMsg(":Purchases: "..tostring(k),1)
@@ -2785,6 +2827,10 @@ function MoveToTarget()
 	Game.SendChat("/vnavmesh moveto " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y))
 end
 
+function FaceBeacon(id)
+	
+end
+
 --juju GotoRelativePosition(tarvec(), 3, 1.125, Game.Player.Target.RotationDegrees)
 
 function GotoRelativePosition(vec, dg, rd, rt)
@@ -2814,8 +2860,10 @@ function MoveToBeacon(tag)
 		tag = string.upper(tag)
 	end
 	
+	bcns = LoadBeacons()
+	
 	if beacons[map]["beacon"][tag] then
-		x,y,z = beacons[map]["beacon"][tag].XPos, beacons[map]["beacon"][tag].YPos, beacons[map]["beacon"][tag].ZPos
+		x,y,z = bcns[tag].XPos, bcns[tag].YPos, bcns[tag].ZPos
 		dbgMsg("MoveToBeacon :: " .. tostring(tag) .. " :: " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y) .. " .", 0)
 		if not IsFlying then
 			Game.SendChat("/vnavmesh moveto " .. tostring(x) .. " " .. tostring(z) .. " " .. tostring(y))
@@ -3118,6 +3166,10 @@ function MoodFromEmote(emt)
 		for k,v in pairs(emote.effects) do
 			dbgMsg("♀emote effects♀ :: [" .. k .. "] •†" .. tostring(v) .. "†•", 3)
 			EmoGyre(k, v)
+		end
+		if emote.slsh == "mogdance" then
+			dbgMsg("♀emote effects♀ :: [mogdance] •† reduce outfit wetness †•", 1)
+			OutfitEnvironmental(-0.00777, -0.00007)
 		end
 	end
 	
@@ -3447,6 +3499,27 @@ function EmoCheck()
 	func_track("EmoCheck")
 end
 
+function CopyTrack(who)
+	local copy
+	local sysA, sysB
+	if #who > 0 then
+		for k,v in pairs(Script.Storage) do
+			if k:lower() == who:lower() then
+				copy = k
+			elseif v.nickName then
+				if v.nickName:lower() == who:lower() then
+					copy = k
+				end
+			end
+		end
+	end
+	if copy then
+		sysTrack = tcopy(Script.Storage[copy].sysTrack)
+		Tracking = tcopy(Script.Storage[copy].Tracking)
+		dbgMsg("§Tracking§ copied from :: " .. tostring(copy) .. " ::", 0)
+	end
+end
+
 function TrackList()
 	dbgMsg("§Systems tracked§ :: DBG :: " .. tostring(DBG) .. ".", 0)
 	for k,v in pairs(sysTrack) do
@@ -3574,6 +3647,11 @@ function DoRandom(ovr, src)
 			func_track("DoRandom")
 			return
 		end
+	end
+	if not CD[playerName] then
+		func_time["DoRandom"].END = os.time()
+		func_track("DoRandom")
+		return
 	end
 	
 	rndTime = os.time()
@@ -4599,6 +4677,8 @@ function doLoad()
 	
 	CD.global.lastChatUpdate = CD.global.lastChatUpdate or os.time()
 	lastChatUpdate = CD.global.lastChatUpdate
+	
+	CD.global.lastBackup = CD.global.lastBackup or 0
 
 	---										---
 	--- 	init character data and stats	---
@@ -4625,7 +4705,7 @@ function doLoad()
 
 	CD[playerName].cHAIn = CD[playerName].cHAIn or {}
 	cHAIn = CD[playerName].cHAIn
-
+	--cHAIn = {}
 	--CD[playerName].traits = Script.Storage[playerName].traits
 	
 	CD[playerName].traits = CD[playerName].traits or {}
@@ -5005,6 +5085,10 @@ function Update()
 	if jogKey then
 		local dis = distBeacon("JogPath"..jogKey)
 		--dbgMsg("✓JogBot✓ :: " .. jogKey .. " ~~ " .. tostring(reduce(dis,2)) .. " ~~.", 1)
+		if not dis then
+			jogKey = nil
+			return
+		end
 		if dis < 3 then
 			JogBot()
 		end
@@ -5103,6 +5187,8 @@ function Update()
 			MoodFromEmote(lastEmote)
 		elseif not lastEmote then
 			dbgMsg("Updater: LastEmote is " .. tostring(lastEmote) .. ".")
+		elseif not emote then
+			dbgMsg("Updater: nil [emote] :: nil.")
 		elseif not emote.cd then
 			dbgMsg("Missing .cd .. " .. tostring(lastEmote) .. ".")
 		elseif IsEmoting and lastEmote and (os.time() - rndTime) < emote.cd then
@@ -5150,6 +5236,10 @@ function Update()
 		currentUpdateCall = "G"
 		if Script.Storage.global.valid then
 			CDUpdater()
+			if (os.time() - (lastBackup or 0)) > 10800 and not IsBusy then
+				Backup()
+				lastBackup = os.time()
+			end
 		else
 			dbgMsg("Invalid Character Data...", 0)
 			--bad savedata
@@ -5166,6 +5256,7 @@ function Update()
 		StatusHandler()
 	elseif ctJ == math.floor(ctJ) then
 		--largestPrime = updCnt
+
 		currentUpdateCall = "J"
 		tokenHandler()
 	elseif ctK == math.floor(ctK) then
@@ -5195,6 +5286,10 @@ function Update()
 		--if #p == 1 then
 			--largestPrime = updCnt
 		--end
+	end
+	
+	if toSSit then
+		TossSalad()
 	end
 	--dbgMsg(".Update() .. Trace: Z", 1)
 	
@@ -5253,6 +5348,9 @@ function CDUpdater()
 		CD[playerName].traits[k] = true
 	end
 	
+	CD[playerName]["Tracking"] = Tracking
+	CD[playerName]["sysTrack"] = sysTrack
+	
 	CD[playerName].prog = playerProg
 	CD[playerName].salesTotal = salesTotal
 	CD[playerName].combatTime = combatTime
@@ -5264,7 +5362,7 @@ function CDUpdater()
 	CD[playerName].favoriteMeal = favoriteMeal
 	CD[playerName]["lastTransaction"] = tostring(lastTransaction)
 	CD[playerName].lastSave = os.time()
-	
+	CD.global.lastBackup = lastBackup
 	CD[playerName].Gyre = tcopy(Gyre)
 	
 	if playerTraits.spriggan then
@@ -5315,8 +5413,9 @@ function RestEffects()
 	end
 	IsSleeping = nil
 	if IsSitting then
-		dbgMsg("ƒRestEffectsƒ :: totalFuncTime :: " .. tostring(math.floor(totalFuncTime * 100)), 1)
+		--dbgMsg("ƒRestEffectsƒ :: totalFuncTime :: " .. tostring(math.floor(totalFuncTime * 100)), 1)
 		if IsPrime(math.floor(totalFuncTime * 100)) then
+			dbgMsg("ƒRestEffectsƒ :: totalFuncTime :: " .. tostring(math.floor(totalFuncTime * 100)), 1)
 			local r = math.random(1,#sittin_motes)
 			if sittin_motes[r] then
 				DoRandom(sittin_motes[r], "as inspired by sitting.")
@@ -5426,7 +5525,7 @@ function StatusHandler()
 	EmoGyre("hot", hA * 3.69)
 	EmoGyre("hungry", busy)
 	EmoGyre("sleepy", busy)
-	EmoGyre("grungy", busy * 0.333)
+	EmoGyre("grungy", busy * 0.234)
 	EmoGyre("responsible", busy * 0.37)
 	if busy > 0 then
 		EmoGyre("bored", busy * -2.33)
@@ -5435,9 +5534,9 @@ function StatusHandler()
 		Leech("focused", "dazed", 0.0167, -1)
 	end
 	tmp = os.time() - bubbleBuff
-	if tmp < 311 then
-		tmp = (444 - tmp) * 0.017
-		EmoGyre("refreshed", tmp)
+	if tmp < 4111 then
+		--tmp = (9111 - tmp) * 0.017
+		EmoGyre("refreshed", 1.44)
 		dbgMsg(":StatusHandler: bubbleBuff :: " .. tostring(reduce(tmp, 2)), 1)
 	end
 	--Leech("focused", "dazed", 0.67)
@@ -5466,11 +5565,14 @@ function StatusHandler()
 			combatTime = combatTime + 1.37
 		end
 		lastCombatCheck = os.time()
+		EmoGyre("grungy", 1.44)
+		EmoGyre("hot", 0.11)
+		EmoGyre("bored", -0.33)
 		--dbgMsg("ƒStatusHandlerƒ InCombat :: " .. tostring(combatTime), 1)
 	end
 	if IsSwimming or IsDiving then
 		EmoGyre("aetheric", -1.39)
-		EmoGyre("refreshed", 13.37)
+		EmoGyre("refreshed", 77)
 		EmoGyre("grungy", -23)
 		EmoGyre("wet", 3.77)
 	else
@@ -5490,7 +5592,11 @@ function StatusHandler()
 	end
 	
 	if emoState.grungy > 7.7 and emoState.refreshed > 3.3 then
-		Leech("refreshed", "grungy", 0.043, -0.37)
+		Leech("refreshed", "grungy", 0.043, -0.77)
+	end
+	
+	if emoState.hot > 3.6 then
+		EmoGyre("wet", emoState.hot * 0.13)
 	end
 	
 	if playerTraits.vixen then
@@ -5499,6 +5605,7 @@ function StatusHandler()
 		--dbgMsg(":StatusHandler: Dissolve hot/cold :: ", 1)
 		if emoState.cold >= 7 and emoState.aetheric > 777 then
 			EmoGyre("aetheric", emoState.hot * 2)
+			EmoGyre("refreshed", emoState.cold * 0.69)
 			EmoGyre("hot", emoState.hot * 0.11)
 			EmoGyre("cold", emoState.cold * -0.77)
 			Moodle("Aetheric Dissipation", "apply", "self", "buffs", "default")
@@ -5509,6 +5616,12 @@ function StatusHandler()
 			local h = emoState.hot
 			local c = emoState.cold
 			Dissolve("hot", "cold", 1.111)
+			if emoState.aetheric > 111 and emoState.hot > 6.9 then
+				Moodle("Aetheric Dissipation", "apply", "self", "buffs", "default")
+				Dissolve("hot", "aetheric", 0.111)
+			end
+			EmoGyre("refreshed", (math.log(emoState.aetheric, 33) or -1) * 0.639)
+			--EmoGyre("refreshed", emoState.aetheric * 0.00369)
 			if sysTrack.environment or sysTrack.outfits or sysTrack.traits then
 				dbgMsg("꒱.StHdlr.꒱ hot reduction ∫ " .. tostring(reduce(h - emoState.hot, 4)), 4, {"environment", "outfits", "traits"})
 				dbgMsg("꒱.StHdlr.꒱ cold reduction ∫ " .. tostring(reduce(c - emoState.cold, 4)), 4, {"environment", "outfits", "traits"})
@@ -5857,6 +5970,11 @@ function EatFood(what)
 end
 
 function MovingEffects(amt)
+	if not Sys.Weather then
+		--func_time["MovingEffects"].END = os.time()
+		--func_track("MovingEffects")
+		return
+	end
 	if filterLog["2"] then
 		dbgMsg("MovingEffects", 2)
 	end
@@ -5880,11 +5998,16 @@ function MovingEffects(amt)
 		humid = weather_effects[weather].neutral.humidity or 0
 	end
 	
-	humidity = humidMult[clmt.humidity] or clmt.humidity
+	humidity = humidMult[clmt.humidity] or clmt.humidity or 0.5
 	tf = validTemps[clmt.temp]
-
-	hu = reduce(humidity * humid, 4)
-	wc = (1.69 - humidity) * 0.11
+	
+	if tonumber(humidity) and tonumber(humid) then
+		hu = reduce(humidity * humid, 4)
+		wc = (1.69 - humidity) * 0.11
+	else
+		hu = 0.1
+		wc = 0.11
+	end
 	
 	if sysTrack.environment or sysTrack.motion then
 		dbgMsg("꒱Motion꒱ • humidity (zone) ∫ " .. tostring(humidity), 1, {"motion", "environment"})
@@ -5944,7 +6067,7 @@ function MovingEffects(amt)
 		dbgMsg("꒱Motion꒱ • swimming grungy adj ‰ " .. tostring(reduce(WC * -0.67,3)), 2, {"outfits", "environment", "motion"})
 		OutfitEnvironmental(wet, WC * -0.97)
 	else
-		OutfitEnvironmental(wet, 0)
+		OutfitEnvironmental(wet * 0.13, 0)
 	end
 	--CD[playerName].outfits[currentOutfit].wetAmt = y
 	--OutfitTempFactor(x)
@@ -5968,7 +6091,7 @@ function MovingEffects(amt)
 	end
 	 
 	EmoGyre("hungry", amt * 1.77)
-	EmoGyre("grungy", amt * 0.37)
+	EmoGyre("grungy", amt * 0.17)
 	--EmoGyre("hungry", amt * 0.71)
 	
 	if playerRace == "Miqo'te" then
@@ -6013,10 +6136,10 @@ function MovingEffects(amt)
 		end
 		--AetherHandler((amt * -0.77), "energized", "CheckPeloton")
 		EmoGyre("energized", amt * -2.69)
-		EmoGyre("hot", amt * 1.69)
+		EmoGyre("hot", amt * 0.69)
 	else
 		EmoGyre("energized", amt*-1.39)
-		EmoGyre("hot", amt * 1.31)
+		EmoGyre("hot", amt * 0.55)
 		--AetherHandler(amt*-0.9, "energized", "CheckPeloton")
 		--emoState["aetheric"] = emoState["aetheric"] + amt*0.9
 	end
@@ -6248,8 +6371,10 @@ function UpdatePos()
 		Porting(disD)
 		return
 	elseif disD < 0.0977 and disD > 0.0001 and IsMoving and playerTraits.spriggan then
-		dbgMsg("disD: Obstacle Alert!", 1)
-		Game.SendChat("/gaction Jump")
+		if not InDuty and not InCombat then
+			dbgMsg("disD: Obstacle Alert!", 1)
+			Game.SendChat("/gaction Jump")
+		end
 	end
 	
 	if (os.time() - lastDistUpdate) > 3.1415 then
@@ -6494,6 +6619,8 @@ local function onInvoke(textline)
 		TrackSystem(args)
 	elseif cmd == "tracking" or cmd == "trackingsys" or cmd == "tracklist" then
 		TrackList()
+	elseif cmd == "copytrack" then
+		CopyTrack(args)
 	elseif cmd == "outfitsave" then --used by SND Script
 		OutfitSave(args)
 	elseif cmd == "outfit" then

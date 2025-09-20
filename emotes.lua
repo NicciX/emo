@@ -29,7 +29,7 @@ local emDex = {
 	"flex", "petals", "fume", "furious", "deride", "goodbye", "greet", "grovel", "handover", "happy", "hug", "huh",
 	"waitforit", "imperialsalute", "joy", "kneel", "laliho", "laugh", "ladance", "lookout", "magictrick",
 	"me", "no", "ohokaliy", "paintblack", "paintblue", "paintyellow", "paintred", "panic", "mime", "rrespect",
-	"pet", "point", "poke", "pose", "pray", "psych", "pushups", "rally", "read", "salute", "sabotender", "gcsalute",
+	"pet", "point", "poke", "pen", "pose", "pray", "psych", "pushups", "rally", "read", "salute", "sabotender", "gcsalute",
 	"shocked", "shrug", "shush", "snap", "slap", "soothe", "squats", "stagger", "stretch", "sulk", "surprised",
 	"think", "thumbsup", "tomestone", "bigfan", "upset", "vexed", "victory", "vreveal", "waterflip", "splash",
 	"waterfloat", "wave", "welcome", "wow", "yes", "bdance", "beesknees", "bombdance", "vpose", "awe",
@@ -1599,6 +1599,8 @@ local emote = {
 			["uncomfortable"] = -0.25,
 			["social"] = -0.25,
 			["sad"] = -0.2,
+			["hot"] = 0.77,
+			["wet"] = -0.11,
 			["neutral"] = -0.5,
 			["bored"] = -0.25,
 			["disturbed"] = -0.35,
@@ -1755,6 +1757,24 @@ local emote = {
 			["tense"] = -3,
 		}
 	},
+	["pen"] = {
+		["slsh"] = "pen",
+		["type"] = "busy",
+		["group"] = "yellow",
+		["cost"] = 7,
+		["weight"] = 57,
+		["cd"] = 120,
+		["last"] = 0,
+		["effects"] = {
+			["curious"] = -2.23,
+			["confident"] = 3.11,
+			["focused"] = -3,
+			["disturbed"] = -1,
+			["focused"] = 3,
+			["responsible"] = -2,
+			["nosey"] = -2,
+		}
+	},
 	["pet"] = {
 		["slsh"] = "pet",
 		["type"] = "amused",
@@ -1832,7 +1852,20 @@ local emote = {
 	["point"] = {
 		["slsh"] = "point",
 		["type"] = "amused",
-		["defEmo"] = true
+		["group"] = "red",
+		["cost"] = 1,
+		["weight"] = 49,
+		["cd"] = 120,
+		["last"] = 0,
+		["defEmo"] = true,
+		["effects"] = {
+			["angry"] = -1,
+			["disturbed"] = -2,
+			["amused"] = -2,
+			["uncomfortable"] = -1,
+			["apathetic"] = 3,
+			["social"] = -1
+		},
 	},
 	["poke"] = {
 		["slsh"] = "poke",
@@ -2278,21 +2311,22 @@ local emote = {
 		["group"] = "yellow",
 		["cost"] = 3.1,
 		["weight"] = 37,
+		["channeled"] = true,
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["hungry"] = 0.25,
-			["energized"] = -4.5,
+			["hungry"] = 0.15,
+			["energized"] = -0.15,
 			["hot"] = 0.17,
-			["bored"] = -2,
-			["uncomfortable"] = 0.65,
-			["social"] = -3,
-			["sad"] = -1,
-			["neutral"] = -1,
-			["bored"] = -1,
-			["impatient"] = -1,
-			["flirty"] = 1,
-			["confident"] = 1
+			["uncomfortable"] = 0.45,
+			["social"] = -0.33,
+			["wet"] = 0.27,
+			["neutral"] = -0.7,
+			["bored"] = -0.5,
+			["impatient"] = -0.1,
+			["grungy"] = 0.77,
+			["refreshed"] = -0.44,
+			["confident"] = 0.2
 		}
 	},
 	["slap"] = {
@@ -2316,14 +2350,17 @@ local emote = {
 		["type"] = "sad",
 		["group"] = "blue",
 		["defEmo"] = true,
+		["channeled"] = true,
 		["cost"] = 1,
 		["weight"] = 51,
 		["cd"] = 120,
 		["last"] = 0,
 		["effects"] = {
-			["sleepy"] = -1.5,
-			["embarrassed"] = -1,
-			["dazed"] = -2.5,
+			["sleepy"] = -0.35,
+			["sad"] = -0.5,
+			["disturbed"] = -0.3,
+			["embarrassed"] = -0.7,
+			["dazed"] = -0.5,
 		}
 	},
 	["snap"] = {

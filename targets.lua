@@ -45,18 +45,23 @@ local targetActions = {
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
+	["Itinerant Moogle"] = {
+		["routine"] = "mesmerized",
+		["cooldown"] = 37.0,
+		["last"] = 0,
+	},
 	["Wind-up Moogle"] = {
 		["routine"] = "mesmerized",
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
 	["Calca"] = {
-		["routine"] = "poppit",
+		["routine"] = "calca",
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
 	["Brina"] = {
-		["routine"] = "poppit",
+		["routine"] = "brina",
 		["cooldown"] = 37.0,
 		["last"] = 0,
 	},
@@ -66,7 +71,7 @@ local targetActions = {
 		["last"] = 0,
 	},
 	["Purification Module"] = {
-		["routine"] = "laundry",
+		["routine"] = "laundryX",
 		["cooldown"] = 137.0,
 		["last"] = 0,
 	},
@@ -104,7 +109,99 @@ local targetActions = {
 		["routine"] = "interact",
 		["cooldown"] = 7.0,
 		["last"] = 0,		
-	}
+	},
+	["Tiny Key"] = {
+		["routine"] = "interact",
+		["cooldown"] = 1.0,
+		["last"] = 0,		
+	},
+	["Locked Door"] = {
+		["routine"] = "interact",
+		["cooldown"] = 1.0,
+		["last"] = 0,		
+	},
+	["Morbol Seedling"] = {
+		["routine"] = "morbid-lore",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Onion Prince"] = {
+		["routine"] = "onions",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Heavy Hatchling"] = {
+		["routine"] = "overstuffed-chicken",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	
+	["Goobbue Sproutling"] = {
+		["routine"] = "goobbue-diet",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Fat Cat"] = {
+		["routine"] = "fat-cats-ahoy",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	
+	["Wind-up Alphinaud"] = {
+		["routine"] = "young-entrepeneur",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Gestahl"] = {
+		["routine"] = "vomit-lapper",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Anteater"] = {
+		["routine"] = "widowmaker",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Golden Beaver"] = {
+		["routine"] = "goldfinger",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Giant Beaver"] = {
+		["routine"] = "giantfinger",
+		["cooldown"] = 477.0,
+		["last"] = 0,		
+	},
+	["Consecrated Shell"] = {
+		["routine"] = "pray",
+		["cooldown"] = 7.0,
+		["last"] = 0,		
+	},
+	["Fragrant Substance"] = {
+		["routine"] = "ambergris",
+		["cooldown"] = 7.0,
+		["last"] = 7,		
+	},
+	["Beady Eye"] = {
+		["routine"] = "magic-tears",
+		["cooldown"] = 477.0,
+		["last"] = 7,		
+	},
+	["Wind-up Ultros"] = {
+		["routine"] = "lecherous-purple",
+		["cooldown"] = 477.0,
+		["last"] = 7,		
+	},
+	["Signal Fire"] = {
+		["routine"] = "smoke-bomb",
+		["cooldown"] = 11.0,
+		["last"] = 0,		
+	},
+	["Piggy"] = {
+		["routine"] = "the-baconator",
+		["cooldown"] = 311.0,
+		["last"] = 0,		
+	},
 	
 }
 

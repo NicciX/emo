@@ -37,7 +37,12 @@ function ChatHandler()
 	end
 
 	if #txt > 0 then
-		SALAD = ChattyChop(txt)
+		if (txt:sub(1,4) == "juju" or txt:sub(1,5) == "chain") then
+			chainLock = true
+		end
+		
+		SALAD = ChattyChop(txt, not validChainChn[chn])
+		
 		if string.find(txt, " beckons to you.") then
 			if not CD[playerName].traits["stubborn"] and playerRace ~= "Miqo'te" then
 				txt = string.gsub(txt, " beckons to you.", "")
@@ -158,10 +163,6 @@ function ChatHandler()
 			Game.SendChat("/useitem 41500")
 		elseif string.find(txt, "sunshine") or string.find(txt, "birb") then
 			Game.SendChat("/useitem 7809")
-		elseif string.find(txt, "beaver") or string.find(txt, "bvr") then
-			Game.SendChat("/minion \"Golden Beaver\"")
-		--elseif string.find(txt, "apple") then
-			--DoRandom("apple", )
 		elseif string.find(txt, "Kaldea") then
 			DoRandom("doubt")
 		--elseif string.find(txt, "pizza") then
@@ -343,7 +344,7 @@ local bijous = {
 local cats = {
 	["whiskers"] = {"Nagxian Cat", "Tora-jiro", "Coeurl Kitten", "Black Coeurl", "Byakko Cub", "Palico", "Jibanyan",
 					"Bluecoat Cat", "Ilyikty'i", "Weatherproof Gaelicat", "Fat Cat", "Meerkat", "USApyon", "Shoebill",
-					"Black Kitten"},
+					"Black Kitten", "Gimme Kitten"},
 	["Nagxian Cat"] = true,
 	["Tora-jiro"] = true,
 	["Coeurl Kitten"] = true,
@@ -359,6 +360,7 @@ local cats = {
 	["Meerkat"] = true,
 	["USApyon"] = true,
 	["Shoebill"] = true,
+	["Gimme Kitten"] = true,
 }
 
 local mischief = {
@@ -380,23 +382,7 @@ local mischief = {
 	["Meerkat"] = true,
 }
 
-local birds = {
-	["feathers"] = {"Bluebird", "Owlet", "Ugly Duckling", "Hunting Hawk", "Road Sparrow",
-					"Silver Dasher", "Gull", "Blue-footed Booby", "Puffin", "Uolosapa", 
-					"Skallic Uolosapa", "Heavy Hatchling"},
-	["Bluebird"] = true,
-	["Owlet"] = true,
-	["Ugly Duckling"] = true,
-	["Hunting Hawk"] = true,
-	["Road Sparrow"] = true,
-	["Silver Dasher"] = true,
-	["Gull"] = true,
-	["Blue-footed Booby"] = true,
-	["Puffin"] = true,
-	["Uolosapa"] = true,
-	["Skallic Uolosapa"] = true,
-	["Heavy Hatchling"] = true,
-}
+
 
 local poppits = {
 	["strings"] = {"Calca", "Brina", "Meerkat", "Wind-up Edda", "Wind-up Chimera", "Shoebill", "Manjimutt"},
@@ -435,7 +421,7 @@ local razzle = {"pose", "dance", "deride", "spectacles", "shakedrink", "earwiggl
 
 local dazzle = {"mime", "magictrick", "allsaintscharm", "crimsonlotus", "blowbubbles", "wow", "victory", "heart", "spectacles"}
 
-local frazzle = {"aback", "shocked", "clutchhead", "panic", "furious", "no", "disappointed", "box", "malevolence"}
+local frazzle = {"aback", "shocked", "clutchhead", "sulk", "windmill", "panic", "angry", "furious", "no", "disappointed", "box", "malevolence", "deride", "sulk"}
 
 local validEarnings = {
 	["cosmic containers"] = 0,
@@ -567,7 +553,29 @@ end
 function Frazzle(msg)
 	local r = math.random(1, #frazzle)
 	--DoRandom(frazzle[r], " upon seeing <t>.")
-	DoRandom(frazzle[r], msg)	
+	lastFrazzle = lastFrazzle or 0
+	if frazzle[r] == "windmill" and Game.Player.Job.ShortName == "DNC" and (os.time() - lastFrazzle > 60) then
+		Game.SendChat("/ac windmill")
+		Script.QueueAction(TakeoffRandom, {"top", "pants", "shoes", "gloves", "necklace", "earrings"})
+		lastFrazzle = os.time()
+		--TakeoffRandom({"top", "pants", "shoes", "gloves", "necklace", "earrings"})
+	elseif frazzle[r] == "windmill" and Game.Player.Job.ShortName == "WHM" and (os.time() - lastFrazzle > 60) then
+		Game.SendChat("/ac assize")
+		Script.QueueAction(TakeoffRandom, {"top", "pants", "shoes", "gloves", "necklace", "earrings"})
+		lastFrazzle = os.time()
+	elseif frazzle[r] == "windmill" and Game.Player.Job.ShortName == "WAR" and (os.time() - lastFrazzle > 60) then
+		Game.SendChat("/ac overpower")
+		Script.QueueAction(TakeoffRandom, {"top", "pants", "shoes", "gloves", "necklace", "earrings"})
+		lastFrazzle = os.time()
+	elseif frazzle[r] == "windmill" and Game.Player.Job.ShortName == "MCH" and (os.time() - lastFrazzle > 60) then
+		Game.SendChat("/ac flamethrower")
+		Script.QueueAction(TakeoffRandom, {"top", "pants", "shoes", "gloves", "necklace", "earrings"})
+		lastFrazzle = os.time()
+	elseif frazzle[r] == "windmill" then
+		-- ω♥∩♥ω
+	else
+		DoRandom(frazzle[r], msg)
+	end
 end
 
 function doBijou(tag)
@@ -598,8 +606,232 @@ function getKitty(cat)
 	return true
 end
 
+local birds = {
+	["feathers"] = {"Bluebird", "Owlet", "Ugly Duckling", "Hunting Hawk", "Road Sparrow",
+					"Silver Dasher", "Gull", "Blue-footed Booby", "Puffin", "Uolosapa", 
+					"Skallic Uolosapa", "Heavy Hatchling", "Quetzal", "Micro Crow", "Zu Hatchling",
+					"Tight-beaked Parrot", "Sponge Silkie", "Morpho", "Gull", "Toco Toquito"},
+	["Bluebird"] = {"blue"},
+	["Owlet"] = {"owl", "wise", "hoot"},
+	["Ugly Duckling"] = {"duck", "goose"},
+	["Hunting Hawk"] = {"hawk"},
+	["Road Sparrow"] = {"sparrow", "tiny"},
+	["Silver Dasher"] = {"tiny"},
+	["Gull"] = {"gull", "sea", "pirate"},
+	["Blue-footed Booby"] = {"booby"},
+	["Puffin"] = {"puffin"},
+	["Uolosapa"] = {"uolo", "uolosapa"},
+	["Skallic Uolosapa"] = {"skallic", "uolosapa"},
+	["Heavy Hatchling"] = {"overstuffed", "fat", "turkey"},
+	["Quetzal"] = {"parrot", "quetzal"},
+	["Micro Crow"] = {"crow", "blackbird"},
+	["Zu Hatchling"] = {"zu"},
+	["Tight-beaked Parrot"] = {"parrot", "pirate"},
+	["Sponge Silkie"] = {"soft", "sponge", "mouse"},
+	["Morpho"] = {"morpho", "butterfly"},
+	["Toco Toquito"] = {"toucan", "pirate"},
+}
+
+local minDex = {
+	["Wayward Hatchling"] = "bird",
+}
+
+local minions = {
+	["bird"] = {
+		["Wayward Hatchling"] = {"yellow", "chocobo", "chick"},
+		["Black Chocobo Chick"] = {"black", "chocobo", "chick"},
+		["Princely Hatchling"] = {"crown", "chocobo", "yellow", "princely"},
+		["Castaway Chocobo Chick"] = {"pirate", "chocobo", "water", "blue", "float"},
+		["Ryunosuke"] = {"green", "dragon", "chocobo"},
+		["Bluebird"] = {"blue"},
+		["Owlet"] = {"owl", "wise", "hoot", "bush"},
+		["Ugly Duckling"] = {"duck", "goose", "flock"},
+		["Hunting Hawk"] = {"hawk", "raptor", "fierce"},
+		["Road Sparrow"] = {"sparrow", "tiny"},
+		["Silver Dasher"] = {"tiny", "silver"},
+		["Gull"] = {"gull", "sea", "pirate", "flock"},
+		["Blue-footed Booby"] = {"booby", "blue", "goofy", "funny"},
+		["Puffin"] = {"puffin", "fluffy"},
+		["Uolosapa"] = {"uolo", "uolosapa"},
+		["Skallic Uolosapa"] = {"skallic", "uolosapa"},
+		["Heavy Hatchling"] = {"overstuffed", "fat", "fluffy", "turkey"},
+		["Quetzal"] = {"parrot", "quetzal", "pirate", "green"},
+		["Micro Crow"] = {"crow", "blackbird", "black", "murder", "raven"},
+		["Zu Hatchling"] = {"zu", "ugly", "weird", "creepy", "skinny"},
+		["Tight-beaked Parrot"] = {"parrot", "pirate"},
+		["Sponge Silkie"] = {"soft", "sponge", "mouse"},
+		["Morpho"] = {"morpho", "butterfly"},
+		["Golden Beaver"] = {"bush"},
+		["Shoebill"] = {"him", "wise", "not a bird", "bush", "not"},
+		["Toco Toquito"] = {"toucan", "pirate"},
+	},
+	["kitty"] = {
+		["Nagxian Cat"] = {"siamese", "noble", "dark", "magestic", "black"},
+		["Tora-jiro"] = {"cute", "fat", "adorable", "fluffy", "orange", "kitten"},
+		["Coeurl Kitten"] = {"alley", "wild", "orange"},
+		["Black Coeurl"] = {"alley", "wild", "black", "coeurl", "couerl", "kitten"},
+		["Byakko Cub"] = {"tiger", "white", "tiger"},
+		["Palico"] = {"devious", "shovel", "pal", "helmet", "digger", "digging", "dig", "miner"},
+		["Jibanyan"] = {"red"},
+		["Bluecoat Cat"] = {"blue", "grey", "lovey"},
+		["Ilyikty'i"] = {"icky", "orange", "tiger", "kitten"},
+		["Weatherproof Gaelicat"] = {"flying"},
+		["Fat Cat"] = {"fat", "soft", "big", "fluffy", "hungry"},
+		["Black Kitten"] = {"black", "fashionable", "pink"},
+		["Meerkat"] = {"fake", "polecat"},
+		["USApyon"] = {"plastic"},
+		["Giant Beaver"] = {"beaver", "snae ling", "not a kitty", "giant", "large", "hungry", "lran", "pixies", "terror"},
+		["Shoebill"] = {"him", "wise", "not a cat"},
+		["Wind-up Chimera"] = {"patchwork", "quilted", "not a cat", "pink"},
+		["Gimme Kitten"] = {"electric", "crazy", "wild"},	
+	},
+	["dog"] = {
+		["Gestahl"] = {"poodle", "fancy", "hat", "pedigree"},
+		["Wolf Pup"] = {"pup", "black", "fluffy", "red bandana"},
+		["Torgal Pup"] = {"pup", "black", "fluffy", "white"},
+		["Royal Hound"] = {"beagle", "tan", "brown", "white"},
+		["Manjimutt"] = {"horrid", "creepy", "creepiest", "bastard", "mangi", "hideous", "vomit", "horrible", "lapping", "flea-bitten", "poodle", "ugly", "mangy", "mangey", "cringey", "chloe", "chloe's"},
+	},
+	["moogle"] = {
+		["Wind-up Moogle"] = {"plain"},
+		["Taoist Moogle"] = {"taoist", "monk"},
+		["Bridesmoogle"] = {"wedding", "bride", "basket"},
+	},
+	["duck"] = {
+		["Ugly Duckling"] = {"duck", "goose"},
+		["Heavy Hatchling"] = {"overstuffed", "fat", "turkey"},
+	},
+	["poppit"] = {
+		["Calca"] = {"anabelle", "calca", "matoya", "creepy", "chloe", "doll", "blue"},
+		["Brina"] = {"anabelle", "brina", "matoya", "creepy", "chloe", "doll", "red"},
+		["Meerkat"] = {"kat", "cat", "polecat"},
+		["Shoebill"] = {"him", "wise", "powerful"},
+		["Wind-up Chimera"] = {"patchwork", "quilted", "cat"},
+		["Wind-up Edda"] = true,
+		["Manjimutt"] = {"horrid", "creepy", "creepiest", "dog", "mutt", "cringey", "chloe", "chloe's"},
+	},
+	["bunny"] = {
+		["Dust Bunny"] = {"dusty", "black", "spriggan", "sandy's", "sandy"},
+		["Unlucky Rabbit"] = {"unlucky", "sad", "brown"},
+		["Meerkat"] = {"kat", "not a bunn", "polecat"},
+		["Shoebill"] = {"him", "wise", "not a bunn", "not a rabbit"},
+	},
+	["turnip"] = {
+		["Kidragora"] = {"mandrake", "sprout", "shrill", "nightshade"},
+		["Onion Prince"] = {"onion", "allium", "prince"},
+		["Eggplant Knight"] = {"eggplant", "knight", "black", "nightshade"},
+		["Shoebill"] = {"him", "wise", "not a bunn", "not a rabbit"},
+		["Garlic Jester"] = {"garlic", "allium"},
+		["Tomato King"] = {"king", "red", "tomato", "saucy", "nightshade"},
+		["Mandragora Queen"] = {"queen", "pink", "mandrake", "deafening", "nightshade"},
+		["Korpokkur Kid"] = {"pitcher", "kid", "sprout"},
+		["Tiny Bulb"] = {"bulb", "sprout"},
+	},
+	["motley"] = {
+		["Motley Egg"] = {"egg", "black and white"},
+		["Mischief Maker"] = {"jester"},
+		["Meerkat"] = {"curious"},
+		["Page 63"] = {"forbidden", "library", "matoya"},
+		["Treasure Box"] = {"mimic", "trickery"},
+		["Porro Roggo"] = {"illusion", "frog", "matoya"},
+		["Shoebill"] = {"him", "wise", "powerful", "annoyed", "smug"},
+		["Wind-up Cursor"] = {"tag", "hand", "finger", "point"},
+		["Manjimutt"] = {"horrid", "rotten", "miserable", "cursed", "mangey", "mangy","creepy", "creepiest", "dog", "mutt", "cringey", "chloe"},
+		["Clockwork Lantern"] = {"light"},
+		["Meerkat"] = {"imposter", "cat", "polecat"},
+	},
+	["doll"] = {
+		["Wind-up Alphinaud"] = {"alphi", "alphinaud", "windup", "wind-up", "doll", "human"},
+	},
+	["booger"] = {
+		["Wind-up Tonberry"] = {"green", "knife", "lalafel", "dungeon", "palace", "seven"},
+		["Mummy's Little Mummy"] = {"undead", "mummy", "tomb", "zombie", "dust"},
+		["Beady Eye"] = {"eye", "flying", "gaze", "leathery wings", "stone", "ahriman"},
+		["Wind-up Ultros"] = {"purple", "godbert", "octopus", "lecherous", "handy"},
+		["Puff of Darkness"] = {"vampire", "wings", "wraith", "dungeon", "darkness", "dark", "wisp", "cloud"},
+	},
+	["creature"] = {
+		["Giant Beaver"] = {"beaver", "snae ling", "giant", "large", "hungry", "lran", "pixies", "terror"},
+		["Bacon Bits"] = {"geordie", "pig", "flying", "not a beaver", "porxie", "pixies"},
+		["Piggy"] = {"bipedal", "pig", "not a pig", "not a beaver", "not a porxie", "strange", "booger"},
+	},
+	["critter"] = {
+		["Wide-eyed Fawn"] = {"deer", "four legs", "blue", "baby"},
+	},
+	["mammet"] = {
+	
+	},
+	["beaver"] = {
+		["Meerkat"] = {"imposter", "cat", "polecat", "not a beaver"},
+		["Golden Beaver"] = {"gold", "golden", "magnificent", "royalty", "pixies", "terror", "lyhe ghia"},
+		["Giant Beaver"] = {"beaver", "snae ling", "giant", "large", "hungry", "lran", "pixies", "terror"},
+		["Capybara Pup"] = {"brown", "adorable", "not a beaver", "capybara", "pup"},
+	},
+	["squirrel"] = {
+		["Nutkin"] = {"squirrel", "nuts", "sacks", "grey"},
+	}
+
+}
+
+function MinionMadness(minion, madness)
+	local slct
+	local variance = 63
+	if minions[minion] then
+		if minions[minion][madness] then
+			Game.SendChat("/minion \"" .. minions[minion][madness] .. "\"")
+			return
+		end
+	end
+	
+	for k,v in pairs(minions[minion]) do
+		if type(v) == "table" and k ~= currentMinion then
+			for i,x in ipairs(v) do
+				if string.contains(madness:lower(), x:lower()) then
+					if not slct then
+						slct = k
+						variance = variance + 14
+					elseif math.random(1,111) > variance then
+						variance = variance + 11
+						slct = k
+					end
+				end
+			end
+		end
+	end
+	--dbgMsg("MinionMadness: madness :: " .. tostring(madness), 1)
+	dbgMsg("MinionMadness: slct :: " .. tostring(slct), 1)
+	if slct then
+		Game.SendChat("/minion \"" .. slct .. "\"")
+		currentMinion = slct
+	end
+end
+
 function getBird(bird)
-	if bird == "random" then
+	local slct
+	if birds[bird] then
+		Game.SendChat("/minion \"" .. birds[bird] .. "\"")
+		return
+	end
+	for k,v in pairs(birds) do
+		if k ~= "feathers" then
+			if type(v) == "table" then
+				for i,x in ipairs(v) do
+					if string.contains(bird:lower(), x:lower()) then
+						if not slct then
+							slct = k
+						elseif math.random(1,100) > 77 then
+							slct = k
+						end
+					end
+				end
+			end
+		end
+	end
+	dbgMsg("getBird: slct :: " .. tostring(slct), 1)
+	if slct then
+		Game.SendChat("/minion \"" .. slct .. "\"")
+		
+	else -- bird == "random" then
 		dbgMsg("getBird: bird :: " .. tostring(bird), 1)
 		local r = math.random(1, #birds.feathers)
 		local k = birds.feathers[r]
@@ -607,8 +839,8 @@ function getBird(bird)
 		if birds[k] then
 			Game.SendChat("/minion \"" .. k .. "\"")
 		end
-	elseif birds[bird] then
-		Game.SendChat("/minion \"" .. birds[bird] .. "\"")
+	--elseif birds[bird] then
+		--Game.SendChat("/minion \"" .. birds[bird] .. "\"")
 	end
 	return true
 end
@@ -768,10 +1000,14 @@ function StringsHandler(dat)
 			Game.SendChat("/" .. tostring(ret))
 		end
 	elseif type(dat) == "table" then
-		dbgMsg("Blimey report ::" .. Blimey(dat.report), 1)
-		if dat.report and CD[playerName].traits["gossiper"] then
-			--dbgMsg("Blimey: " .. Blimey(dat.report), 1)
-			Game.SendChat("/fc " .. Blimey(dat.report))
+		if dat.report then
+			dbgMsg("Blimey report ::" .. Blimey(dat.report), 1)
+			if dat.report and CD[playerName].traits["gossiper"] then
+				--dbgMsg("Blimey: " .. Blimey(dat.report), 1)
+				Game.SendChat("/fc " .. Blimey(dat.report))
+			end
+		elseif dat.routine then
+			CallRoutine(dat.routine)
 		end
 	elseif type(dat) == "string" then
 		Game.SendChat("/" .. dat)		
@@ -784,30 +1020,97 @@ function Chatty(what)
 	end
 end
 
-function ChattyChop(chat)
+function ChattyChop(chat, opt)
 	dbgMsg(".ChattyChop.", 2)
 	func_time["ChattyChop"].ST = os.time()
 	
+	if lockChain then
+		lockChain = nil
+		func_time["ChattyChop"].END = os.time()
+		func_track("ChattyChop")
+		return nil
+	end
+	
+	if not cHAIn then
+		cHAIn = {}
+	end
+	
+	if chat:sub(1,4) == "juju" or chat:sub(1,5) == "chain" or opt then
+		lockChain = true
+	end
+	
 	local salad = {}
 	local cnt = 0
+	local cm = 0
 	local s = string.match(chat, "(%a+)")
-	local c,pr
-	while s and cnt < 53 do
-		salad[#salad+1] = s
-		c = string.lower(s)
-		cHAIn[c] = cHAIn[c] or {}
-		cHAIn[c].link = (cHAIn[c].link or 0) + 1
-		cHAIn[c].pos = (cHAIn[c].pos or 0) + cnt + 1
-		if pr then
-			cHAIn[c].follows = cHAIn[c].follows or {}
-			cHAIn[c].follows[pr] = (cHAIn[c].follows[pr] or 0) + 1
+	local t = string.match(chat, "([%a][%w']*[%w]+)")
+	local u = string.match(chat, "(%a+),")
+	if s ~= t then
+		if s ~= "a" and s ~= "i" and s ~= "q" then
+			s = t
 		end
+	end
+		
+	if s == u and s and u then
+		cm = 1
+	end
+	--local s = string.match(chat, "([%a][%w']*[%w]+)")
+	
+	local c,pr,fl,fw
+	while s and cnt < 377 do
+		salad[#salad+1] = s
+		--dbgMsg("ChattyChop:  word :: " .. tostring(s), 1)
+		c = string.lower(s)
+		if not lockChain then
+			cHAIn[c] = cHAIn[c] or {}
+			cHAIn[c].link = (cHAIn[c].link or 0) + 1
+			cHAIn[c].time = os.time()
+			cHAIn[c].comma = (cHAIn[c].comma or 0) + cm
+			cHAIn[c].pos = math.floor(((cHAIn[c].pos or 0) + cnt + 1) / 2)
+			if ((fl or c) ~= c) then
+				cHAIn[c].follows = cHAIn[c].follows or {}
+				cHAIn[c].follows[fl] = (cHAIn[c].follows[fl] or 0) + 1
+			end
+						
+			if cnt == 0 then
+				cHAIn[c].isFW = (cHAIn[c].isFW or 0) + 1
+				fw = c
+			elseif fw then
+				cHAIn[c].fw = cHAIn[c].fw or {}
+				cHAIn[c].fw[fw] = (cHAIn[c].fw[fw] or 0) + 1
+			end
+			
+		end
+		pr = nil
+		fl = c
 		chat = string.gsub(chat, s, "", 1)
 		s = string.match(chat, "(%a+)")
-		pr = string.lower(s)
-		cHAIn[c].precedes = cHAIn[c].precedes or {}
-		cHAIn[c].precedes[pr] = (cHAIn[c].precedes[pr] or 0) + 1
+		t = string.match(chat, "([%a][%w']*[%w]+)")
+		u = string.match(chat, "(%a+), ")
+		if s ~= "a" and s ~= "i" and s ~= "q" then
+			if s ~= "a" then
+				s = t
+			end
+		end
+		
+		cm = 0
+		if s == u and s and u then
+			cm = 1
+			dbgMsg("ChattyChop:  comma✓ :: " .. tostring(s), 1)
+		end
+		--s = string.match(chat, "([%a][%w']*[%w]+)")
+		if (c and s) then
+			if not lockChain then
+				pr = string.lower(s)
+				cHAIn[c].precedes = cHAIn[c].precedes or {}
+				cHAIn[c].precedes[pr] = (cHAIn[c].precedes[pr] or 0) + 1
+			end
+		end
+		
 		cnt = cnt + 1
+	end
+	if opt then
+		lockChain = nil
 	end
 	func_time["ChattyChop"].END = os.time()
 	func_track("ChattyChop")
@@ -1040,6 +1343,7 @@ function JujuHoodoo(txt, chn)
 			--dbgMsg("JujuHoodoo:  funCoo :: " .. tostring(funCoo[2]), 9)
 			if not funCoo[2] then
 				if chn then
+					lockChain = true
 					Game.SendChat("/" .. string.lower(chn) .. preef .. tostring(funCoo[2]))
 				else
 					Game.SendChat("/e" .. preef .. tostring(funCoo[2]))
@@ -1056,6 +1360,7 @@ function JujuHoodoo(txt, chn)
 					local x, o = {pcall(funCoo[2])}
 					if type(x) == "table" then
 						if chn then
+							lockChain = true
 							Game.SendChat("/" .. string.lower(chn) .. preef .. tostring(x[2]))
 							
 						else
@@ -1083,9 +1388,11 @@ function JujuHoodoo(txt, chn)
 							--local x, o = {pcall(funCoo[2])}
 							--x, o = {pcall(funCoo[2])}
 							--Game.SendChat("/e" ..  preef .. tostring(funCoo[2]))
+							lockChain = true
 							Game.SendChat("/" .. string.lower(chn) .. preef .. tostring(funCoo[2]))
 						else
 							--Game.SendChat("/e" ..  preef .. tostring(funCoo[2]))
+							lockChain = true
 							Game.SendChat("/" .. string.lower(chn) .. preef .. tostring(funCoo[2]))
 						end
 						
@@ -1117,6 +1424,9 @@ function Expense(txt, chn, toss)
 		end
 		txt = string.gsub(txt, toss, "")
 		txt = string.gsub(txt, " ", "")
+		txt = string.gsub(txt, "a ", "")
+		txt = string.gsub(txt, "an ", "")
+		txt = string.gsub(txt, "", "")
 		
 		local val = string.match(txt, "(%d+,?%d+,?%d*)")
 		if not val then
@@ -1142,15 +1452,28 @@ function Expense(txt, chn, toss)
 		if not val then
 			val = 0
 		end
-
-		local tmp = ChattyChop(txt)
+		--dbgMsg("Market: Item :: " .. tostring(txt), 1)
+		txt = string.gsub(txt, "a copy of ", "")
+		txt = string.gsub(txt, "fistfuls of ", "")
+		txt = string.gsub(txt, "vials of ", "")
+		txt = string.gsub(txt, "bottles of ", "") 
+		
+		local tmp = ChattyChop(txt, not validChainChn[chn])
+		
+		if not tmp or type(tmp) ~= "table" then
+			dbgMsg("Expense: ERROR! .. :: " .. tostring(tmp), 1)
+			tmp = {}
+		end
+		
 		txt = ""
+		
 		for i,v in ipairs(tmp) do
 			txt = txt .. v
 			if i < #tmp then
 				txt = txt .. " "
 			end
 		end
+		--dbgMsg("Market: chopped :: " .. tostring(txt), 1)
 		
 		CD[playerName]["purchases"][txt] = CD[playerName]["purchases"][txt] or {}
 		CD[playerName]["purchases"][txt].total = CD[playerName]["purchases"][txt].total or 0
@@ -1221,7 +1544,11 @@ function Windfall(txt, chn, toss)
 		else
 			val = 1
 		end
-		local tmp = ChattyChop(txt)
+		local tmp = ChattyChop(txt, not validChainChn[chn])
+		if not tmp then
+			dbgMsg("Windfall: ERROR!", 1)
+			tmp = {}
+		end
 		txt = ""
 		for i,v in ipairs(tmp) do
 			txt = txt .. v
@@ -1309,11 +1636,14 @@ function Windfall(txt, chn, toss)
 		if sale > 7777 then
 			Report(lastSale)
 		end
-	elseif (chn == "RetainerSale" or chn == "say") and string.find(txt, "you put up for sale") then
+	elseif (chn == "RetainerSale" or chn == "say" or chn == "l2") and string.find(txt, "you put up for sale") then
 		--dbgMsg("Windfall: txt :: " .. tostring(txt), 1)
 		lastSale = txt
 		txt = string.gsub(txt, "handfuls of", "")
+		txt = string.gsub(txt, ",", "")
 		--txt = string.gsub(txt, "handfuls of", "")
+		
+		--local cnt = string.match(txt, "^The (%d+) ")
 		local cnt = string.match(txt, "^The (%d+) ")
 		if cnt then
 			cnt = tonumber(cnt)
@@ -1432,7 +1762,10 @@ function ProgHandler(txt, toss, chn)
 		Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
 		EmoGyre("responsible", 7)
 		EmoGyre("confident", 7)
-		DoRandom("cheer", " moved by excellent performance.")
+		if os.time() - (lastCheer or 0) > 444 then
+			DoRandom("cheer", " moved by excellent performance.")
+			lastCheer = os.time()
+		end
 	elseif string.find(txt, "Silver Star rating") then
 		Moodle("SilverStar", "apply", "self", "buffs", "default")
 		playerProg.SilverStar = playerProg.SilverStar + 1
@@ -1440,7 +1773,11 @@ function ProgHandler(txt, toss, chn)
 		Moodle("-AetherSpriggan-", "apply", "self", "buffs", "default")
 		EmoGyre("responsible", 3)
 		EmoGyre("confident", 3)
-		DoRandom("clap", " from a job well done.")
+		if os.time() - (lastClap or 0) > 333 then
+			DoRandom("clap", " from a job well done.")
+			lastClap = os.time()
+		end
+		
 	elseif string.find(txt, "Bronze Star rating") then
 		Moodle("BronzeStar", "apply", "self", "buffs", "default")
 		playerProg.BronzeStar = playerProg.BronzeStar + 1
@@ -1585,6 +1922,537 @@ function StartTour(txt)
 	end
 end
 
+function LettuceLoad()
+	SG = {}
+	local x = 1
+	local row = 1
+	for k,v in pairs(cHAIn) do
+		SG[row] = SG[row] or {}
+		table.insert(SG[row], k)
+		x = x + 1
+		if x > 17 then
+			row = row + 1
+			x = 1
+		end
+	end
+	rWs = row
+	for i=1, 17 do
+		shiftSG(i, i, Gyre.black[1])
+	end
+	
+	dbgMsg("∫LettuceLoad∫ •‡• Loaded!", 1)
+end
+
+function chaiNLength()
+	local n = 0
+	for k,v in pairs(cHAIn) do
+		n = n + 1
+	end
+	return n
+end
+
+function shiftSG(row, col, amt)
+	local tmpA = tcopy(SG)
+	--local rws = 1 + math.floor((ChL - 1) / 17)
+	local dxPtr
+	if row ~= 0 then
+		for i = 1, 17 do
+			dxPtr = i + amt - 17 * ((i + amt > 17) and 1 or 0)
+			SG[row][dxPtr] = tmpA[row][i]
+		end
+	end
+	if col ~= 0 then
+		--dbgMsg("∫shiftSG∫ •‡• col: " .. tostring(col) .. " •‡• amt: " .. tostring(amt), 1)
+		for i = 1, rWs do
+			dxPtr = i + amt - rWs * ((i + amt > rWs) and 1 or 0)
+			if not tmpA[i] then
+				tmpA[i] = {}
+			end
+			if not tmpA[i][col] then
+				--dbgMsg("∫shiftSG∫ •‡• booger: " .. tostring(i) .. " •‡• dxPtr: " .. tostring(dxPtr), 1)
+				tmpA[i][col] = "booger" -- Keep a full table and you wont get boogers in your salad. ~Sandy Skittles
+			end
+			if dxPtr < 1 then
+				dxPtr = rWs + dxPtr
+				--dbgMsg("∫shiftSG∫ •‡• dxPtr: " .. tostring(dxPtr), 1)
+			end
+			if not SG[dxPtr] then
+				dbgMsg("∫shiftSG∫ •‡• dxPtr: " .. tostring(dxPtr), 1)
+				SG[dxPtr] = SG[dxPtr] or {}
+			end
+			SG[dxPtr][col] = tmpA[i][col]
+		end
+	end
+end
+
+function TossSalad()
+	--local rws = 1 + math.floor((ChL - 1) / 17)
+	--local sv = Gyre.black[3]
+	--local ln = 3 + Gyre.red[4]
+	--local brk = 0
+	--local tomato = ""
+	--local salt
+	local salt = math.random(1,77)
+	--if not lastWord then
+		--lastWord = SG[toSSit][9]
+	--end
+	if not cHAIn[SG[toSSit][9]].precedes then
+		shiftSG(toSSit, 0, 1)
+	elseif not lastWord then
+		toMAto = SG[toSSit][9] .. " "
+		lastWord = SG[toSSit][9]
+		dbgMsg("∫TossSalad∫ •‡• firstWord: " .. tostring(lastWord) .. " <se.1>", 1)
+		
+		toSSit = toSSit + 1
+	elseif not cHAIn[lastWord].precedes[SG[toSSit][9]] then
+		--dbgMsg("∫TossSalad∫ •‡• " .. tostring(SG[toSSit][9]) .. " <•‡•> " .. tostring(SG[toSSit+1][9]), 1)
+		if salt > 53 then
+			shiftSG(toSSit, 0, 1)
+		elseif salt > 47 then
+			shiftSG(0, 8, 2)
+			shiftSG(0, 10, 2)
+			shiftSG(toSSit, 0, -1)
+		elseif salt > 37 then
+			shiftSG(0, 7, 1)
+			shiftSG(0, 11, 1)
+			shiftSG(toSSit, 0, -2)
+		elseif salt > 29 then
+			shiftSG(0, 6, 3)
+			shiftSG(0, 12, 3)
+			shiftSG(toSSit, 0, -3)
+		elseif salt > 19 then
+			shiftSG(0, 5, 4)
+			shiftSG(0, 13, 4)
+			shiftSG(toSSit, 0, -4)
+		elseif salt > 9 then
+			shiftSG(0, 8, 1)
+			shiftSG(0, 10, -1)
+			shiftSG(toSSit, 0, -1)
+		else
+			--shiftSG(0, 9, salt)
+		end
+	else
+		
+		--if toMAto == "" then
+			--toMAto = SG[toSSit][9] .. " "
+		--end
+		toMAto = toMAto .. SG[toSSit][9] .. " "
+		lastWord = SG[toSSit][9]
+		--lastWord = SG[toSSit+1][9]
+		
+		dbgMsg("∫TossSalad∫ •‡• " .. tostring(SG[toSSit][9]) .. " <se.7>", 1)
+		
+		toSSit = toSSit + 1
+		--lastWord = SG[toSSit][9]
+		if toSSit > leTTuce or not cHAIn[lastWord].precedes then
+			toSSit = nil
+			Game.SendChat(tostring(toMAto))
+		end
+	end
+	
+	
+	
+	toSSes = toSSes + 1
+	
+	if IsPrime(toSSes) then
+		dbgMsg("∫TossSalad∫ •‡• " .. tostring(lastWord) .. " <•‡•> " .. tostring(SG[toSSit][9]), 1)
+		--dbgMsg("∫TossSalad∫ •‡• " .. tostring(SG[toSSit][9]), 1)
+	end
+	
+
+	--dbgMsg("∫TossSalad∫ •‡• " .. tostring(toMAto), 1)
+	--return toSSit
+	--shiftSG(3, 0, -3)
+	--dbgMsg("∫TossSalad∫ •‡• " .. tostring(SG[3][9]), 1)
+end
+
+function SpinTheBowl(n)
+	dbgMsg("∫SpinTheBowl∫ • get ready for the spike!✓", 1)
+	local row,col
+	for i=1, rWs do
+		for j=1, 17 do
+			if SG[i][j] == n then
+				row = i
+				col = j
+				break
+			end
+		end
+		if row then
+			dbgMsg("∫SpinTheBowl∫ • break chk✓", 1)
+			break
+		end
+	end
+	for i=1, 17 do
+		shiftSG(0, i, 1 - row)
+	end
+	dbgMsg("∫SpinTheBowl∫ • shift rows✓", 1)
+	for i=1, rWs do
+		shiftSG(i, 0, 9 - col)
+	end
+	dbgMsg("∫SpinTheBowl∫ • shift columns✓", 1)
+end
+
+function SaladGyre(n, chn)
+	--dbgMsg("∫SaladGyre∫ •", 1)
+	runGyreMethod("black-snake")
+	if not SG or (ChL or 0) ~= chaiNLength() then
+		ChL = chaiNLength()
+		LettuceLoad()
+	end
+	
+	--local rws = 1 + math.floor((ChL - 1) / 17)
+	--local sv = Gyre.black[3]
+	--local ln = 3 + Gyre.red[4]
+	
+	--rWs = 1 + math.floor((ChL - 1) / 17)
+	leTTuce = 2 + Gyre.red[4]
+	if leTTuce > 17 then
+		leTTuce = 11
+	end
+	
+	if cHAIn[n] then
+		SpinTheBowl(n)
+	else
+		shiftSG(1, 0, 1)
+	end
+	
+	lastWord = nil
+	toSSes = 1
+	saLad = Gyre.black[3]
+	toMAto = ""
+	toSSit = 1
+	
+	--local bowl = TossSalad()
+	--Game.SendChat("/" .. string.lower(chn) .. " " .. bowl)
+	--dbgMsg("∫SaladGyre∫ Tossed •", 1)
+	--dbgMsg("∫SaladGyre∫ • toss salad •‡• " .. tostring(SG[1][9]), 1)
+	
+end
+
+function Proclaim(n, chan)
+	local jot = ""
+	local cnt = 1
+	local pot, hot, dot, spot, snot, shot, quot, wot, bot, cot, sot, rot
+	local plot, slot, snp, trot, itshit, got, lot
+	local idx = 0
+	local lmX = 7
+	local cX = 0
+	
+	runGyreMethod("black-snake")
+	Moodle("Aetheric++", "apply", "self", "buffs", "default")
+	EmoGyre("aetheric", 27)
+	
+	if type(n) == "string" then
+		if string.contains(n, " ") then
+			jot = n
+			n = n:match("%w+$")
+			jot = string.gsub(jot, n, "")
+			lot = jot:match("(%w+) $")
+		end
+	end
+	
+	if not n then
+		n = 27
+	elseif not tonumber(n) then
+		--dbgMsg("∫Proclaim∫ • n •‡• " .. tostring(n), 1)
+		if #n > 0 then
+			shot = n
+			--dbgMsg("∫Proclaim∫ • shot •‡• " .. tostring(cHAIn[shot]), 1)
+			if playerTraits.spriggan then
+				n = 3 + Gyre.yellow[1]
+				--dbgMsg("∫Proclaim∫ • ∫prig~ [ylw] •‡• " .. tostring(n), 1)
+				if n > 17 then
+					n = n - Gyre.red[6]
+					--dbgMsg("∫Proclaim∫ • ∫prig~ [red] •‡• " .. tostring(n), 1)
+				end
+				if n < 7 then
+					n = n + Gyre.white[6]
+					--dbgMsg("∫Proclaim∫ • ∫prig~ [grn] •‡• " .. tostring(n), 1)
+				end
+				if n > 17 then
+					n = n - Gyre.blue[4]
+					--dbgMsg("∫Proclaim∫ • ∫prig~ [wht] •‡• " .. tostring(n), 1)
+				end
+				if n < 7 or n > 17 then
+					n = 7
+				end
+				--dbgMsg("∫Proclaim∫ • ∫prig~n •‡• " .. tostring(n), 1)
+			else
+				n = 13
+			end
+		else
+			n = 9
+		end
+	else
+		n = tonumber(n)
+	end
+	
+	dbgMsg("∫Proclaim∫ • -n- •‡• " .. tostring(n), 1)
+	
+	lmX = n
+	
+	chan = chan or "fc"
+	wot = {}
+	
+	for k,v in pairs(cHAIn) do
+		idx = idx + 1
+		wot[idx] = k
+	end
+	
+	disco = math.floor((Gyre.blue[2] + Gyre.green[3]) / 3)
+		
+	if disco < 3 then
+		disco = Gyre.blue[2] + Gyre.green[3]
+	end
+	
+	while disco > 11 do
+		disco = disco - 7
+	end
+	
+	repeat
+		hot = 0
+		pot = nil
+		if cnt == 1 and shot then
+			pot = shot
+			spot = pot
+			--lot
+			dbgMsg("∫Proclaim∫ • pot shot •‡• " .. tostring(pot), 1)
+		elseif cnt == 1 then
+			repeat
+				cX = cX + 1
+				dot = math.random(1, idx)
+				--dbgMsg("∫Proclaim∫ • wot •‡• " .. tostring(wot[dot]), 1)
+				if cHAIn[wot[dot]] then
+					if cHAIn[wot[dot]].precedes then
+						pot = wot[dot]
+					end
+					dbgMsg("∫Proclaim∫ • |wot| •‡• " .. tostring(pot), 1)
+				end
+			until (pot or cX > 7)
+		else
+			if cHAIn[spot] then
+				if cHAIn[spot].precedes then
+					dot = 0.5
+					snot = 0.5
+					rot = 1 + math.floor(Gyre.blue[5] * 0.1)
+					bot = 1
+					trot = Gyre.black[4]
+					itshit = 0
+					for k,v in pairs(cHAIn[spot].precedes) do
+						if v > dot and (v / dot < 777 or math.random(1,100) > 44) and k ~= spot then
+							quot = 0
+							
+							if cHAIn[k] then
+								slot = 7
+								if cHAIn[k].time then
+									slot = math.floor((os.time() - cHAIn[k].time) / 369)
+								end
+								if cHAIn[k].precedes then
+									for o,p in pairs(cHAIn[k].precedes) do quot = quot + 1 end
+								end
+								if not string.contains(jot, k .. " ") or math.random(1,77) > 44 then
+									if playerTraits.aetheric and cHAIn[k].link > snot and Gyre.black[1] > 23 and slot > 7 then
+										bot = quot
+										dot = v
+										pot = k
+										if emoState.aetheric < 366 then
+											snot = cHAIn[k].link - math.floor(emoState.aetheric / 66)
+										else
+											snot = cHAIn[k].link + math.floor(emoState.aetheric / 66)
+										end
+										dbgMsg("∫Proclaim∫ • aetheric •" .. pot .. " •‡• snot: " .. tostring(snot) .. " •‡• cnt: " .. tostring(cnt), 1)
+									elseif cHAIn[k].follows[spot] > 11 + slot + trot then
+										pot = k
+										trot = cHAIn[k].follows[spot] + 17
+										rot = rot - cHAIn[k].follows[spot] * 0.37
+										dbgMsg("∫Proclaim∫ • follower •" .. pot .. " •‡• " .. tostring(cHAIn[k].follows[spot]) .. " •‡• cnt: " .. tostring(cnt), 1)
+									elseif diff(cHAIn[k].pos, cnt) < rot then
+										pot = k
+										rot = diff(cHAIn[k].pos, cnt)
+										dbgMsg("∫Proclaim∫ • " .. pot .. " •‡• rot: " .. tostring(rot) .. " •‡• cnt: " .. tostring(cnt), 1)
+										--rot = 
+									elseif rot > 3 and cHAIn[k].link > snot and quot >= math.random(1, bot) then
+										bot = quot
+										dot = v
+										pot = k
+										dbgMsg("∫Proclaim∫ • " .. pot .. " •‡• dot: " .. tostring(dot).. " •‡• bot: " .. tostring(bot) .. " •‡• cnt: " .. tostring(cnt), 1)
+										snot = cHAIn[k].link + Gyre.yellow[3]
+									elseif not cot then
+										--if slot > 7 then
+										
+										cot = k
+										dbgMsg("∫Proclaim∫ •‡• cot: " .. cot .. " •‡• cnt: " .. tostring(cnt) , 1)
+										--end
+									elseif slot > 7 then
+										snot = snot - math.floor(Gyre.yellow[6] / 7)
+										cot = k
+										dbgMsg("∫Proclaim∫ • " .. cot .. " •‡• snot: " .. tostring(snot).. " •‡• cnt: " .. tostring(cnt), 1)
+									end
+								end
+							end
+						elseif not cot then
+							dot = dot + Gyre.black[3] * 0.1
+							if Gyre.red[6] < idx then
+								sot = math.random(Gyre.red[6], idx)
+								--dbgMsg("∫Proclaim∫ • red sot •‡• " .. tostring(sot), 1)
+							else
+								sot = math.random(1, idx)
+								--dbgMsg("∫Proclaim∫ • sot •‡• " .. tostring(sot), 1)
+							end
+							
+							cot = wot[sot]
+							dbgMsg("∫Proclaim∫ • wot cot •‡• " .. tostring(cot) .. " •‡• cnt: " .. tostring(cnt), 1)
+						end
+						if cot or pot then
+							itshit = itshit + 1
+						end
+						if itshit > 3 then
+							dbgMsg("∫Proclaim∫ • break! •‡• cot: " .. tostring(cot) .. " •‡• pot: " .. tostring(pot) , 1)
+							break
+						end
+					end
+					
+					
+
+				else
+					--
+				end
+			end
+		end
+		
+		
+		
+		if ((matchsticks.strikes[pot] == "*PW*" or matchsticks.strikes[pot] == "*panic*") and cnt == 1) then
+			lmX = lmX - 1
+			dbgMsg("∫Proclaim∫ • (PW) •‡• " .. tostring(lmX), 1)
+			--dbgMsg("∫Proclaim∫ • (pot) •‡• " .. tostring(pot), 1)
+		elseif not pot and not cot then
+			lmX = lmX - cnt
+			dbgMsg("∫Proclaim∫ • not cot •‡• " .. tostring(lmX), 1)
+		elseif not pot then
+			spot = cot
+			got = cot
+			--jot = jot .. tostring(cot) .. " "
+			snp = nil
+			cnt = cnt + 1
+			dbgMsg("∫Proclaim∫ • not pot •‡• " .. tostring(cot), 1)
+		elseif cnt / disco == math.floor(cnt / disco) then
+			dbgMsg("∫Proclaim∫ • (disco) •‡• " .. tostring(disco), 1)
+			dbgMsg("∫Proclaim∫ • (cot) •‡• " .. tostring(cot), 1)
+			if not cot then
+				cot = pot
+			end
+			spot = cot
+			got = cot
+			
+			--[[
+			if Gyre.white[1] > 23 then
+				jot = jot:sub(1, #jot - 1)
+				jot = jot .. ", " .. tostring(cot) .. " "
+			else
+				jot = jot .. tostring(cot) .. ", "
+			end
+			]]--
+			
+			snp = nil
+			cnt = cnt + 1
+		elseif not cHAIn[pot] then
+			lmX = lmX - 1
+			dbgMsg("∫Proclaim∫ • pot not •‡• " .. tostring(pot), 1)
+		elseif not cHAIn[pot].precedes and lmX > 1 then
+			lmX = lmX - 1
+			
+			if cot and cot ~= pot then
+				if cHAIn[cot].precedes then
+					spot = cot
+					got = cot
+					--jot = jot .. cot .. " "
+					cnt = cnt + 1
+					lmX = lmX - cnt
+				end
+			end
+			if snp then
+				lmX = 0
+				if pot then
+					spot = pot
+					got = pot
+					--jot = jot .. pot .. " "
+					cnt = cnt + 1
+					dbgMsg("∫Proclaim∫ • end of chain •‡• " .. tostring(pot), 1)
+					--lmX = lmX - cnt
+				end
+			else
+				snp = 1
+			end
+			--if lmX == 0 then
+				--spot = pot
+				--jot = jot .. pot .. " "
+				--cnt = cnt + 1
+			--end
+			--dbgMsg("∫Proclaim∫ • pot •‡• " .. tostring(pot), 1)
+		else
+			if cot and pot then
+				if math.random(1,Gyre.white[2] + 7) > Gyre.yellow[3] + Gyre.black[4] then
+					pot = cot
+					dbgMsg("∫Proclaim∫ • pot-cot •‡• " .. tostring(cot) ..  " [WHT] •‡• " .. tostring(Gyre.white[2] + 7) .. " •‡•  [YLW] •‡• " .. tostring(Gyre.yellow[3] + Gyre.black[4]) , 1)
+				end
+			end
+			spot = pot
+			--dbgMsg("∫Proclaim∫ • spot •‡• " .. tostring(spot), 1)
+			
+			got = pot
+			--jot = jot .. pot .. " "
+			snp = nil
+			cnt = cnt + 1
+		end
+		cot = nil
+		if got then
+			if cHAIn[got].cap then
+				--dbgMsg("∫Proclaim∫ • Cap✓ •‡• got: " .. tostring(got), 1)
+				dbgMsg("∫Proclaim∫ • Cap✓ •‡• lot: " .. tostring(lot), 1)
+				dbgMsg("∫Proclaim∫ • Cap✓ •‡• cap: " .. tostring(cHAIn[got].cap), 1)
+				if cHAIn[got].cap == true then
+					got = got:sub(1,1):upper() .. got:sub(2, #got)
+				elseif cHAIn[got].cap == lot then
+					got = got:sub(1,1):upper() .. got:sub(2, #got)
+				end
+			end
+			jot = jot .. got .. " "
+			lot = got
+		end
+		got = nil
+	until (cnt > n or lmX < 1 or lmX == cnt)
+	
+	if jot:sub(#jot-1, #jot) == ", " then
+		jot = jot:sub(1,1):upper() .. jot:sub(2, #jot - 2) .. "."
+	else
+		jot = jot:sub(1,1):upper() .. jot:sub(2, #jot - 1) .. "."
+	end
+	
+	lastProclamation = jot
+	
+	Game.SendChat("/" .. string.lower(chan) .. " " .. jot)
+	--dbgMsg("∫hip∫ • πpos •‡• " .. tostring(math.floor(snap)), 1)
+end
+
+function WhipIT(chain,chan)
+	local good, bad = shiftWord(chain)
+	local snap, dragon
+	if bad == "" then
+		if cHAIn[good] then
+			snap = cHAIn[good].pos / (cHAIn[good].link or 1)
+			lockChain =  true
+			--Game.SendChat("/" .. string.lower(chan) .. " ∫hip∫ • πpos •‡• " .. tostring(math.floor(snap)))
+			dbgMsg("∫hip∫ • πpos •‡• " .. tostring(math.floor(snap)), 1)
+		end
+	--elseif good == "proclaim" and tonumber(bad) > 0 then
+		
+	else
+		dbgMsg("∫hip∫ • bad • " .. tostring(bad), 1)
+	end
+
+end
+
 function JogBot(act)
 	local beans = LoadBeacons()
 	local x,y,z = Game.Player.Entity.PosX, Game.Player.Entity.PosY, Game.Player.Entity.PosZ
@@ -1694,6 +2562,140 @@ function NextCurrent(txt)
 	end
 end
 
+function ChaiNGanG(txt)
+	if txt:sub(1,3) == "BRK" then
+		txt = string.gsub(txt, "BRK ", "")
+		if txt == "BRK" then
+			--cHAIn = nil -- only enable if necessary
+			--cHAIn = {}
+			dbgMsg("‡ChaiNGanG‡ • ♪I can still hear you sayin'...♪ •‡• " .. tostring(cHAIn), 1)
+			return
+		end
+		local a,b = shiftWord(txt)
+		if a ~= "" and b ~= "" then
+			dbgMsg("‡ChaiNGanG‡ • ♪cHAIn BRK♪  ",1)
+			if cHAIn[a] and cHAIn[b] then
+				if cHAIn[a].precedes then
+					cHAIn[a].precedes[b] = nil
+				end
+				if cHAIn[a].follows then
+					cHAIn[a].follows[b] = nil
+				end
+				if cHAIn[b].precedes then
+					cHAIn[b].precedes[a] = nil
+				end
+				if cHAIn[b].follows then
+					cHAIn[b].follows[a] = nil
+				end
+				dbgMsg("‡PowerWords‡ • ♪cHAIn BRK♪  " .. tostring(a) .. " •∞• " .. tostring(b), 1)
+			end
+		elseif cHAIn[a] then
+			dbgMsg("‡ChaiNGanG‡ • ♪cHAIn BRK♪  •∞• " .. tostring(a),1)
+			for k,v in pairs(cHAIn) do
+				if cHAIn[k].precedes then
+					cHAIn[k].precedes[a] = nil
+				end
+				if cHAIn[k].follows then
+					cHAIn[k].follows[a] = nil
+				end
+			end
+			cHAIn[a] = nil
+			dbgMsg("‡ChaiNGanG‡ • ♪cHAIn BRK♪  " .. tostring(a) .. " •∞• removed from memory |", 1)
+		end
+			
+		return
+	elseif txt:sub(1,3) == "CHK" then
+		txt = string.gsub(txt, "CHK ", "")
+		if txt == "CHK" then
+			--cHAIn = nil -- only enable if necessary
+			--cHAIn = {}
+			dbgMsg("‡ChaiNGanG‡ • ♪The CHK's in the mail...♪ •‡• " .. tostring(cHAIn), 1)
+			return
+		end
+		
+		local a,b = shiftWord(txt)
+		if a ~= "" and b ~= "" then
+			dbgMsg("‡ChaiNGanG‡ • ♪cHAIn CHK♪  ",1)
+			if cHAIn[a] and cHAIn[b] then
+				if cHAIn[a].precedes then
+					dbgMsg("‡ChaiNGanG‡ • CHK:: " .. tostring(a) .. " <precedes> " .. tostring(b) .. " •∞• " .. tostring(cHAIn[a].precedes[b]),1)
+				end
+				if cHAIn[a].follows then
+					dbgMsg("‡ChaiNGanG‡ • CHK:: " .. tostring(a) .. " <follows> " .. tostring(b) .. " •∞• " .. tostring(cHAIn[a].follows[b]),1)
+				end
+				if cHAIn[b].precedes then
+					dbgMsg("‡ChaiNGanG‡ • CHK:: " .. tostring(b) .. " <precedes> " .. tostring(a) .. " •∞• " .. tostring(cHAIn[b].precedes[a]),1)
+				end
+				if cHAIn[b].follows then
+					dbgMsg("‡ChaiNGanG‡ • CHK:: " .. tostring(b) .. " <follows> " .. tostring(a) .. " •∞• " .. tostring(cHAIn[b].follows[a]),1)
+				end
+			end
+		end
+		return
+	elseif txt:sub(1,3) == "PRE" then
+		txt = string.gsub(txt, "PRE ", "")
+		if txt == "PRE" then
+			--cHAIn = nil -- only enable if necessary
+			--cHAIn = {}
+			dbgMsg("‡ChaiNGanG‡ • ♪PRE CEDE...♪ •‡• " .. tostring(cHAIn), 1)
+			return
+		end
+		local a,b,c
+		
+		a,b = shiftWord(txt)
+		b,c = shiftWord(b)
+		
+		dbgMsg("‡ChaiNGanG‡ • ♪cHAIn PRE♪ a: " .. tostring(a) .. " •‡• b: " .. tostring(b) .. " •‡• c: " .. tostring(c),1)
+		
+		if a ~= "" and b ~= "" and c ~= "" then
+			--dbgMsg("‡ChaiNGanG‡ • ♪cHAIn PRE♪  ",1)
+			
+			if cHAIn[a] and cHAIn[b] and tonumber(c) >= 0  then
+				cHAIn[a].precedes = cHAIn[a].precedes or {}
+				cHAIn[a].precedes[b] = tonumber(c)
+				cHAIn[b].follows = cHAIn[b].follows or {}
+				cHAIn[b].follows[a] = tonumber(c)
+			end
+		end
+		return
+	elseif txt:sub(1,4) == "ATTR" then
+		txt = string.gsub(txt, "ATTR ", "")
+		if txt == "ATTR" then
+			--cHAIn = nil -- only enable if necessary
+			--cHAIn = {}
+			dbgMsg("‡ChaiNGanG‡ • ♪ATTRibute Set :: No value specified >•< ", 1)
+			return
+		end
+		local a,b,c
+		
+		a,b = shiftWord(txt)
+		b,c = shiftWord(b)
+		
+		dbgMsg("‡ChaiNGanG‡ • ♪ATTRibute Set♪ [" .. tostring(a) .. "] •‡• ‡" .. tostring(b) .. "‡ (•" .. tostring(c) .. "•)",1)
+		
+		if a ~= "" and b ~= "" and c ~= "" then
+			--dbgMsg("‡ChaiNGanG‡ • ♪cHAIn PRE♪  ",1)
+			
+			if cHAIn[a] then
+				cHAIn[a][b] = c
+			end
+		end
+		return
+	end
+	--dbgMsg("∫PW∫ • txt •‡• " .. tostring(txt), 1)
+	WhipIT(txt, chn)
+end
+
+function Study()
+	local lettuce = Script.Clipboard
+	
+	if lettuce then
+		DoRandom("study", "trying to make sense of the data.")
+		lettuce = ChattyChop(lettuce)
+		dbgMsg("∫Study∫ • Salad Chopped • " .. tostring(#lettuce), 1)
+	end
+end
+
 function Ascend(txt)
 	local map = Game.Player.MapZone
 	local x,y,z = Game.Player.Entity.PosX, Game.Player.Entity.PosY, Game.Player.Entity.PosZ
@@ -1720,6 +2722,14 @@ function PowerWords(txt, toss, chn, sender)
 			txt = string.gsub(txt, toss .. " ", "")
 			Game.SendChat("/glamour apply " .. txt .. " | <me>")
 		end
+	elseif string.sub(txt, 1, 7) == "recount" then
+		if lastProclamation then
+			Game.SendChat(tostring(lastProclamation))
+		end
+	elseif string.sub(txt, 1, 6) == "invoke" then
+		txt = string.gsub(txt, "invoke ", "")
+		txt = string.gsub(txt, "invoke", "")
+		SaladGyre(txt, chn)
 	elseif string.sub(txt, 1,6) == "switch" then
 		txt = string.gsub(txt,"switch", "")
 		txt = string.gsub(txt," ", "")
@@ -1745,6 +2755,8 @@ function PowerWords(txt, toss, chn, sender)
 			filterLog["76"] = not filterLog["76"]
 			dbgMsg("‡PowerWords‡ logging toggled :: logging ∫ " .. tostring(filterLog["76"]) , 1)
 		end
+	elseif string.sub(txt,1,5) == "leave" and InDuty then
+		Game.SendChat("/pdfleave")
 	elseif string.sub(txt,1,5) == "dress" then
 		txt = string.gsub(txt,"dress", "")
 		if txt ~= "" then
@@ -1776,6 +2788,8 @@ function PowerWords(txt, toss, chn, sender)
 		swimTime = nil
 		if (tonumber(txt) or 0) > 0 then
 			swimTime = os.time() + tonumber(txt) * 60
+		elseif txt == "end" or txt == "stop" or txt == "exit" then
+			SwimHandler(true)
 		end
 		laundry = nil
 		SwimHandler()
@@ -1813,6 +2827,25 @@ function PowerWords(txt, toss, chn, sender)
 		end
 	elseif txt == "return" then
 		Game.SendChat("/return")
+	elseif string.sub(txt,1,5) == "chain" then
+		txt = string.gsub(txt, "chain ", "")
+		ChaiNGanG(txt)
+		
+	elseif string.sub(txt,1,7) == "impress" then
+		txt = string.gsub(txt, "impress ", "")
+		for i = 1, 77 do
+			ChattyChop(txt)
+		end
+		dbgMsg("∫PW∫ • impression complete •‡• ", 1)
+	elseif string.sub(txt,1,8) == "proclaim" then
+		txt = string.gsub(txt, "proclaim ", "")
+		
+		Proclaim(txt, chn)
+		
+		--dbgMsg("∫PW∫ • txt •‡• " .. tostring(txt), 1)
+		WhipIT(txt, chn)
+	elseif string.sub(txt,1,5) == "study" then
+		Study()
 	elseif string.startsWith(txt, "tour") then
 		txt = string.gsub(txt, "tour ", "")
 		StartTour(txt)
@@ -2062,7 +3095,14 @@ function FlameCheck(flame, toss, txt, chn, sender)
 	--[2]<Sandy Skittles> juju lastChat
 
 	if flame == "*creature*" then
-		--words = string.lower(words)
+		MinionMadness("creature", txt)
+	elseif flame == "*critter*" then
+		MinionMadness("critter", txt)
+	elseif flame == "*squirrel*" then
+		MinionMadness("squirrel", txt)
+	elseif flame == "*booger*" then
+		emoReact("scared")
+		MinionMadness("booger", txt)
 	elseif flame == "*expense*" then
 		--bits, bobs = string.match(txt, "(%d+) (gil)")
 		bits, bobs = string.match(txt, "(%d*,?%d*) (gil)")
@@ -2177,17 +3217,31 @@ function FlameCheck(flame, toss, txt, chn, sender)
 	elseif flame == "*crystal*" then
 		Crystal(txt, chn, toss)
 	elseif flame == "*kitty*" then
-		getKitty("random")
+		MinionMadness("kitty", txt)
+		--getKitty("random")
 	elseif flame == "*bird*" then
-		getBird("random")
+		MinionMadness("bird", txt)
+		--getBird(txt)
+		--getBird("random")
 	elseif flame == "*bunny*" then
 		getBunny("random")
 	elseif flame == "*motley*" then
-		getMotley("random")
+		MinionMadness("motley", txt)
+		--getMotley("random")
 	elseif flame == "*poppit*" then
-		getPoppit("random")
+		MinionMadness("poppit", txt)
+		--getPoppit("random")
+	elseif flame == "*doll*" then
+		MinionMadness("doll", txt)
+	elseif flame == "*mammet*" then
+		MinionMadness("mammet", txt)
 	elseif flame == "*turnip*" then
-		getKyurghen("random")
+		MinionMadness("turnip", txt)
+	elseif flame == "*beaver*" then
+		MinionMadness("beaver", txt)
+	elseif flame == "*dog*" then
+		MinionMadness("dog", txt)
+		--getKyurghen("random")
 	elseif flame == "*zoom*" and not InCombat and not safe then
 		CallRoutine("automove")
 	elseif flame == "*goober*" then
@@ -2198,8 +3252,10 @@ function FlameCheck(flame, toss, txt, chn, sender)
 		if txt == "leves" then
 			CallRoutine("leves")
 			--Game.SendChat("/chilledleves")
-		else
+		elseif txt:sub(1,#toss) == toss then
 			Game.SendChat("/"..txt)
+		else
+			dbgMsg("FlameCheck:  ω̆♡̆∩    :: " .. tostring(txt), 1)
 		end
 	elseif flame == "*emo*" and (sender == playerName or playerTraits.mimic) then
 		emoReact(toss)
@@ -2251,7 +3307,12 @@ function MatchStick(txt, sender, chn)
 	local bits, bobs, cnt
 	
 	--local salad = ChattyChop(txt)
-	local salad = SALAD or ChattyChop(txt)
+	local salad = SALAD
+	
+	if not salad then
+		salad = ChattyChop(txt, not validChainChn[chn])
+	end
+	
 	local toss = ""
 	
 	local fire = {}
@@ -2380,7 +3441,8 @@ end
 
 return {ChatHandler, Blimey, StringsHandler, Chatty, ChattyChop, JujuHoodoo, FlameCheck, MatchStick, Windfall,
 		TimeGate, doPhrash, ProgHandler, emoReact, Crystal, doBijou, bijous, Expense, cookTheBooks, validEarnings,
-		Census, StartTour, NextCurrent, JogBot}
+		Census, StartTour, NextCurrent, JogBot, WhipIT, Proclaim, MinionMadness, minions, SaladGyre, chaiNLength,
+		LettuceLoad, shiftSG, ChaiNGanG}
 
 --	^								^	--
 --	^	^^^ Chat Handler ^^^ 		^	--
